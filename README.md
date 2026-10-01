@@ -1,93 +1,34 @@
 # Cohen–Lenstra Asymptotics
 
-A small, reproducible playground for studying **finite-(X) corrections** to the Cohen–Lenstra distribution for class groups of imaginary quadratic fields.
+A reproducible playground for testing finite-(X) corrections to Cohen–Lenstra statistics for imaginary quadratic class groups.
 
-The repository is designed around one principle:
+## Quick start
 
-> **Do not recompute class groups.**  
-> Use the precomputed LMFDB tables, convert them into the notation used in class, build a tiny summary table once, and then test asymptotic formulas in seconds.
-
-## What is in this repository?
-
-For an imaginary quadratic field
-
-[
-K=mathbf Q(sqrt d),
-]
-
-we work with
-
-[
-D_K=operatorname{disc}(K),qquad
-h_K=|operatorname{Cl}_K|,qquad
-operatorname{Cl}_K.
-]
-
-The current repository contains the complete precomputed LMFDB class-group data for
-
-[
-|D_K|<2^{28}=268{,}435{,}456,
-]
-
-which gives **81,594,634 imaginary quadratic fields**.
-
-The raw class groups are stored in Git LFS under `data/raw/`.  
-The file `data/processed/p3_counts.csv` is a tiny summary used for fast experiments.
-
-For the exact raw-file encoding and the reconstruction of (d), (D_K), (h_K), and (operatorname{Cl}_K), see [DATA_FORMAT.md](DATA_FORMAT.md).
-
-For the asymptotic fitting interface and how to add your own conjectural function, see [EXPERIMENTS.md](EXPERIMENTS.md).
-
----
-
-## 30-second quick start
-
-A new Codespace should configure itself automatically. In the terminal, first verify that the data and environment are available:
+A new Codespace should configure itself automatically.
 
 ```bash
 gzip -t data/raw/*.gz && echo "raw data OK"
 pytest -q
 ```
 
-Expected output includes
-
-```text
-raw data OK
-4 passed
-```
-
-### Example 1: list all fields with (|D_K|le 100)
+List all fields with (|D_K|le 100):
 
 ```bash
 python -m scripts.list_fields --max-D 100
 ```
 
-The beginning of the output should look like
+Example output:
 
 ```text
      d    D_K   h_K            Cl_K
 --------------------------------------
     -3     -3     1               1
     -1     -4     1               1
-    -7     -7     1               1
-    -2     -8     1               1
-   -11    -11     1               1
    -15    -15     2              C2
-   -19    -19     1               1
-    -5    -20     2              C2
    -23    -23     3              C3
 ```
 
-So, for example,
-
-[
-K=mathbf Q(sqrt{-23}),qquad
-D_K=-23,qquad
-h_K=3,qquad
-operatorname{Cl}_Ksimeq C_3.
-]
-
-### Example 2: fit the (C_9) error to a power law
+Fit the (C_9) error to a free power law:
 
 ```bash
 python -m experiments.fit \
@@ -97,161 +38,70 @@ python -m experiments.fit \
   --xmin 1000000
 ```
 
-This fits
+## Data
 
-[
-E_{C_9}(X)=A X^	heta.
-]
-
-On the current dataset, a typical fit over (10^6le Xle 2^{28}) gives approximately
-
-[
-Aapprox -0.01853,qquad
-	hetaapprox 0.832998,
-]
-
-which is numerically close to
-
-[
-rac56=0.833333ldots.
-]
-
-This is an **empirical finite-range observation**, not a proved asymptotic statement.
-
-### Example 3: force the exponent to be (5/6)
-
-```bash
-python -m experiments.fit \
-  --group C9 \
-  --error conditional \
-  --model five_sixths \
-  --xmin 1000000
-```
-
-This tests
-
-[
-E_{C_9}(X)=A X^{5/6}.
-]
-
-The script prints fitted parameters, RMSE, relative RMSE, AIC, and BIC, and writes fit/residual plots to `figures/`.
-
----
-
-## Where did the data come from?
-
-The raw files are from the **LMFDB quadratic imaginary class-group tables**:
+Source: LMFDB quadratic imaginary class-group tables:
 
 https://www.lmfdb.org/NumberField/QuadraticImaginaryClassGroups
 
-LMFDB organizes negative fundamental discriminants into four congruence classes:
+The repo currently contains all imaginary quadratic fields with
 
 [
-|D_K|equiv 3,7pmod 8,
-qquad
-|D_K|equiv 4,8pmod{16}.
+0<|D_K|<2^{28},
 ]
 
-For each congruence class, the data is split into blocks indexed by (k).  
-The current repository contains the four (k=0) files:
+for a total of **81,594,634 fields**.
 
-```text
-data/raw/cl3mod8.0.gz
-data/raw/cl7mod8.0.gz
-data/raw/cl4mod16.0.gz
-data/raw/cl8mod16.0.gz
-```
+The raw LMFDB files are stored in Git LFS under `data/raw/`. We do **not** recompute class groups.
 
-Together they cover exactly
+The mathematical interface uses
 
 [
-0<|D_K|<2^{28}.
+K=mathbf Q(sqrt d),qquad
+D_K,qquad
+h_K,qquad
+operatorname{Cl}_K.
 ]
 
-These files already contain the class number and full class-group invariant factors.  
-This project only **decodes and analyzes** them; it does not run PARI/GP or another class-group algorithm over the full dataset.
+See [DATA_FORMAT.md](DATA_FORMAT.md) for the raw encoding and reconstruction.
 
----
-
-## How are the processed files generated?
-
-The mathematical decoder is in
-
-```text
-src/dataset.py
-```
-
-It reconstructs the fundamental discriminant from the compressed LMFDB representation, converts it into the course notation (K=mathbf Q(sqrt d)), and exposes records containing
-
-```text
-d
-D_K
-h_K
-Cl_K_invariants
-Cl3_K_invariants
-```
-
-To inspect the data directly:
-
-```bash
-python -m scripts.show_fields --n 20
-```
-
-or by a discriminant bound:
-
-```bash
-python -m scripts.list_fields --max-D 100
-```
-
-The cumulative (3)-primary summary is generated by
+## Processed statistics
 
 ```bash
 python -m scripts.build_stats
 ```
 
-which writes
+creates
 
 ```text
 data/processed/p3_counts.csv
 ```
 
-The current summary contains about 200 logarithmically spaced checkpoints and tracks
+with cumulative statistics at about 200 values of (X) for
 
 [
-1,qquad C_3,qquad C_9,qquad C_3	imes C_3.
+1,quad C_3,quad C_9,quad C_3	imes C_3.
 ]
 
-Once this file exists, fitting new asymptotic models is essentially instantaneous.
+Once this file exists, asymptotic fits are essentially instantaneous.
 
----
+## Error definitions
 
-## Error functions currently available
-
-For a fixed finite (3)-group (G), let (N_G(X)) be the number of imaginary quadratic fields with (|D_K|le X) and
-
-[
-operatorname{Cl}_K[3^infty]simeq G.
-]
-
-The code supports two normalizations.
-
-### Conditional error
+Conditional error:
 
 [
 E_G^{mathrm{cond}}(X)
 =
-N_G(X)-P_{mathrm{CL}}(G),N(X),
+N_G(X)-P_{mathrm{CL}}(G)N(X).
 ]
 
-where (N(X)) is the **actual** number of fields in the dataset up to (X).
-
-Use
+Use:
 
 ```bash
 --error conditional
 ```
 
-### Xu–Zhu-style error
+Xu–Zhu-style error:
 
 [
 E_G^{mathrm{XZ}}(X)
@@ -259,58 +109,31 @@ E_G^{mathrm{XZ}}(X)
 N_G(X)-P_{mathrm{CL}}(G)rac{3}{pi^2}X.
 ]
 
-Use
+Use:
 
 ```bash
 --error xuzhu
 ```
 
-The conditional version removes the fluctuation coming solely from counting fundamental discriminants, while the Xu–Zhu version matches the usual main-term normalization.
+## Testing asymptotic functions
 
----
-
-## Designing your own asymptotic function
-
-All candidate models live in
-
-```text
-experiments/models.py
-```
-
-Existing examples include
+Built-in examples include
 
 [
-A X^	heta,
+AX^	heta,qquad
+AX^{5/6},qquad
+AX^{5/6}+BX^{2/3},qquad
+AX^	heta(log X)^eta.
 ]
 
-[
-A X^	heta(log X)^eta,
-]
-
-[
-A X^	heta+B X^phi,
-]
-
-and
-
-[
-A X^{5/6}+B X^{2/3}.
-]
-
-To add your own model, edit `experiments/models.py`. For example, suppose you want to test
-
-[
-A X^{5/6}+B X^{1/2}log X.
-]
-
-Add
+To add your own model, edit `experiments/models.py`:
 
 ```python
 def my_model(x, A, B):
     return A * x**(5/6) + B * x**0.5 * np.log(x)
 ```
 
-Then run
+Then run:
 
 ```bash
 python -m experiments.fit \
@@ -320,86 +143,33 @@ python -m experiments.fit \
   --xmin 1000000
 ```
 
-No other code needs to change.
+See [EXPERIMENTS.md](EXPERIMENTS.md) for more examples.
 
-If the nonlinear optimizer needs a better initial guess, pass one explicitly:
+## Current baseline
 
-```bash
-python -m experiments.fit \
-  --group C9 \
-  --error conditional \
-  --model my_model \
-  --xmin 1000000 \
-  --p0=-0.02,0.001
-```
+For (C_9) on (10^6le Xle2^{28}), a free power fit gives
 
----
+[
+E_{C_9}(X)approx AX^	heta,
+qquad
+	hetaapprox0.832998,
+]
 
-## Recommended workflow for a new conjecture
+which is numerically close to (5/6).
 
-1. Add one function to `experiments/models.py`.
-2. Fit it on a fixed range, for example (Xge10^6).
-3. Inspect both the fit and residual plots.
-4. Change `--xmin` to test stability.
-5. Compare against simpler models before adding more parameters.
-6. Repeat for several groups (`trivial`, `C3`, `C9`, `C3xC3`).
+This is an empirical finite-range observation, not a theorem.
 
-For example, to see how a free power exponent changes as small-(X) data is discarded:
-
-```bash
-for XMIN in 100000 300000 1000000 3000000 10000000 30000000 100000000; do
-  echo "===== xmin = $XMIN ====="
-  python -m experiments.fit \
-    --group C9 \
-    --error conditional \
-    --model power \
-    --xmin "$XMIN"
-done
-```
-
-A stable exponent is much more informative than a single good fit.
-
----
-
-## Repository map
+## Repo layout
 
 ```text
-.
-├── data/
-│   ├── raw/                 # original LMFDB .gz files (Git LFS)
-│   └── processed/
-│       └── p3_counts.csv    # fast cumulative statistics
-├── src/
-│   └── dataset.py           # LMFDB decoder + mathematical representation
-├── scripts/
-│   ├── list_fields.py       # list fields up to a discriminant bound
-│   ├── show_fields.py       # inspect sample records
-│   ├── build_stats.py       # regenerate p3_counts.csv
-│   └── setup.sh             # Codespace/local setup
-├── experiments/
-│   ├── models.py            # candidate asymptotic functions
-│   └── fit.py               # generic nonlinear fitting interface
-├── figures/                 # generated fit and residual plots
-├── tests/
-│   └── test_dataset.py
-├── DATA_FORMAT.md
-└── README.md
+data/raw/              original LMFDB files
+data/processed/        small summary tables
+src/dataset.py         LMFDB decoder
+scripts/build_stats.py generate p3_counts.csv
+scripts/list_fields.py inspect fields by |D_K|
+experiments/models.py  candidate asymptotic functions
+experiments/fit.py     generic fitter
+figures/               generated plots
 ```
 
-## Reproducibility
-
-Run
-
-```bash
-pytest -q
-gzip -t data/raw/*.gz
-```
-
-to verify the parser tests and raw compressed files.
-
-The small-(D) output can also be independently checked with PARI/GP.
-
-## Scope
-
-The current raw dataset contains **imaginary** quadratic fields only, so (D_K<0).  
-Real quadratic fields require a separate dataset and have a different Cohen–Lenstra weighting.
+Scope: the current dataset contains **imaginary quadratic fields only**.
