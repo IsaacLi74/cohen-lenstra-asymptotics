@@ -1,6 +1,6 @@
 # Cohen–Lenstra Asymptotics
 
-A reproducible playground for testing finite-(X) corrections to Cohen–Lenstra statistics for imaginary quadratic class groups.
+A reproducible playground for testing finite-X corrections to Cohen–Lenstra statistics for imaginary quadratic class groups.
 
 ## Quick start
 
@@ -11,7 +11,7 @@ gzip -t data/raw/*.gz && echo "raw data OK"
 pytest -q
 ```
 
-List all fields with (|D_K|le 100):
+List all fields with `|D_K| <= 100`:
 
 ```bash
 python -m scripts.list_fields --max-D 100
@@ -28,7 +28,11 @@ Example output:
    -23    -23     3              C3
 ```
 
-Fit the (C_9) error to a free power law:
+So, for example:
+
+`K = Q(sqrt(-23)), D_K = -23, h_K = 3, Cl_K = C3`.
+
+Fit the `C9` error to a free power law:
 
 ```bash
 python -m experiments.fit \
@@ -46,9 +50,7 @@ https://www.lmfdb.org/NumberField/QuadraticImaginaryClassGroups
 
 The repo currently contains all imaginary quadratic fields with
 
-[
-0<|D_K|<2^{28},
-]
+`0 < |D_K| < 2^28`
 
 for a total of **81,594,634 fields**.
 
@@ -56,32 +58,30 @@ The raw LMFDB files are stored in Git LFS under `data/raw/`. We do **not** recom
 
 The mathematical interface uses
 
-[
-K=mathbf Q(sqrt d),qquad
-D_K,qquad
-h_K,qquad
-operatorname{Cl}_K.
-]
+`K = Q(sqrt(d))`, together with `D_K`, `h_K`, and `Cl_K`.
 
 See [DATA_FORMAT.md](DATA_FORMAT.md) for the raw encoding and reconstruction.
 
 ## Processed statistics
 
+Run:
+
 ```bash
 python -m scripts.build_stats
 ```
 
-creates
+This creates:
 
 ```text
 data/processed/p3_counts.csv
 ```
 
-with cumulative statistics at about 200 values of (X) for
+The file contains cumulative statistics at about 200 values of `X` for:
 
-[
-1,quad C_3,quad C_9,quad C_3	imes C_3.
-]
+- `1`
+- `C3`
+- `C9`
+- `C3 x C3`
 
 Once this file exists, asymptotic fits are essentially instantaneous.
 
@@ -89,11 +89,7 @@ Once this file exists, asymptotic fits are essentially instantaneous.
 
 Conditional error:
 
-[
-E_G^{mathrm{cond}}(X)
-=
-N_G(X)-P_{mathrm{CL}}(G)N(X).
-]
+`E_G^cond(X) = N_G(X) - P_CL(G) * N(X)`
 
 Use:
 
@@ -103,11 +99,7 @@ Use:
 
 Xu–Zhu-style error:
 
-[
-E_G^{mathrm{XZ}}(X)
-=
-N_G(X)-P_{mathrm{CL}}(G)rac{3}{pi^2}X.
-]
+`E_G^XZ(X) = N_G(X) - P_CL(G) * (3/pi^2) * X`
 
 Use:
 
@@ -117,14 +109,12 @@ Use:
 
 ## Testing asymptotic functions
 
-Built-in examples include
+Built-in examples include:
 
-[
-AX^	heta,qquad
-AX^{5/6},qquad
-AX^{5/6}+BX^{2/3},qquad
-AX^	heta(log X)^eta.
-]
+- `A * X^theta`
+- `A * X^(5/6)`
+- `A * X^(5/6) + B * X^(2/3)`
+- `A * X^theta * (log X)^beta`
 
 To add your own model, edit `experiments/models.py`:
 
@@ -147,15 +137,15 @@ See [EXPERIMENTS.md](EXPERIMENTS.md) for more examples.
 
 ## Current baseline
 
-For (C_9) on (10^6le Xle2^{28}), a free power fit gives
+For `C9` on `10^6 <= X <= 2^28`, a free power fit gives approximately
 
-[
-E_{C_9}(X)approx AX^	heta,
-qquad
-	hetaapprox0.832998,
-]
+`E_C9(X) = A * X^theta`
 
-which is numerically close to (5/6).
+with
+
+`theta = 0.832998`.
+
+This is numerically close to `5/6 = 0.833333...`.
 
 This is an empirical finite-range observation, not a theorem.
 
