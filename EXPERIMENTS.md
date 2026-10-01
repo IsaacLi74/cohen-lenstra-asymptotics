@@ -1,24 +1,14 @@
 # Asymptotic experiments
 
-This document describes the fast experiment loop used in this repository.
+## Setup
 
-## Goal
+Processed data:
 
-For a finite abelian (3)-group (G), define
+```text
+data/processed/p3_counts.csv
+```
 
-[
-N_G(X)
-=
-#left{
-K:
-|D_K|le X, 
-operatorname{Cl}_K[3^infty]simeq G
-ight}.
-]
-
-The repository is designed to test candidate formulas for the finite-(X) error relative to the Cohen–Lenstra prediction.
-
-The current target groups are
+Current target groups:
 
 [
 1,qquad C_3,qquad C_9,qquad C_3	imes C_3.
@@ -26,7 +16,7 @@ The current target groups are
 
 ## Error definitions
 
-### Conditional error
+Conditional error:
 
 [
 E_G^{mathrm{cond}}(X)
@@ -34,15 +24,7 @@ E_G^{mathrm{cond}}(X)
 N_G(X)-P_{mathrm{CL}}(G)N(X).
 ]
 
-This uses the actual number (N(X)) of fields in the dataset.
-
-Run with
-
-```bash
---error conditional
-```
-
-### Xu–Zhu-style error
+Xu–Zhu-style error:
 
 [
 E_G^{mathrm{XZ}}(X)
@@ -50,7 +32,13 @@ E_G^{mathrm{XZ}}(X)
 N_G(X)-P_{mathrm{CL}}(G)rac{3}{pi^2}X.
 ]
 
-Run with
+Choose with
+
+```bash
+--error conditional
+```
+
+or
 
 ```bash
 --error xuzhu
@@ -58,12 +46,10 @@ Run with
 
 ## Built-in models
 
-The functions are defined in `experiments/models.py`.
-
-### Free power law
+Free power law:
 
 [
-A X^	heta
+AX^	heta
 ]
 
 ```bash
@@ -74,10 +60,10 @@ python -m experiments.fit \
   --xmin 1000000
 ```
 
-### Fixed (5/6) power
+Fixed (5/6):
 
 [
-A X^{5/6}
+AX^{5/6}
 ]
 
 ```bash
@@ -88,10 +74,10 @@ python -m experiments.fit \
   --xmin 1000000
 ```
 
-### Two fixed powers
+Two powers:
 
 [
-A X^{5/6}+B X^{2/3}
+AX^{5/6}+BX^{2/3}
 ]
 
 ```bash
@@ -102,44 +88,26 @@ python -m experiments.fit \
   --xmin 1000000
 ```
 
-### Power times logarithm
+Power-log model:
 
 [
-A X^	heta(log X)^eta
+AX^	heta(log X)^eta.
 ]
 
-```bash
-python -m experiments.fit \
-  --group C9 \
-  --error conditional \
-  --model power_log \
-  --xmin 1000000
-```
+Use `--model power_log`.
 
-## How to add a new model
+## Add a new model
 
-Edit
-
-```text
-experiments/models.py
-```
-
-and add an ordinary Python function whose first argument is (x) and whose remaining arguments are free parameters.
+Edit `experiments/models.py`.
 
 Example:
-
-[
-A X^{5/6}+B X^{1/2}log X.
-]
-
-Add
 
 ```python
 def my_model(x, A, B):
     return A * x**(5/6) + B * x**0.5 * np.log(x)
 ```
 
-Then run
+Then run:
 
 ```bash
 python -m experiments.fit \
@@ -149,44 +117,17 @@ python -m experiments.fit \
   --xmin 1000000
 ```
 
-The fitter discovers the number and names of parameters automatically from the function signature.
-
-If necessary, provide an explicit starting point:
+If needed, supply an initial guess:
 
 ```bash
-python -m experiments.fit \
-  --group C9 \
-  --error conditional \
-  --model my_model \
-  --xmin 1000000 \
-  --p0=-0.02,0.001
+--p0=-0.02,0.001
 ```
 
-## What the fitter reports
+## What to compare
 
-For each model the script prints:
+The fitter reports parameters, RMSE, relative RMSE, AIC, and BIC, and saves fit/residual plots in `figures/`.
 
-- fitted parameters;
-- standard errors from `curve_fit`;
-- RMSE;
-- relative RMSE;
-- AIC;
-- BIC.
-
-It also writes
-
-```text
-figures/<group>_<error>_<model>.png
-figures/<group>_<error>_<model>_residuals.png
-```
-
-The residual plot is important: a visually systematic residual pattern often means that a model is missing a lower-order term even when the global RMSE is small.
-
-## Stability with respect to (X_{min})
-
-A single fitted exponent can be misleading. A basic robustness check is to repeatedly discard small-(X) data.
-
-Example:
+A useful robustness check is to vary (X_{min}):
 
 ```bash
 for XMIN in 100000 300000 1000000 3000000 10000000 30000000 100000000; do
@@ -199,53 +140,16 @@ for XMIN in 100000 300000 1000000 3000000 10000000 30000000 100000000; do
 done
 ```
 
-If
+## Current baseline
+
+For (C_9) on (10^6le Xle2^{28}),
 
 [
-E_G(X)sim A X^	heta,
+	hetaapprox0.832998
 ]
 
-one expects the fitted exponent to become increasingly stable as (X_{min}) grows, provided the available (X)-range is still wide enough.
+for a free power fit, close to (5/6). Fixing the exponent at (5/6) gives nearly the same RMSE with one fewer parameter.
 
-## Current baseline observation
+Treat this as numerical evidence only.
 
-For (G=C_9) and
-
-[
-10^6le Xle2^{28},
-]
-
-the free power fit gives approximately
-
-[
-A=-0.01853,
-qquad
-	heta=0.832998.
-]
-
-This is extremely close numerically to
-
-[
-rac56=0.833333ldots.
-]
-
-A model with the exponent fixed at (5/6) has nearly the same RMSE and uses one fewer free parameter. Adding a (B X^{2/3}) term did not improve the current fit appreciably.
-
-This is a numerical observation on the current finite range, not a theorem.
-
-## Important statistical caution
-
-The points in `p3_counts.csv` are cumulative counts. Therefore neighboring checkpoints are strongly correlated.
-
-As a result:
-
-- the reported `curve_fit` standard errors are useful diagnostics but should not be interpreted as rigorous confidence intervals;
-- AIC/BIC are convenient model-comparison summaries, but their usual independent-error interpretation does not literally apply.
-
-A natural next step is to analyze non-overlapping dyadic shells
-
-[
-(X,2X],
-]
-
-which reduces the dependence between observations.
+Note: the checkpoints are cumulative and therefore correlated. Standard errors and AIC/BIC are useful diagnostics, not rigorous inference. A future improvement is to analyze non-overlapping dyadic shells ((X,2X]).
