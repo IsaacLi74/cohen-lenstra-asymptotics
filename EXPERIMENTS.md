@@ -1,6 +1,6 @@
 # Asymptotic experiments
 
-## Setup
+## Data
 
 Processed data:
 
@@ -10,35 +10,28 @@ data/processed/p3_counts.csv
 
 Current target groups:
 
-[
-1,qquad C_3,qquad C_9,qquad C_3	imes C_3.
-]
+- `1`
+- `C3`
+- `C9`
+- `C3 x C3`
 
 ## Error definitions
 
 Conditional error:
 
-[
-E_G^{mathrm{cond}}(X)
-=
-N_G(X)-P_{mathrm{CL}}(G)N(X).
-]
+`E_G^cond(X) = N_G(X) - P_CL(G) * N(X)`
 
-Xu–Zhu-style error:
-
-[
-E_G^{mathrm{XZ}}(X)
-=
-N_G(X)-P_{mathrm{CL}}(G)rac{3}{pi^2}X.
-]
-
-Choose with
+Use:
 
 ```bash
 --error conditional
 ```
 
-or
+Xu–Zhu-style error:
+
+`E_G^XZ(X) = N_G(X) - P_CL(G) * (3/pi^2) * X`
+
+Use:
 
 ```bash
 --error xuzhu
@@ -46,11 +39,9 @@ or
 
 ## Built-in models
 
-Free power law:
+### Free power law
 
-[
-AX^	heta
-]
+`A * X^theta`
 
 ```bash
 python -m experiments.fit \
@@ -60,11 +51,9 @@ python -m experiments.fit \
   --xmin 1000000
 ```
 
-Fixed (5/6):
+### Fixed 5/6 power
 
-[
-AX^{5/6}
-]
+`A * X^(5/6)`
 
 ```bash
 python -m experiments.fit \
@@ -74,11 +63,9 @@ python -m experiments.fit \
   --xmin 1000000
 ```
 
-Two powers:
+### Two fixed powers
 
-[
-AX^{5/6}+BX^{2/3}
-]
+`A * X^(5/6) + B * X^(2/3)`
 
 ```bash
 python -m experiments.fit \
@@ -88,13 +75,15 @@ python -m experiments.fit \
   --xmin 1000000
 ```
 
-Power-log model:
+### Power-log model
 
-[
-AX^	heta(log X)^eta.
-]
+`A * X^theta * (log X)^beta`
 
-Use `--model power_log`.
+Use:
+
+```bash
+--model power_log
+```
 
 ## Add a new model
 
@@ -117,7 +106,7 @@ python -m experiments.fit \
   --xmin 1000000
 ```
 
-If needed, supply an initial guess:
+If needed, give an initial guess:
 
 ```bash
 --p0=-0.02,0.001
@@ -125,9 +114,17 @@ If needed, supply an initial guess:
 
 ## What to compare
 
-The fitter reports parameters, RMSE, relative RMSE, AIC, and BIC, and saves fit/residual plots in `figures/`.
+The fitter reports:
 
-A useful robustness check is to vary (X_{min}):
+- fitted parameters
+- RMSE
+- relative RMSE
+- AIC
+- BIC
+
+It also saves fit and residual plots in `figures/`.
+
+A useful robustness check is to vary `XMIN`:
 
 ```bash
 for XMIN in 100000 300000 1000000 3000000 10000000 30000000 100000000; do
@@ -142,14 +139,16 @@ done
 
 ## Current baseline
 
-For (C_9) on (10^6le Xle2^{28}),
+For `C9` on `10^6 <= X <= 2^28`, the free power fit gives approximately:
 
-[
-	hetaapprox0.832998
-]
+`theta = 0.832998`
 
-for a free power fit, close to (5/6). Fixing the exponent at (5/6) gives nearly the same RMSE with one fewer parameter.
+which is close to:
+
+`5/6 = 0.833333...`
+
+Fixing the exponent at `5/6` gives nearly the same RMSE with one fewer parameter.
 
 Treat this as numerical evidence only.
 
-Note: the checkpoints are cumulative and therefore correlated. Standard errors and AIC/BIC are useful diagnostics, not rigorous inference. A future improvement is to analyze non-overlapping dyadic shells ((X,2X]).
+Note: the checkpoints are cumulative and therefore correlated. Standard errors and AIC/BIC are diagnostics, not rigorous inference.
