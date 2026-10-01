@@ -6,96 +6,80 @@ Raw data comes from the LMFDB quadratic imaginary class-group tables:
 
 https://www.lmfdb.org/NumberField/QuadraticImaginaryClassGroups
 
-The current repo contains the four (k=0) files
+The current repo contains the four `k = 0` files:
 
-```text
-cl3mod8.0.gz
-cl7mod8.0.gz
-cl4mod16.0.gz
-cl8mod16.0.gz
-```
+- `cl3mod8.0.gz`
+- `cl7mod8.0.gz`
+- `cl4mod16.0.gz`
+- `cl8mod16.0.gz`
 
-covering all imaginary quadratic fundamental discriminants with
+Together they cover all imaginary quadratic fundamental discriminants with
 
-[
-0<|D_K|<2^{28}.
-]
+`0 < |D_K| < 2^28`.
 
 ## Mathematical notation
 
-We write
+We write `K = Q(sqrt(d))`, with `d < 0` squarefree, and expose:
 
-[
-K=mathbf Q(sqrt d),
-]
+- `d`
+- `D_K`
+- `h_K`
+- `Cl_K`
 
-with (d<0) squarefree, and expose
+For quadratic fields:
 
-[
-d,qquad D_K,qquad h_K,qquad operatorname{Cl}_K.
-]
+- `D_K = d` if `d ≡ 1 (mod 4)`
+- `D_K = 4d` if `d ≡ 2 or 3 (mod 4)`
 
-For quadratic fields,
+So the decoder recovers:
 
-[
-D_K=
-egin{cases}
-d,&dequiv1pmod4,\
-4d,&dequiv2,3pmod4.
-end{cases}
-]
+- `d = D_K` if `D_K ≡ 1 (mod 4)`
+- `d = D_K / 4` otherwise
 
-So the decoder recovers
+Example:
 
-[
-d=
-egin{cases}
-D_K,&D_Kequiv1pmod4,\
-D_K/4,&	ext{otherwise}.
-end{cases}
-]
+`D_K = -20` gives `d = -5`, so `K = Q(sqrt(-5))`.
 
 ## Raw LMFDB encoding
 
-A file has the form
+A file has the form:
 
 ```text
 cl{r}mod{m}.{k}.gz
 ```
 
-and starts from
+For example, `cl3mod8.0.gz` means:
 
-[
-D_0=-k2^{28}-r.
-]
+```text
+r = 3
+m = 8
+k = 0
+```
 
-Each line is
+LMFDB stores discriminants by delta encoding.
+
+Initialize:
+
+`D_0 = -k * 2^28 - r`
+
+Each line is:
 
 ```text
 a   h   c1 c2 ... ct
 ```
 
-with
+The next discriminant is:
 
-[
-D_i=D_{i-1}-ma,
-qquad
-h=h_K,
-]
+`D_i = D_(i-1) - m * a`
 
-and
+The remaining columns mean:
 
-[
-operatorname{Cl}_K
-simeq
-C_{c_1}	imescdots	imes C_{c_t}.
-]
+- `h = h_K`
+- `Cl_K = C_c1 x C_c2 x ... x C_ct`
 
-The integrity check is
+Integrity check:
 
-[
-h_K=prod_j c_j.
-]
+`h_K = product(c_j)`
 
 Example from `cl3mod8.0.gz`:
 
@@ -106,17 +90,18 @@ Example from `cl3mod8.0.gz`:
 2  2  2
 ```
 
-which decodes to
+This decodes to:
 
-[
-D_K=-3,-11,-19,-35,
-]
-
-with class groups (1,1,1,C_2).
+```text
+D_K = -3    h_K = 1    Cl_K = 1
+D_K = -11   h_K = 1    Cl_K = 1
+D_K = -19   h_K = 1    Cl_K = 1
+D_K = -35   h_K = 2    Cl_K = C2
+```
 
 ## Python representation
 
-`src/dataset.py` exposes a `FieldRecord` with
+`src/dataset.py` exposes a `FieldRecord` with:
 
 ```text
 d
@@ -126,7 +111,7 @@ Cl_K_invariants
 Cl3_K_invariants
 ```
 
-For example,
+Example:
 
 ```text
 d = -59
@@ -135,19 +120,13 @@ h_K = 3
 Cl_K_invariants = (3,)
 ```
 
-means
+means `Cl_K = C3`.
 
-[
-operatorname{Cl}_Ksimeq C_3.
-]
+The 3-primary part keeps only the largest power of 3 in each invariant factor.
 
-The (3)-primary part is obtained by keeping only the largest power of (3) in each invariant factor. For example,
+Example:
 
-[
-C_{18}	imes C_{12}
-mapsto
-C_9	imes C_3.
-]
+`C18 x C12 -> C9 x C3`.
 
 ## Useful commands
 
@@ -169,4 +148,4 @@ Rebuild processed statistics:
 python -m scripts.build_stats
 ```
 
-The current dataset contains imaginary quadratic fields only, so (D_K<0).
+The current dataset contains imaginary quadratic fields only, so `D_K < 0`.
