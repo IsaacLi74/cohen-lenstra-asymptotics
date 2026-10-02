@@ -139,6 +139,8 @@ def my_model(x, A, B):
     return A * x**(5/6) + B * x**0.5 * np.log(x)
 ```
 
+Fits use ordinary nonlinear least squares on the raw counting error `E(X)`, not least squares in log-space. For the free power model `E(X) = A * X^theta`, the parameters are chosen to minimize `sum_i (E(X_i) - A * X_i^theta)^2`.
+
 Then run:
 
 ```bash
