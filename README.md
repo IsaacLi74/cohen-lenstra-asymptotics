@@ -20,7 +20,7 @@ The raw LMFDB files contain the full class-group structure, so other odd primes 
 
 ## Quick start
 
-A new Codespace should configure itself automatically.
+A new Codespace should configure itself automatically. Run the data-integrity and test checks first:
 
 ```bash
 gzip -t data/raw/*.gz && echo "raw data OK"
