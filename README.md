@@ -1,6 +1,39 @@
 # Cohen–Lenstra Asymptotics
 
-A reproducible playground for testing finite-X corrections to Cohen–Lenstra statistics for imaginary quadratic class groups.
+A reproducible playground for testing finite-`X` corrections to Cohen–Lenstra statistics for imaginary quadratic class groups.
+
+## Motivation
+
+For imaginary quadratic fields, Davenport–Heilbronn gives the limiting average
+
+`Avg |Cl_K[3]| -> 2`.
+
+A refined secondary asymptotic has the form
+
+`Avg |Cl_K[3]| = 2 + c * X^(-1/6) + o(X^(-1/6))`
+
+for an explicit constant `c`. Equivalently, the corresponding counting problem has a secondary term of order `X^(5/6)`.
+
+Our question is whether **individual Cohen–Lenstra probabilities** have comparable secondary terms. For a fixed finite 3-group `G`, we test models such as
+
+`N_G(X) = P_CL(G) * N(X) + A_G * X^(5/6) + lower-order terms`.
+
+This is currently an empirical question in this repo.
+
+## Scope
+
+The Cohen–Lenstra heuristic is formulated for any fixed **odd prime `p`**.
+
+The current implementation studies only **`p = 3`**, with the groups
+
+- `1`
+- `C3`
+- `C9`
+- `C3 x C3`
+
+The raw LMFDB files contain the **full class-group structure**, so extending the project to `p = 5, 7, 11, ...` does not require recomputing class groups; only the statistics code needs to be generalized.
+
+The current dataset contains **imaginary quadratic fields only**.
 
 ## Quick start
 
@@ -161,5 +194,3 @@ experiments/models.py  candidate asymptotic functions
 experiments/fit.py     generic fitter
 figures/               generated plots
 ```
-
-Scope: the current dataset contains **imaginary quadratic fields only**.
