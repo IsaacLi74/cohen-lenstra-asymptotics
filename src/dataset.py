@@ -8,11 +8,12 @@ from pathlib import Path
 from typing import Iterator
 
 from src import ROOT
+from src.statistics import DATA_BOUND, RAW_FILES, RESIDUES
 
 RAW_DIR = ROOT / "data/raw"
 
 FILE_RE = re.compile(
-    r"cl(?P<r>\d+)mod(?P<m>\d+)\.(?P<k>\d+)\.gz$"
+    r"cl(?P<r>\d+)mod(?P<m>\d+)\.0\.gz$"
 )
 
 
@@ -92,17 +93,16 @@ def group_label(invariants: tuple[int, ...] | list[int]) -> str:
     return " x ".join(f"C{n}" for n in parts)
 
 
-def parse_filename(path: Path) -> tuple[int, int, int]:
-    match = FILE_RE.search(path.name)
+def parse_filename(path: Path) -> tuple[int, int]:
+    match = FILE_RE.fullmatch(path.name)
 
     if not match:
         raise ValueError(f"Unrecognized LMFDB filename: {path.name}")
 
-    return (
-        int(match.group("r")),
-        int(match.group("m")),
-        int(match.group("k")),
-    )
+    r, m = int(match.group("r")), int(match.group("m"))
+    if (r, m) not in RESIDUES:
+        raise ValueError(f"Unrecognized LMFDB filename: {path.name}")
+    return r, m
 
 
 def iter_file(path: Path) -> Iterator[FieldRecord]:
@@ -110,15 +110,14 @@ def iter_file(path: Path) -> Iterator[FieldRecord]:
     Read one compressed LMFDB class-group file.
 
     LMFDB encoding:
-        d_0 = -k*2^28-r
+        d_0 = -r
         d_i = d_{i-1} - m*a_i
 
     Each line:
         a_i   h(D_i)   c_1 c_2 ... c_t
     """
-    r, m, k = parse_filename(path)
-
-    D = -k * 2**28 - r
+    r, m = parse_filename(path)
+    D = -r
 
     with gzip.open(path, "rt") as f:
         for line_no, line in enumerate(f, start=1):
@@ -137,8 +136,8 @@ def iter_file(path: Path) -> Iterator[FieldRecord]:
                 raise ValueError(f"{path}:{line_no}: invalid delta or invariant")
 
             D -= m * a
-            if not k*2**28 <= abs(D) < (k+1)*2**28:
-                raise ValueError(f"{path}:{line_no}: discriminant outside filename block")
+            if not 0 < abs(D) < DATA_BOUND:
+                raise ValueError(f"{path}:{line_no}: discriminant outside the dataset range")
 
             product = 1
             for n in invariants:
@@ -164,37 +163,7 @@ def iter_file(path: Path) -> Iterator[FieldRecord]:
             )
 
 
-def available_blocks() -> dict[int, list[Path]]:
-    """
-    Group files by k.
-
-    For each k, the four residue classes cover all negative
-    fundamental discriminants in that 2^28 block.
-    """
-    blocks: dict[int, list[Path]] = {}
-
-    for path in RAW_DIR.glob("cl*mod*.gz"):
-        _, _, k = parse_filename(path)
-        blocks.setdefault(k, []).append(path)
-
-    return blocks
-
-
 def iter_all_fields() -> Iterator[FieldRecord]:
-    """
-    Yield all available fields globally ordered by |D_K|.
-
-    This also continues to work when k=1,2,... are added later.
-    """
-    blocks = available_blocks()
-
-    for k in sorted(blocks):
-        streams = [
-            iter_file(path)
-            for path in sorted(blocks[k])
-        ]
-
-        yield from heapq.merge(
-            *streams,
-            key=lambda record: abs(record.D_K),
-        )
+    """Yield the four committed inputs in increasing |D_K| order."""
+    streams = [iter_file(RAW_DIR/name) for name in RAW_FILES]
+    yield from heapq.merge(*streams, key=lambda record: abs(record.D_K))

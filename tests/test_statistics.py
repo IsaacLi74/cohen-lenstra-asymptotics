@@ -13,7 +13,7 @@ from src import ROOT
 from src.dataset import FieldRecord, p_part
 from src.fitting import load_series, fit_power, predict, select_range
 from src.statistics import (aut_size, cl_probability, ETA3, TARGETS, P_DIVISIBLE,
-                            DENSITY, group_parts, summary_row, RESIDUES, BLOCK_SIZE)
+                            DENSITY, group_parts, summary_row, RESIDUES)
 
 
 def test_torsion_is_not_sylow_order():
@@ -46,7 +46,7 @@ def synthetic_files(tmp_path):
         text = "0 1 1\n1 9 9\n1 9 3 3\n1 27 27\n1 27 9 3\n"
         with gzip.open(tmp_path/f"cl{r}mod{m}.0.gz", "wt") as f:
             f.write(text)
-    return input_files(tmp_path, 100)
+    return input_files(tmp_path)
 
 
 def test_accelerator_matches_reference(synthetic_files):
@@ -58,10 +58,10 @@ def test_accelerator_matches_reference(synthetic_files):
 
 def test_incomplete_coverage_and_lfs_pointer(tmp_path):
     with pytest.raises(ValueError, match="Missing"):
-        input_files(tmp_path, BLOCK_SIZE+1)
+        input_files(tmp_path)
     (tmp_path/"cl3mod8.0.gz").write_text("version https://git-lfs.github.com/spec/v1\n")
     with pytest.raises(ValueError, match="LFS"):
-        input_files(tmp_path, 100)
+        input_files(tmp_path)
 
 
 def test_wrong_class_number_is_rejected(synthetic_files):
@@ -75,25 +75,38 @@ def test_wrong_class_number_is_rejected(synthetic_files):
             cpp_buckets(synthetic_files, [100])
 
 
-def test_next_block_and_checkpoint_boundary(tmp_path):
+def test_checkpoint_boundary(tmp_path):
     paths = []
-    for k in [0,1]:
-        for r,m in RESIDUES:
-            path = tmp_path/f"cl{r}mod{m}.{k}.gz"
-            with gzip.open(path, "wt") as f:
-                f.write("0 9 9\n1 9 3 3\n")
-            paths.append(path)
-    grid = [8, 24, BLOCK_SIZE+4, BLOCK_SIZE+24]
-    expected = python_buckets(paths, grid)
-    assert sum(b.total() for b in expected) == 16
+    for r,m in RESIDUES:
+        path = tmp_path/f"cl{r}mod{m}.0.gz"
+        with gzip.open(path, "wt") as f:
+            f.write("0 9 9\n1 9 3 3\n")
+        paths.append(path)
+    grid = [3, 4, 7, 8, 11, 15, 20, 24]
+    expected = [Counter({"C9": 1}) for _ in range(4)] + [Counter({"C3xC3": 1}) for _ in range(4)]
+    assert python_buckets(paths, grid) == expected
     if shutil.which("c++"):
         assert cpp_buckets(paths, grid) == expected
+
+
+def test_unsupported_raw_files_are_rejected(tmp_path):
+    import subprocess
+
+    for name in ["cl3mod8.1.gz", "cl1mod8.0.gz"]:
+        path = tmp_path/name
+        with gzip.open(path, "wt") as f:
+            f.write("0 9 9\n")
+        with pytest.raises(ValueError, match="filename"):
+            python_buckets([path], [100])
+        if shutil.which("c++"):
+            with pytest.raises(subprocess.CalledProcessError):
+                cpp_buckets([path], [100])
 
 
 def test_current_summary_matches_manifest_and_count_identities():
     data = pd.read_csv(ROOT/"data/processed/p3_statistics.csv")
     manifest = json.loads((ROOT/"data/processed/p3_statistics.manifest.json").read_text())
-    assert list(data.X) == manifest["checkpoints"] == checkpoints(BLOCK_SIZE)
+    assert list(data.X) == manifest["checkpoints"] == checkpoints()
     assert (data.N_divisible == data.N_fields-data.N_trivial).all()
     assert np.array_equal(data.N_other,
                           data.N_fields-sum(data[f"N_{g}"] for g in TARGETS))

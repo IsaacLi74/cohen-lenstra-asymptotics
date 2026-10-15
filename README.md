@@ -56,7 +56,7 @@ Each row uses its own fitted $c,\theta$. These ratios are not fitted separately;
 
 ## Reproduce in Codespaces
 
-Setup installs pinned dependencies and retrieves the four Git LFS input files.
+Setup installs pinned dependencies and retrieves the four committed Git LFS input files. Reproduction uses only this dataset.
 
 ~~~bash
 source .venv/bin/activate
@@ -84,14 +84,3 @@ python -m experiments.fit --group C3xC3
 ~~~
 
 Use --xmin and --xmax to select the fitted range. Results go to results/custom/ as JSON, CSV, and PNG files named by the statistic and actual fit bounds. The CSV includes observed errors, fitted errors, residuals, and ratios.
-
-## Extend the raw data
-
-~~~bash
-python -m scripts.download_data --xmax 10000000000 --dry-run
-python -m scripts.reproduce --download --xmax 10000000000
-~~~
-
-Coverage to $10^{10}$ requires 152 files and about 3.04 billion records. Extended data and outputs use separate extended_BOUND directories.
-
-The CL leading probabilities are conjectural; the torsion mean 2 is proved. Fits describe this finite range, and cumulative checkpoints are correlated. GitHub Actions checks reproduction on Ubuntu/Python 3.12.

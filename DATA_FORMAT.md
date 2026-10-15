@@ -11,9 +11,9 @@ The four Git LFS files in data/raw/ come from the [LMFDB imaginary quadratic cla
 | cl4mod16.0.gz | $\lvert D\rvert\equiv4\pmod{16}$ |
 | cl8mod16.0.gz | $\lvert D\rvert\equiv8\pmod{16}$ |
 
-A file cl{r}mod{m}.{k}.gz covers block $k2^{28}\le\lvert D\rvert<(k+1)2^{28}$. Each line is a h c1 ... ct, decoded as
+A file cl{r}mod{m}.0.gz contains records with $0<\lvert D\rvert<2^{28}$. Each line is a h c1 ... ct, decoded as
 
-$$D_0=-k2^{28}-r,\qquad D_i=D_{i-1}-ma_i,\qquad
+$$D_0=-r,\qquad D_i=D_{i-1}-ma_i,\qquad
 \mathrm{Cl}_{D_i}\cong\prod_j C_{c_j},\qquad h_{D_i}=\prod_j c_j.$$
 
 Keep $q_j=3^{v_3(c_j)}>1$ to obtain the Sylow 3 type. If there are $r_3$ such factors, the 3-torsion size is $3^{r_3}$. Factors are sorted in decreasing order, giving keys such as C9xC3; the trivial group is trivial.
@@ -41,6 +41,6 @@ python -m scripts.build_stats
 python -m scripts.reproduce --rebuild --check
 ~~~
 
-The default C++ gzip scanner and the --engine python reference implementation are compared in tests. Scans use bounded-memory checkpoint histograms. Missing blocks, incomplete residue coverage, LFS pointer stubs, inconsistent class numbers, and out-of-block records are rejected.
+The default C++ gzip scanner and the --engine python reference implementation are compared in tests. Scans use bounded-memory checkpoint histograms. Missing inputs, LFS pointer stubs, inconsistent class numbers, and out-of-range records are rejected.
 
-The source tables contain blocks 0–4095. Additional raw downloads are ignored by Git. See the [calculation report](results/calculations.md) for current counts, fit definitions, and coefficients.
+See the [calculation report](results/calculations.md) for counts, fit definitions, and coefficients.

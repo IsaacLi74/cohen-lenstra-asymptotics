@@ -11,32 +11,30 @@ import tempfile
 
 from src import ROOT
 from src.dataset import iter_file
-from src.statistics import (BLOCK_SIZE, RESIDUES, DENSITY, group_key,
+from src.statistics import (DATA_BOUND, RAW_FILES, DENSITY, group_key,
                             group_parts, cl_probability, summary_row)
 
-def checkpoints(xmax, n=200, xmin=1000):
+
+def checkpoints(n=200, xmin=1000):
     # Logarithmic grid; always include the exact integer upper bound.
     import math
-    if not 1 <= xmin <= xmax or n < 1:
-        raise ValueError("Require 1 <= xmin <= xmax and checkpoints >= 1")
-    values = {int(10**(math.log10(xmin) + i*(math.log10(xmax)-math.log10(xmin))/n))
+    if not 1 <= xmin <= DATA_BOUND or n < 1:
+        raise ValueError("Require 1 <= xmin <= 2^28 and checkpoints >= 1")
+    values = {int(10**(math.log10(xmin) + i*(math.log10(DATA_BOUND)-math.log10(xmin))/n))
               for i in range(n+1)}
-    return sorted({max(1, min(x, xmax)) for x in values} | {xmax})
+    return sorted({max(1, min(x, DATA_BOUND)) for x in values} | {DATA_BOUND})
 
 
-def input_files(raw_dir, xmax):
-    if not 1 <= xmax <= 2**40:
-        raise ValueError("xmax must be between 1 and 2^40")
+def input_files(raw_dir):
     paths = []
-    for k in range((xmax-1)//BLOCK_SIZE + 1):
-        for r, m in RESIDUES:
-            path = raw_dir / f"cl{r}mod{m}.{k}.gz"
-            if not path.is_file():
-                raise ValueError(f"Missing {path}; download all four residues in every required block")
-            with path.open("rb") as f:
-                if f.read(2) != b"\x1f\x8b":
-                    raise ValueError(f"{path} is not gzip data (possibly an LFS pointer); run git lfs pull")
-            paths.append(path)
+    for name in RAW_FILES:
+        path = raw_dir/name
+        if not path.is_file():
+            raise ValueError(f"Missing {path}; run git lfs pull to retrieve the four committed inputs")
+        with path.open("rb") as f:
+            if f.read(2) != b"\x1f\x8b":
+                raise ValueError(f"{path} is not gzip data (possibly an LFS pointer); run git lfs pull")
+        paths.append(path)
     return paths
 
 
@@ -91,9 +89,9 @@ def write_csv(path, rows):
     temporary.replace(path)
 
 
-def build(raw_dir, output_dir, xmax, n=200, xmin=1000, engine="auto"):
-    paths = input_files(raw_dir, xmax)
-    xs = checkpoints(xmax, n, xmin)
+def build(raw_dir, output_dir, n=200, xmin=1000, engine="auto"):
+    paths = input_files(raw_dir)
+    xs = checkpoints(n, xmin)
     chosen = "cpp" if engine == "auto" and shutil.which("c++") else engine
     if chosen == "auto":
         chosen = "python"
@@ -130,7 +128,7 @@ def build(raw_dir, output_dir, xmax, n=200, xmin=1000, engine="auto"):
         inputs.append({"filename": path.name, "bytes": path.stat().st_size,
                        "sha256": digest.hexdigest()})
     manifest = {"source": "https://www.lmfdb.org/NumberField/QuadraticImaginaryClassGroups",
-                "xmax": xmax, "comparison": "0 < |D| <= X", "checkpoints": xs,
+                "xmax": DATA_BOUND, "comparison": "0 < |D| <= X", "checkpoints": xs,
                 "fields": rows[-1]["N_fields"], "inputs": inputs,
                 "observables": {"divisible": "h_D % 3 == 0",
                                 "torsion": "|Cl_D[3]| = 3^rank3, identity included",
@@ -143,16 +141,13 @@ def build(raw_dir, output_dir, xmax, n=200, xmin=1000, engine="auto"):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--raw-dir", type=Path, default=ROOT/"data/raw")
-    parser.add_argument("--output-dir", type=Path)
-    parser.add_argument("--xmax", type=int, default=BLOCK_SIZE)
+    parser.add_argument("--output-dir", type=Path, default=ROOT/"data/processed")
     parser.add_argument("--xmin", type=int, default=1000)
     parser.add_argument("--checkpoints", type=int, default=200)
     parser.add_argument("--engine", choices=["auto", "python", "cpp"], default="auto")
     args = parser.parse_args()
-    output_dir = args.output_dir or ((ROOT/"data") if args.xmax == BLOCK_SIZE else
-                                     (ROOT/f"data/extended_{args.xmax}"))/"processed"
     try:
-        build(args.raw_dir, output_dir, args.xmax, args.checkpoints, args.xmin, args.engine)
+        build(args.raw_dir, args.output_dir, args.checkpoints, args.xmin, args.engine)
     except (ValueError, RuntimeError, subprocess.CalledProcessError) as error:
         parser.exit(1, f"{error}\n")
 
