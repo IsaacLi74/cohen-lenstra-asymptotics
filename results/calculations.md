@@ -69,31 +69,6 @@ These are free-power fits to counting errors under the linear main terms above.
 | Sylow C9 | -0.0185352474 | 0.832990102 | 574.539 |
 | Sylow C3 x C3 | -0.0135183885 | 0.845309608 | 170.032 |
 
-## Proved torsion reference: the two blackboard formulas
-
-With the identity included in $\mathrm{Cl}_D[3]$, the counting and mean forms are
-
-$$S_3(X)=\frac{6}{\pi^2}X+C_{\mathrm{tor}}X^{5/6}+o(X^{5/6}),$$
-
-$$\frac{S_3(X)}{N(X)}=2+\frac{C_{\mathrm{tor}}}{\rho}X^{-1/6}+o(X^{-1/6}).$$
-
-These are two normalizations of the same proved result. The leading count coefficient is $6/\pi^2$, consistent with mean 2. The count coefficient $C_{\mathrm{tor}}$ and mean coefficient $C_{\mathrm{tor}}/\rho$ are different.
-
-[Bhargava–Shankar–Tsimerman, Theorem 4](https://arxiv.org/pdf/1005.0672) gives $S_3(X)=2N(X)+C_{\mathrm{tor}}X^{5/6}+o(X^{5/6})$, with
-
-$$C_{\mathrm{tor}}=\frac{8\sqrt3\,\zeta(1/3)}{5\Gamma(2/3)^3}\prod_{p\ \mathrm{prime}}\left(1-\frac{p^{1/3}+1}{p(p+1)}\right).$$
-
-Here $\zeta$ is the Riemann zeta function and $\Gamma$ is the gamma function. The product is truncated at primes <= 1,000,000, giving C_tor approximately -0.414786002. Using primes <= 100,000 gives -0.414804622; the change is 1.9e-05. This is a truncation check, not a certified error bound.
-
-| Normalization | Proved coefficient (approx.) | Coefficient from free count fit | Proved exponent | Fitted / derived exponent |
-|---|---:|---:|---:|---:|
-| Count error | -0.414786002 | -0.412214530 | 5/6 = 0.833333333 | 0.833651532 |
-| Mean minus 2 | -1.364591251 | -1.356131447 | -1/6 = -0.166666667 | -0.166348468 |
-
-The mean row is derived from the count fit using $N(X)\sim\rho X$; it is not another fit. The free-power coefficient and exponent are estimated jointly, so a coefficient difference also reflects the exponent difference. The torsion plot uses the reference mean curve $2+C_{\mathrm{tor}}X^{5/6}/N(X)$ with the actual field count.
-
-The board leaves secondary coefficients as $c$ without numerical values. The numerical torsion reference above comes from Theorem 4. The board labels the divisibility limit as a conjecture; CL proportions for individual Sylow types are also predictions. No proved secondary coefficient is assigned to those fits.
-
 ## Curves shown in the ratio plots
 
 Add the fitted error to the fixed main term, then divide by the actual field count:

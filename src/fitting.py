@@ -8,7 +8,6 @@ import pandas as pd
 from scipy.optimize import minimize_scalar
 
 from experiments import models
-from experiments.reference import PRIME_BOUND, SOURCE, torsion_coefficient
 from src.statistics import DENSITY, P_DIVISIBLE, TARGETS, cl_probability, group_parts
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -60,12 +59,6 @@ def load_series(observable="divisible", group=None, error="xuzhu", data_dir=None
                 "input_files": [{"path": str(p.relative_to(data_dir)),
                                  "sha256": hashlib.sha256(p.read_bytes()).hexdigest()} for p in paths],
                 "caution": CAUTION}
-    if observable == "torsion":
-        metadata["proved_reference"] = {
-            "formula": "S_3(X) = 2*N(X) + C*X**(5/6) + o(X**(5/6))",
-            "C_approx": torsion_coefficient(), "theta": 5/6,
-            "prime_bound": PRIME_BOUND, "source": SOURCE,
-        }
     return df, metadata
 
 
@@ -112,13 +105,6 @@ def predict(result, x):
     return models.power(np.asarray(x, float), **result["parameters"])
 
 
-def reference_error(df, metadata):
-    """The proved torsion correction in the same convention as the observed error."""
-    reference = metadata["proved_reference"]
-    return (2*df["N_fields"]-df["baseline"]
-            + reference["C_approx"]*df["X"]**reference["theta"])
-
-
 def select_range(df, xmin, xmax=None):
     mask = (df["X"] >= xmin) & np.isfinite(df["error"]) & (df["N_fields"] > 0)
     if xmax is not None:
@@ -142,9 +128,6 @@ def plot_fits(df, metadata, fits, output):
     ax.plot(x, sign*y, ".", label="Observed")
     for fit_index, fit in enumerate(fits):
         ax.plot(x, sign*predict(fit, x), color=f"C{fit_index+2}", label=r"Fit: $cX^\theta$")
-    theory = reference_error(df, metadata) if "proved_reference" in metadata else None
-    if theory is not None:
-        ax.plot(x, sign*theory, "--", color="C3", label="Proved reference")
     ax.set(xscale="log", yscale="log" if all_negative or all_positive else "symlog",
            xlabel="X", ylabel="-E(X)" if all_negative else "E(X)",
            title="Counting error and fitted correction")
@@ -153,16 +136,12 @@ def plot_fits(df, metadata, fits, output):
     theta = fits[0]["parameters"]["theta"]
     ax.plot(x, y/x**theta, ".", label="Observed")
     ax.axhline(fits[0]["parameters"]["c"], color="C2", label="Fitted c")
-    if theory is not None:
-        ax.plot(x, theory/x**theta, "--", color="C3", label="Proved reference")
     ax.set(xscale="log", xlabel="X", ylabel=rf"$E(X)/X^{{{theta:.6f}}}$",
            title="Error scaled by the fitted exponent")
     ax.legend(fontsize=8)
     ax = axes[1,0]
     for fit_index, fit in enumerate(fits):
         ax.plot(x, y-predict(fit, x), ".", color=f"C{fit_index+2}", label=r"Fit: $cX^\theta$")
-    if theory is not None:
-        ax.plot(x, y-theory, "--", color="C3", label="Observed - proved reference")
     ax.axhline(0, color="gray", linewidth=.7)
     ax.set(xscale="log", xlabel="X", ylabel="Observed E - fitted E", title="Residuals")
     ax.legend(fontsize=8)
@@ -171,9 +150,6 @@ def plot_fits(df, metadata, fits, output):
     for fit_index, fit in enumerate(fits):
         ax.plot(x, (df["baseline"]+predict(fit, x))/df["N_fields"],
                 color=f"C{fit_index+2}", label="From count fit")
-    if theory is not None:
-        ax.plot(x, (df["baseline"]+theory)/df["N_fields"], "--", color="C3",
-                label="Proved reference")
     leading = metadata["ratio_leading_term"]
     ax.axhline(leading, color="black", linestyle=":", label=f"Leading value: {leading:.6f}")
     ylabel = "Mean |Cl_D[3]|" if metadata["observable"] == "torsion" else "Proportion of fields"

@@ -9,8 +9,7 @@ import pytest
 
 from scripts.build_stats import cpp_buckets, python_buckets, input_files, checkpoints
 from src.dataset import FieldRecord, p_part
-from src.fitting import load_series, fit_model, predict, reference_error, select_range, ROOT
-from experiments.reference import torsion_coefficient
+from src.fitting import load_series, fit_model, predict, select_range, ROOT
 from src.statistics import (aut_size, cl_probability, ETA3, TARGETS, P_DIVISIBLE,
                             DENSITY, group_parts, summary_row, RESIDUES, BLOCK_SIZE)
 
@@ -142,18 +141,3 @@ def test_c9_fit_reference_value():
     df = select_range(df, 1e6)
     fit = fit_model(df.X, df.error)
     assert fit["parameters"]["theta"] == pytest.approx(.83299775, abs=2e-6)
-
-
-def test_proved_torsion_coefficient():
-    assert torsion_coefficient(100000) == pytest.approx(-.414804621730, abs=1e-11)
-    assert abs(torsion_coefficient()-torsion_coefficient(100000)) < 2e-5
-
-
-def test_proved_reference_matches_both_count_normalizations():
-    for convention in ["xuzhu", "conditional"]:
-        df, metadata = load_series("torsion", error=convention)
-        expected = 2*df.N_fields+torsion_coefficient()*df.X**(5/6)
-        assert np.allclose(df.baseline+reference_error(df, metadata), expected)
-    for observable, group in [("divisible", None), ("sylow", "C9")]:
-        _, metadata = load_series(observable, group)
-        assert "proved_reference" not in metadata
