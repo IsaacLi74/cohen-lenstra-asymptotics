@@ -7,7 +7,7 @@ import sys
 from experiments.report import generate
 from scripts.build_stats import build
 from scripts.download_data import download
-from src.fitting import ROOT
+from src import ROOT
 from src.statistics import BLOCK_SIZE
 
 

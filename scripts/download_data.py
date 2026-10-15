@@ -7,7 +7,7 @@ from pathlib import Path
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
-from src.fitting import ROOT
+from src import ROOT
 from src.statistics import BLOCK_SIZE, RESIDUES
 
 BASE_URL = "https://www.lmfdb.org/NumberField/QuadraticImaginaryClassGroups"

@@ -1,4 +1,4 @@
-"""Counting-error fits with explicit, fixed leading terms and data provenance."""
+"""Fit c*X**theta after subtracting the fixed linear main term."""
 import hashlib
 import math
 from pathlib import Path
@@ -7,74 +7,52 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import minimize_scalar
 
-from experiments import models
-from src.statistics import DENSITY, P_DIVISIBLE, TARGETS, cl_probability, group_parts
+from src import ROOT
+from src.statistics import DENSITY, P_DIVISIBLE, SYLOW_TYPES, TARGETS, cl_probability
 
-ROOT = Path(__file__).resolve().parents[1]
-CAUTION = ("Finite-range fits with a fixed conjectural CL leading coefficient, except for the "
-           "proved torsion mean 2. Cumulative checkpoints are correlated. RMSE/AIC/BIC "
-           "are descriptive diagnostics, not independent-error inference or a proof of a remainder.")
+NOTE = "Finite-range least-squares fits; cumulative checkpoints are correlated."
+FIT_CASES = {
+    ("divisible", None): ("N_divisible", P_DIVISIBLE, "Class-number divisibility"),
+    ("torsion", None): ("S_torsion3", 2.0, "3-torsion sum"),
+    **{("sylow", group): (f"N_{group}", cl_probability(TARGETS[group]), f"Sylow {group}")
+       for group in SYLOW_TYPES},
+}
+GROUP_LABELS = {"C3": r"$C_3$", "C9": r"$C_9$", "C3xC3": r"$C_3\times C_3$"}
 
 
-def load_series(observable="divisible", group=None, error="xuzhu", data_dir=None):
+def load_series(observable="divisible", group=None, data_dir=None):
+    try:
+        column, leading, _ = FIT_CASES[observable, group]
+    except KeyError:
+        raise ValueError("Choose divisible, torsion, or a Sylow type: C3, C9, C3xC3") from None
     data_dir = Path(data_dir) if data_dir else ROOT/"data"
-    if observable not in {"divisible", "torsion", "sylow"}:
-        raise ValueError("Unknown observable")
-    if error not in {"xuzhu", "conditional"}:
-        raise ValueError("Unknown main-term convention")
-    if observable == "sylow" and not group:
-        raise ValueError("--group is required for Sylow statistics")
     path = data_dir/"processed/p3_statistics.csv"
-    df = pd.read_csv(path)
-    paths = [path]
-    if observable == "divisible":
-        count = df["N_divisible"]
-    elif observable == "torsion":
-        count = df["S_torsion3"]
-    elif group in TARGETS or group == "other":
-        count = df[f"N_{group}"]
-    else:
-        path = data_dir/"processed/sylow3_types.csv"
-        types = pd.read_csv(path)
-        selected = types[types["group"] == group].set_index("X")["N_group"]
-        if selected.empty:
-            raise ValueError(f"No observed Sylow type {group}; see sylow3_types.csv")
-        count = df["X"].map(selected)
-        paths.append(path)
-    df = pd.DataFrame({"X": df["X"], "N_fields": df["N_fields"], "count": count})
-    if observable == "divisible":
-        leading = P_DIVISIBLE
-    elif observable == "torsion":
-        leading = 2.0
-    elif group == "other":
-        leading = 1-sum(cl_probability(g) for g in TARGETS.values())
-    else:
-        leading = cl_probability(group_parts(group))
-    df["baseline"] = leading * (df["N_fields"] if error == "conditional" else DENSITY*df["X"])
-    df["error"] = df["count"] - df["baseline"]
-    df["ratio"] = df["count"] / df["N_fields"]
+    summary = pd.read_csv(path)
+    df = pd.DataFrame({"X": summary["X"], "N_fields": summary["N_fields"],
+                       "count": summary[column]})
+    df["baseline"] = leading * (DENSITY*df["X"])
+    df["error"] = df["count"]-df["baseline"]
+    df["ratio"] = df["count"]/df["N_fields"]
     metadata = {"observable": observable, "group": group,
-                "error_convention": error, "ratio_leading_term": leading,
-                "linear_count_coefficient": leading*DENSITY,
-                "input_files": [{"path": str(p.relative_to(data_dir)),
-                                 "sha256": hashlib.sha256(p.read_bytes()).hexdigest()} for p in paths],
-                "caution": CAUTION}
+                "ratio_leading_term": leading, "linear_count_coefficient": leading*DENSITY,
+                "input_files": [{"path": str(path.relative_to(data_dir)),
+                                 "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}]}
     return df, metadata
 
 
-def fit_model(x, y, name="power"):
+def fit_power(x, y):
     x, y = np.asarray(x, float), np.asarray(y, float)
-    if name != "power":
-        raise ValueError("Only the power model c*X**theta is supported")
     if (x.ndim != 1 or y.shape != x.shape or len(x) <= 2
             or not np.all(np.isfinite(x)) or not np.all(np.isfinite(y)) or not np.all(x > 0)):
-        raise ValueError("Need more finite data points than model parameters, with X > 0")
+        raise ValueError("Need more than two finite points, with X > 0")
     scale = float(x.max())
     t = x/scale
+
     def profile(theta):
         basis = t**theta
         amplitude = float(basis@y/(basis@basis))
         return float(np.sum((y-amplitude*basis)**2)), amplitude
+
     grid = np.linspace(-1, 2, 601)
     index = min(range(len(grid)), key=lambda j: profile(grid[j])[0])
     if index in (0, len(grid)-1):
@@ -87,77 +65,80 @@ def fit_model(x, y, name="power"):
     theta = float(optimum.x)
     _, amplitude = profile(theta)
     params = {"c": amplitude/scale**theta, "theta": theta}
-    prediction = np.asarray(models.power(x, **params), float)
+    prediction = params["c"]*x**theta
     if not np.all(np.isfinite(prediction)):
         raise ValueError("Non-finite model prediction")
-    rss = float(np.sum((y-prediction)**2))
-    norm = float(y@y)
-    size = len(y)
-    return {"model": name, "parameters": params,
-            "points": size, "xmin": int(x.min()), "xmax": int(x.max()),
+    rss, norm, size = float(np.sum((y-prediction)**2)), float(y@y), len(y)
+    return {"parameters": params, "points": size,
+            "xmin": int(x.min()), "xmax": int(x.max()),
             "RMSE": math.sqrt(rss/size),
-            "relative_RMSE": math.sqrt(rss/norm) if norm else None,
-            "AIC_diagnostic": size*math.log(rss/size)+2*len(params) if rss>0 else None,
-            "BIC_diagnostic": size*math.log(rss/size)+len(params)*math.log(size) if rss>0 else None}
+            "relative_RMSE": math.sqrt(rss/norm) if norm else None}
 
 
-def predict(result, x):
-    return models.power(np.asarray(x, float), **result["parameters"])
+def predict(fit, x):
+    return fit["parameters"]["c"]*np.asarray(x, float)**fit["parameters"]["theta"]
+
+
+def fitted_ratio(df, fit):
+    return (df["baseline"]+predict(fit, df["X"]))/df["N_fields"]
 
 
 def select_range(df, xmin, xmax=None):
+    if (not np.isfinite(xmin) or xmin <= 0
+            or (xmax is not None and (not np.isfinite(xmax) or xmax < xmin))):
+        raise ValueError("Require 0 < xmin <= xmax")
     mask = (df["X"] >= xmin) & np.isfinite(df["error"]) & (df["N_fields"] > 0)
     if xmax is not None:
         mask &= df["X"] <= xmax
     return df.loc[mask].copy()
 
 
-def plot_fits(df, metadata, fits, output):
+def plot_fit(df, metadata, fit, output):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     plt.rcParams.update({"font.size": 10, "axes.spines.top": False, "axes.spines.right": False})
     fig, axes = plt.subplots(2, 2, figsize=(11, 7.5), constrained_layout=True)
-    x = df["X"].to_numpy(float)
-    y = df["error"].to_numpy(float)
-    curves = [predict(fit, x) for fit in fits]
-    all_negative = np.all(y < 0) and all(np.all(curve < 0) for curve in curves)
-    all_positive = np.all(y > 0) and all(np.all(curve > 0) for curve in curves)
-    sign = -1 if all_negative else 1
-    ax = axes[0,0]
+    x, y = df["X"].to_numpy(float), df["error"].to_numpy(float)
+    curve = predict(fit, x)
+    negative = np.all(y < 0) and np.all(curve < 0)
+    positive = np.all(y > 0) and np.all(curve > 0)
+    sign = -1 if negative else 1
+    c, theta = fit["parameters"]["c"], fit["parameters"]["theta"]
+
+    ax = axes[0, 0]
     ax.plot(x, sign*y, ".", label="Observed")
-    for fit_index, fit in enumerate(fits):
-        ax.plot(x, sign*predict(fit, x), color=f"C{fit_index+2}", label=r"Fit: $cX^\theta$")
-    ax.set(xscale="log", yscale="log" if all_negative or all_positive else "symlog",
-           xlabel="X", ylabel="-E(X)" if all_negative else "E(X)",
+    ax.plot(x, sign*curve, color="C2", label=r"Fit: $cX^\theta$")
+    ax.set(xscale="log", yscale="log" if negative or positive else "symlog",
+           xlabel="X", ylabel="-E(X)" if negative else "E(X)",
            title="Counting error and fitted correction")
     ax.legend(fontsize=8)
-    ax = axes[0,1]
-    theta = fits[0]["parameters"]["theta"]
+
+    ax = axes[0, 1]
     ax.plot(x, y/x**theta, ".", label="Observed")
-    ax.axhline(fits[0]["parameters"]["c"], color="C2", label="Fitted c")
+    ax.axhline(c, color="C2", label="Fitted c")
     ax.set(xscale="log", xlabel="X", ylabel=rf"$E(X)/X^{{{theta:.6f}}}$",
            title="Error scaled by the fitted exponent")
     ax.legend(fontsize=8)
-    ax = axes[1,0]
-    for fit_index, fit in enumerate(fits):
-        ax.plot(x, y-predict(fit, x), ".", color=f"C{fit_index+2}", label=r"Fit: $cX^\theta$")
+
+    ax = axes[1, 0]
+    ax.plot(x, y-curve, ".", color="C2")
     ax.axhline(0, color="gray", linewidth=.7)
     ax.set(xscale="log", xlabel="X", ylabel="Observed E - fitted E", title="Residuals")
-    ax.legend(fontsize=8)
-    ax = axes[1,1]
+
+    ax = axes[1, 1]
     ax.plot(x, df["ratio"], ".", label="Observed")
-    for fit_index, fit in enumerate(fits):
-        ax.plot(x, (df["baseline"]+predict(fit, x))/df["N_fields"],
-                color=f"C{fit_index+2}", label="From count fit")
+    ax.plot(x, fitted_ratio(df, fit), color="C2", label="From count fit")
     leading = metadata["ratio_leading_term"]
     ax.axhline(leading, color="black", linestyle=":", label=f"Leading value: {leading:.6f}")
-    ylabel = "Mean |Cl_D[3]|" if metadata["observable"] == "torsion" else "Proportion of fields"
+    ylabel = r"Mean $|\mathrm{Cl}_D[3]|$" if metadata["observable"] == "torsion" else "Proportion of all fields"
     ax.set(xscale="log", xlabel="X", ylabel=ylabel, title="(Main term + fitted error) / N(X)")
     ax.legend(fontsize=8)
-    label = metadata["observable"] + (f": {metadata['group']}" if metadata["group"] else "")
-    fig.suptitle(f"{label} | {metadata['error_convention']} main term\n"
-                 f"{int(x.min()):,} <= X <= {int(x.max()):,}; finite-range fit", fontsize=12)
+    label = FIT_CASES[metadata["observable"], metadata["group"]][2]
+    if metadata["observable"] == "sylow":
+        label = "Sylow "+GROUP_LABELS[metadata["group"]]
+    fig.suptitle(f"{label}\n{fit['xmin']:,} <= X <= {fit['xmax']:,}; "
+                 f"c = {c:.6g}, theta = {theta:.6f}", fontsize=12)
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(output, dpi=160)

@@ -8,6 +8,7 @@ DENSITY = 3 / math.pi**2
 ETA3 = math.prod(1 - 3.0**(-j) for j in range(1, 100))
 P_DIVISIBLE = 1 - ETA3
 TARGETS = {"trivial": (), "C3": (3,), "C9": (9,), "C3xC3": (3, 3)}
+SYLOW_TYPES = ("C3", "C9", "C3xC3")
 
 
 def group_key(parts):

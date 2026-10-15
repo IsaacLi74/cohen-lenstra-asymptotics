@@ -26,7 +26,7 @@ The code searches $\theta\in[-1,2]$ and rejects an optimum at the boundary.
 
 ## Data and counts
 
-Raw coverage: 268,435,456; available cumulative checkpoints: 202. Requested fit limits: 1e+06 to the data maximum. Actual fit: **1,030,400 <= X <= 268,435,456, 91 points**.
+Raw coverage: 268,435,456; available cumulative checkpoints: 202. Actual fit: **1,030,400 <= X <= 268,435,456, 91 points**.
 
 At X = 268,435,456:
 
@@ -63,27 +63,17 @@ These are free-power fits to counting errors under the linear main terms above.
 
 | Statistic | c | theta | RMSE |
 |---|---:|---:|---:|
-| Divisibility | -0.12861445 | 0.826916132 | 564.549 |
-| Torsion sum | -0.41221453 | 0.833651532 | 594.803 |
+| Class-number divisibility | -0.12861445 | 0.826916132 | 564.549 |
+| 3-torsion sum | -0.41221453 | 0.833651532 | 594.803 |
 | Sylow C3 | -0.0470714438 | 0.838457807 | 882.746 |
 | Sylow C9 | -0.0185352474 | 0.832990102 | 574.539 |
-| Sylow C3 x C3 | -0.0135183885 | 0.845309608 | 170.032 |
+| Sylow C3xC3 | -0.0135183885 | 0.845309608 | 170.032 |
 
-## Curves shown in the ratio plots
-
-Add the fitted error to the fixed main term, then divide by the actual field count:
-
-| Plot | Observed ratio | Curve from the count fit |
-|---|---|---|
-| Divisibility proportion | $N_3(X)/N(X)$ | $(p_3\rho X+cX^\theta)/N(X)$ |
-| Mean torsion size | $S_3(X)/N(X)$ | $(2\rho X+cX^\theta)/N(X)$ |
-| Sylow type proportion | $N_{G_3}(X)/N(X)$ | $(P_{\mathrm{CL}}(G_3)\rho X+cX^\theta)/N(X)$ |
-
-Each statistic uses its own fitted $c,\theta$. Ratios are not fitted separately. Every denominator includes all fields, including types outside the three Sylow fits. The Sylow comparison plot uses the same fits and CL probabilities.
+Ratio curves use the [README formulas](../README.md#what-the-ratio-plots-show). The three Sylow fits are also shown together in the comparison plot.
 
 ## Checks and reproducibility
 
-The report contains 5 power fits and 35 lower-cutoff checks. See [fit_sensitivity.csv](fit_sensitivity.csv) for changes with the fitted range.
+The report contains 5 power fits. Use --xmin and --xmax with experiments.fit to change the fitted range.
 
 The CL leading values for divisibility and Sylow types are conjectural; the torsion mean 2 is proved. Finite-range fits do not establish an asymptotic. Cumulative checkpoints are correlated.
 

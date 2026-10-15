@@ -83,7 +83,7 @@ python -m experiments.fit --group C9
 python -m experiments.fit --group C3xC3
 ~~~
 
-The default error convention, xuzhu, uses the table's linear main terms. Optional --error conditional instead subtracts $p_3N(X)$, $2N(X)$, or $P_{\mathrm{CL}}(G_3)N(X)$; it is not part of the default report. Use --xmin and --xmax to select checkpoints. Custom outputs include c, theta, fitted errors, residuals, and ratios under results/custom/.
+Use --xmin and --xmax to select the fitted range. Results go to results/custom/ as JSON, CSV, and PNG files named by the statistic and actual fit bounds. The CSV includes observed errors, fitted errors, residuals, and ratios.
 
 ## Extend the raw data
 
@@ -94,4 +94,4 @@ python -m scripts.reproduce --download --xmax 10000000000
 
 Coverage to $10^{10}$ requires 152 files and about 3.04 billion records. Extended data and outputs use separate extended_BOUND directories.
 
-The CL leading values for divisibility and Sylow types are conjectural; the torsion mean 2 is proved. These are finite-range fits. Cumulative checkpoints are correlated, so diagnostic scores do not establish an asymptotic or its remainder. GitHub Actions checks reproduction on Ubuntu/Python 3.12.
+The CL leading probabilities are conjectural; the torsion mean 2 is proved. Fits describe this finite range, and cumulative checkpoints are correlated. GitHub Actions checks reproduction on Ubuntu/Python 3.12.
