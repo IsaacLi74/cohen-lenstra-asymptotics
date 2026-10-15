@@ -31,8 +31,6 @@ P_{\mathrm{CL}}(G_3)=\frac{1-p_3}{\lvert\mathrm{Aut}(G_3)\rvert}.$$
 | 3-torsion | $S_3(X)=\sum_D\lvert\mathrm{Cl}_D[3]\rvert$ | $E_{\mathrm{tor}}(X)=S_3(X)-\frac{6}{\pi^2}X$ |
 | Sylow 3 type $G_3$ | $N_{G_3}(X)=\sum_D\mathbf1[\mathrm{Cl}_D[3^\infty]\cong G_3]$ | $E_{G_3}(X)=N_{G_3}(X)-P_{\mathrm{CL}}(G_3)\frac{3}{\pi^2}X$ |
 
-Thus $N_3$ counts **all fields with nontrivial Sylow 3 subgroup**, rather than only those of type $C_3$. For $C_9$, the group $\mathrm{Cl}_D[3]$ is $C_3$ and has size 3; for $C_3\times C_3$, it has size 9.
-
 For each error above we compare
 
 $$cX^\theta,\qquad cX^{5/6},\qquad cX^{5/6}+bX^{2/3}.$$
