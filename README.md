@@ -15,6 +15,7 @@ All sums run over negative fundamental discriminants $D$ with $-X\le D<0$. The c
 | $\mathrm{Cl}_D[3]$ | Elements $g$ satisfying $3g=0$. |
 | $\mathrm{Cl}_D[3^\infty]$ | The whole Sylow 3 subgroup in $\mathrm{Cl}_D$. |
 | $G_3$ | A finite abelian 3-group. |
+| $P_{\mathrm{CL}}(G_3)$ | CL predicted limiting proportion of fields with $\mathrm{Cl}_D[3^\infty]\cong G_3$. |
 
 The field count and the CL predicted proportions are
 
@@ -22,6 +23,8 @@ $$N(X)=\sum_D1\sim\frac{3}{\pi^2}X,$$
 
 $$p_3=1-\prod_{j=1}^{\infty}(1-3^{-j})\approx0.439873922,\qquad
 P_{\mathrm{CL}}(G_3)=\frac{1-p_3}{\lvert\mathrm{Aut}(G_3)\rvert}.$$
+
+Here $p_3$ is the predicted limiting proportion with $3\mid h_D$, and $\mathrm{Aut}(G_3)$ is the automorphism group of $G_3$.
 
 ## What we fit
 
@@ -31,20 +34,27 @@ P_{\mathrm{CL}}(G_3)=\frac{1-p_3}{\lvert\mathrm{Aut}(G_3)\rvert}.$$
 | 3-torsion | $S_3(X)=\sum_D\lvert\mathrm{Cl}_D[3]\rvert$ | $E_{\mathrm{tor}}(X)=S_3(X)-\frac{6}{\pi^2}X$ |
 | Sylow 3 type $G_3$ | $N_{G_3}(X)=\sum_D\mathbf1[\mathrm{Cl}_D[3^\infty]\cong G_3]$ | $E_{G_3}(X)=N_{G_3}(X)-P_{\mathrm{CL}}(G_3)\frac{3}{\pi^2}X$ |
 
-For each error above we compare
+For each error above we fit only
 
-$$cX^\theta,\qquad cX^{5/6},\qquad cX^{5/6}+bX^{2/3}.$$
+$$E(X)\approx cX^\theta.$$
 
-The coefficient $c$ and exponent $\theta$ are fitted in the first model; only $c$ is fitted in the second; $c,b$ are fitted in the third. Coefficients are separate for each statistic and model. Output files call them A, theta, and B. The $X^{5/6}$ correction is the candidate secondary term after the linear main term; $X^{2/3}$ is an additional comparison term.
+Both $c$ and $\theta$ are estimated separately for each statistic by unweighted least squares on the counting error. The leading terms in the table stay fixed.
 
-Fits minimize the unweighted sum of squared differences between the observed error and the model at the selected cumulative bounds. We fit **counts**, then reconstruct proportions or means. For example,
+Sylow fits cover exactly $C_3$, $C_9$, and $C_3\times C_3$. The report lists their fitted $c,\theta$ side by side and compares observed proportions with $P_{\mathrm{CL}}(G_3)$.
 
-$$\widehat N_3(X)=p_3\frac{3}{\pi^2}X+\widehat E(X),\qquad
-\text{fitted proportion}=\frac{\widehat N_3(X)}{N(X)}.$$
+For torsion, the report also compares the fit with the proved secondary coefficient and exponent $5/6$ from [Bhargava–Shankar–Tsimerman, Theorem 4](https://arxiv.org/pdf/1005.0672). Its count and mean formulas are two normalizations of the same result.
 
-A hat denotes a fitted quantity. Likewise, $S_3(X)/N(X)$ is the mean torsion size, and $N_{G_3}(X)/N(X)$ is the proportion of type $G_3$; their fitted curves use the same reconstruction.
+## What the ratio plots show
 
-The default Sylow fits cover the trivial group, $C_3$, $C_9$, $C_3\times C_3$, and their complement “other.” Every proportion uses **all fields** as its denominator.
+Each plot compares the observed ratio with **(fixed main term + fitted error) / actual field count**:
+
+| Quantity | Observed ratio | Curve from the count fit |
+|---|---|---|
+| Proportion with $3\mid h_D$ | $N_3(X)/N(X)$ | $\bigl(p_3\frac{3}{\pi^2}X+cX^\theta\bigr)/N(X)$ |
+| Mean 3-torsion size | $S_3(X)/N(X)$ | $\bigl(\frac{6}{\pi^2}X+cX^\theta\bigr)/N(X)$ |
+| Proportion of Sylow type $G_3$ | $N_{G_3}(X)/N(X)$ | $\bigl(P_{\mathrm{CL}}(G_3)\frac{3}{\pi^2}X+cX^\theta\bigr)/N(X)$ |
+
+Each row uses its own fitted $c,\theta$. These ratios are not fitted separately; every denominator counts **all fields**.
 
 ## Reproduce in Codespaces
 
@@ -55,26 +65,27 @@ source .venv/bin/activate
 python -m scripts.reproduce --check
 ~~~
 
-This generates **8 plots, 42 fits, and the calculation report** from committed summaries. Add --rebuild to first scan every raw record:
+This generates **5 power fits, 6 plots, and the calculation report** from committed summaries. Add --rebuild to first scan every raw record:
 
 ~~~bash
 python -m scripts.reproduce --rebuild --check
 ~~~
 
-Each fit plot shows the counting error, scaled error, residuals, and reconstructed proportion or mean.
+Each fit plot shows the counting error, error divided by its fitted power, residuals, and the ratio defined above. A separate plot compares the three Sylow types.
 
 [Calculations and fitted coefficients](results/calculations.md) · [Fit table](results/fit_summary.csv) · [Plots](figures/statistics) · [Data format](DATA_FORMAT.md)
 
 ## Individual fits
 
 ~~~bash
-python -m experiments.fit --observable divisible --error xuzhu --model power
-python -m experiments.fit --observable torsion --error xuzhu --model five_sixths
-python -m experiments.fit --group C9 --error conditional --model power
-python -m experiments.fit --group C3xC3 --error conditional --model power
+python -m experiments.fit --observable divisible
+python -m experiments.fit --observable torsion
+python -m experiments.fit --group C3
+python -m experiments.fit --group C9
+python -m experiments.fit --group C3xC3
 ~~~
 
-xuzhu uses the errors in the table. conditional replaces their leading terms by $p_3N(X)$, $2N(X)$, and $P_{\mathrm{CL}}(G_3)N(X)$, respectively; the same three models are fitted again. Use --xmin and --xmax to select checkpoints. Custom outputs include coefficients, fitted errors, residuals, and reconstructed ratios under results/custom/.
+The default error convention, xuzhu, uses the table's linear main terms. Optional --error conditional instead subtracts $p_3N(X)$, $2N(X)$, or $P_{\mathrm{CL}}(G_3)N(X)$; it is not part of the default report. Use --xmin and --xmax to select checkpoints. Custom outputs include c, theta, fitted errors, residuals, and ratios under results/custom/.
 
 ## Extend the raw data
 

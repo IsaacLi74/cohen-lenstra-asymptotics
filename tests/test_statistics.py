@@ -9,7 +9,8 @@ import pytest
 
 from scripts.build_stats import cpp_buckets, python_buckets, input_files, checkpoints
 from src.dataset import FieldRecord, p_part
-from src.fitting import load_series, fit_model, predict, select_range, ROOT
+from src.fitting import load_series, fit_model, predict, reference_error, select_range, ROOT
+from experiments.reference import torsion_coefficient
 from src.statistics import (aut_size, cl_probability, ETA3, TARGETS, P_DIVISIBLE,
                             DENSITY, group_parts, summary_row, RESIDUES, BLOCK_SIZE)
 
@@ -124,14 +125,16 @@ def test_fits_recover_known_secondary_terms():
     x = np.geomspace(1e6, 2**28, 80)
     y = -.13*x**.827
     fit = fit_model(x, y)
+    assert fit["parameters"]["c"] == pytest.approx(-.13, rel=1e-5)
     assert fit["parameters"]["theta"] == pytest.approx(.827, abs=1e-6)
     assert np.allclose(predict(fit, x), y, rtol=1e-6)
-    y = -.112*x**(5/6)+.2*x**(2/3)
-    fit = fit_model(x, y, "five_sixths_plus_two_thirds")
-    assert fit["parameters"]["A"] == pytest.approx(-.112)
-    assert fit["parameters"]["B"] == pytest.approx(.2)
+    fit = fit_model(x, -y)
+    assert fit["parameters"]["c"] == pytest.approx(.13, rel=1e-5)
+    assert np.allclose(predict(fit, x), -y, rtol=1e-6)
     with pytest.raises(ValueError, match="more"):
         fit_model(x[:2], y[:2])
+    with pytest.raises(ValueError, match="Only the power"):
+        fit_model(x, y, "unsupported")
 
 
 def test_c9_fit_reference_value():
@@ -139,3 +142,18 @@ def test_c9_fit_reference_value():
     df = select_range(df, 1e6)
     fit = fit_model(df.X, df.error)
     assert fit["parameters"]["theta"] == pytest.approx(.83299775, abs=2e-6)
+
+
+def test_proved_torsion_coefficient():
+    assert torsion_coefficient(100000) == pytest.approx(-.414804621730, abs=1e-11)
+    assert abs(torsion_coefficient()-torsion_coefficient(100000)) < 2e-5
+
+
+def test_proved_reference_matches_both_count_normalizations():
+    for convention in ["xuzhu", "conditional"]:
+        df, metadata = load_series("torsion", error=convention)
+        expected = 2*df.N_fields+torsion_coefficient()*df.X**(5/6)
+        assert np.allclose(df.baseline+reference_error(df, metadata), expected)
+    for observable, group in [("divisible", None), ("sylow", "C9")]:
+        _, metadata = load_series(observable, group)
+        assert "proved_reference" not in metadata
