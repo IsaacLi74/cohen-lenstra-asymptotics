@@ -4,3 +4,10 @@ __pycache__/
 .ipynb_checkpoints/
 .venv/
 .pytest_cache/
+data/raw/*.gz
+data/raw/*.part
+data/raw/*.source.json
+data/extended*/
+results/custom/
+results/extended*/
+figures/statistics/extended*/

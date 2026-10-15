@@ -1,5 +1,5 @@
 {
-  "name": "Cohen-Lenstra Asymptotics",
+  "name": "Cohen-Lenstra: divisibility, torsion, and Sylow statistics",
   "image": "mcr.microsoft.com/devcontainers/python:3.12",
 
   "postCreateCommand": "bash scripts/setup.sh",

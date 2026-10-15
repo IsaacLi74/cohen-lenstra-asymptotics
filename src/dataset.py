@@ -40,6 +40,20 @@ class FieldRecord:
     def Cl3_K(self) -> str:
         return group_label(self.Cl3_K_invariants)
 
+    @property
+    def sylow3_invariants(self) -> tuple[int, ...]:
+        """Entire Sylow 3 subgroup; Cl3_K_invariants is the legacy alias."""
+        return self.Cl3_K_invariants
+
+    @property
+    def rank3(self) -> int:
+        return len(self.sylow3_invariants)
+
+    @property
+    def torsion3_size(self) -> int:
+        """|Cl_K[3]|, including the identity (C9 contributes 3, not 9)."""
+        return 3 ** self.rank3
+
 
 def radicand_from_discriminant(D: int) -> int:
     """
@@ -54,6 +68,8 @@ def radicand_from_discriminant(D: int) -> int:
 
 
 def p_part(n: int, p: int) -> int:
+    if n < 1 or p < 2:
+        raise ValueError("n must be positive and p must be at least 2")
     q = 1
     while n % p == 0:
         q *= p
@@ -125,7 +141,12 @@ def iter_file(path: Path) -> Iterator[FieldRecord]:
             h = values[1]
             invariants = tuple(values[2:])
 
+            if a < 0 or (line_no > 1 and a == 0) or h < 1 or any(n < 1 for n in invariants):
+                raise ValueError(f"{path}:{line_no}: invalid delta or invariant")
+
             D -= m * a
+            if not k*2**28 <= abs(D) < (k+1)*2**28:
+                raise ValueError(f"{path}:{line_no}: discriminant outside filename block")
 
             product = 1
             for n in invariants:
