@@ -42,8 +42,6 @@ Both $c$ and $\theta$ are estimated separately for each statistic by unweighted 
 
 Sylow fits cover exactly $C_3$, $C_9$, and $C_3\times C_3$. The report lists their fitted $c,\theta$ side by side and compares observed proportions with $P_{\mathrm{CL}}(G_3)$.
 
-For torsion, the report also compares the fit with the proved secondary coefficient and exponent $5/6$ from [Bhargava–Shankar–Tsimerman, Theorem 4](https://arxiv.org/pdf/1005.0672). Its count and mean formulas are two normalizations of the same result.
-
 ## What the ratio plots show
 
 Each plot compares the observed ratio with **(fixed main term + fitted error) / actual field count**:

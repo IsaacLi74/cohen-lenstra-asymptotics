@@ -6,7 +6,6 @@ from pathlib import Path
 import pandas as pd
 
 from src.statistics import DENSITY, ETA3, P_DIVISIBLE, TARGETS, aut_size, cl_probability
-from experiments.reference import PRIME_BOUND, SOURCE, torsion_coefficient
 
 LABELS = {
     ("divisible", None): "Divisibility",
@@ -92,40 +91,8 @@ def write_calculations(data_dir, output_dir, results, sensitivity, requested_xmi
         label = LABELS[entry["observable"], entry["group"]]
         lines.append(f"| {label} | {fit['parameters']['c']:.9g} | "
                      f"{fit['parameters']['theta']:.9f} | {fit['RMSE']:.3f} |")
-    torsion_fit = next(entry["fit"] for entry in results if entry["observable"] == "torsion")
-    coefficient = torsion_coefficient()
-    coarser = torsion_coefficient(PRIME_BOUND//10)
     lines.extend([
-        "", "## Proved torsion reference: the two blackboard formulas", "",
-        r"With the identity included in $\mathrm{Cl}_D[3]$, the counting and mean forms are", "",
-        r"$$S_3(X)=\frac{6}{\pi^2}X+C_{\mathrm{tor}}X^{5/6}+o(X^{5/6}),$$", "",
-        r"$$\frac{S_3(X)}{N(X)}=2+\frac{C_{\mathrm{tor}}}{\rho}X^{-1/6}+o(X^{-1/6}).$$", "",
-        "These are two normalizations of the same proved result. "
-        r"The leading count coefficient is $6/\pi^2$, consistent with mean 2. "
-        r"The count coefficient $C_{\mathrm{tor}}$ and mean coefficient $C_{\mathrm{tor}}/\rho$ are different.", "",
-        f"[Bhargava–Shankar–Tsimerman, Theorem 4]({SOURCE}) gives "
-        r"$S_3(X)=2N(X)+C_{\mathrm{tor}}X^{5/6}+o(X^{5/6})$, with", "",
-        r"$$C_{\mathrm{tor}}=\frac{8\sqrt3\,\zeta(1/3)}{5\Gamma(2/3)^3}"
-        r"\prod_{p\ \mathrm{prime}}\left(1-\frac{p^{1/3}+1}{p(p+1)}\right).$$", "",
-        r"Here $\zeta$ is the Riemann zeta function and $\Gamma$ is the gamma function. "
-        f"The product is truncated at primes <= {PRIME_BOUND:,}, giving C_tor approximately {coefficient:.9f}. "
-        f"Using primes <= {PRIME_BOUND//10:,} gives {coarser:.9f}; the change is {abs(coefficient-coarser):.2g}. "
-        "This is a truncation check, not a certified error bound.", "",
-        "| Normalization | Proved coefficient (approx.) | Coefficient from free count fit | Proved exponent | Fitted / derived exponent |",
-        "|---|---:|---:|---:|---:|",
-        f"| Count error | {coefficient:.9f} | {torsion_fit['parameters']['c']:.9f} | 5/6 = {5/6:.9f} | "
-        f"{torsion_fit['parameters']['theta']:.9f} |",
-        f"| Mean minus 2 | {coefficient/DENSITY:.9f} | {torsion_fit['parameters']['c']/DENSITY:.9f} | "
-        f"-1/6 = {-1/6:.9f} | {torsion_fit['parameters']['theta']-1:.9f} |", "",
-        r"The mean row is derived from the count fit using $N(X)\sim\rho X$; it is not another fit. "
-        "The free-power coefficient and exponent are estimated jointly, so a coefficient difference "
-        "also reflects the exponent difference. The torsion plot uses the reference mean curve "
-        r"$2+C_{\mathrm{tor}}X^{5/6}/N(X)$ with the actual field count.", "",
-        r"The board leaves secondary coefficients as $c$ without numerical values. "
-        "The numerical torsion reference above comes from Theorem 4. "
-        "The board labels the divisibility limit as a conjecture; CL proportions for individual Sylow types "
-        "are also predictions. No proved secondary coefficient is assigned to those fits.", "",
-        "## Curves shown in the ratio plots", "",
+        "", "## Curves shown in the ratio plots", "",
         "Add the fitted error to the fixed main term, then divide by the actual field count:", "",
         "| Plot | Observed ratio | Curve from the count fit |",
         "|---|---|---|",

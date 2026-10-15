@@ -42,13 +42,6 @@
         }
       ],
       "caution": "Finite-range fits with a fixed conjectural CL leading coefficient, except for the proved torsion mean 2. Cumulative checkpoints are correlated. RMSE/AIC/BIC are descriptive diagnostics, not independent-error inference or a proof of a remainder.",
-      "proved_reference": {
-        "formula": "S_3(X) = 2*N(X) + C*X**(5/6) + o(X**(5/6))",
-        "C_approx": -0.41478600232265367,
-        "theta": 0.8333333333333334,
-        "prime_bound": 1000000,
-        "source": "https://arxiv.org/pdf/1005.0672"
-      },
       "fit": {
         "model": "power",
         "parameters": {
