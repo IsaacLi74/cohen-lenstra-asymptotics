@@ -7,7 +7,7 @@ import pandas as pd
 
 from src import ROOT
 from src.fitting import (FIT_CASES, GROUP_LABELS, NOTE, fit_power, fitted_ratio,
-                         load_series, plot_fit, select_range)
+                         load_series, plot_error_fit, plot_fit, select_range)
 from src.statistics import SYLOW_TYPES
 from experiments.calculations import write_calculations
 
@@ -16,7 +16,7 @@ def comparison(data_dir, results, output):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    fig, ax = plt.subplots(figsize=(8, 5), constrained_layout=True)
+    fig, (ax, error_ax) = plt.subplots(1, 2, figsize=(12, 5), constrained_layout=True)
     for entry in results:
         if entry["observable"] != "sylow":
             continue
@@ -27,9 +27,12 @@ def comparison(data_dir, results, output):
         ax.plot(df["X"], df["ratio"], ".", color=color, label=GROUP_LABELS[entry["group"]])
         ax.plot(df["X"], fitted_ratio(df, fit), color=color)
         ax.axhline(entry["ratio_leading_term"], color=color, linestyle="--")
+        plot_error_fit(error_ax, df, fit, GROUP_LABELS[entry["group"]], color)
     ax.set(xscale="log", xlabel="X", ylabel="Proportion of all fields",
            title="Sylow 3 proportions\nObserved (dots), fitted (solid), CL (dashed)")
     ax.legend()
+    error_ax.set_title(r"Power fits for $E_{G_3}(X)$")
+    error_ax.legend(fontsize=8)
     fig.savefig(output, dpi=160)
     plt.close(fig)
 

@@ -93,12 +93,23 @@ def select_range(df, xmin, xmax=None):
     return df.loc[mask].copy()
 
 
+def plot_error_fit(ax, df, fit, label=None, color="C2"):
+    x = df["X"].to_numpy(float)
+    ax.plot(x, np.abs(df["error"]), ".", color="C0" if label is None else color,
+            label="Observed" if label is None else None)
+    c, theta = fit["parameters"]["c"], fit["parameters"]["theta"]
+    parameters = rf"$c={c:.6g},\ \theta={theta:.6f}$"
+    ax.plot(x, np.abs(predict(fit, x)), color=color,
+            label=f"{label}: {parameters}" if label else parameters)
+    ax.set(xscale="log", yscale="log", xlabel="X", ylabel=r"$|E(X)|$")
+
+
 def plot_fit(df, metadata, fit, output):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     plt.rcParams.update({"font.size": 10, "axes.spines.top": False, "axes.spines.right": False})
-    fig, ax = plt.subplots(figsize=(8, 5), constrained_layout=True)
+    fig, (ax, error_ax) = plt.subplots(1, 2, figsize=(12, 5), constrained_layout=True)
     x = df["X"].to_numpy(float)
     ax.plot(x, df["ratio"], ".", label="Observed")
     ax.plot(x, fitted_ratio(df, fit), color="C2", label="Fitted curve")
@@ -117,6 +128,9 @@ def plot_fit(df, metadata, fit, output):
     elif metadata["observable"] == "sylow":
         label = "Sylow "+GROUP_LABELS[metadata["group"]]
     ax.set_title(f"{label}\n{fit['xmin']:,} <= X <= {fit['xmax']:,}")
+    plot_error_fit(error_ax, df, fit)
+    error_ax.set_title(r"Power fit: $E(X)\approx cX^\theta$")
+    error_ax.legend(fontsize=9)
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(output, dpi=160)
