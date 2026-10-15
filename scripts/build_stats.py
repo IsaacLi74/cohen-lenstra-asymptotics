@@ -1,4 +1,4 @@
-"""Rebuild full statistics; the legacy p3_counts.csv is never overwritten."""
+"""Build the current divisibility, torsion, rank, and Sylow-type summaries."""
 import argparse
 from collections import Counter
 import csv
@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def checkpoints(xmax, n=200, xmin=1000):
-    # Keep the original grid exactly when rebuilding the original data range.
+    # Logarithmic grid; always include the exact integer upper bound.
     import math
     if not 1 <= xmin <= xmax or n < 1:
         raise ValueError("Require 1 <= xmin <= xmax and checkpoints >= 1")

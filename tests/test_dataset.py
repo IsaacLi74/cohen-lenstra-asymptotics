@@ -1,5 +1,4 @@
 from itertools import islice
-from pathlib import Path
 import gzip
 
 from src.dataset import (

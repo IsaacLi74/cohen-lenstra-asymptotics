@@ -1,4 +1,4 @@
-"""Fit one observable; --group C9 remains a supported legacy command."""
+"""Fit divisibility, torsion, or one Sylow 3 type."""
 import argparse
 import json
 from pathlib import Path

@@ -99,12 +99,7 @@ def fit_model(x, y, name="power", p0=None):
         params = [float(b/scale**a) for a,b in zip(exponents, coefficients)]
     else:
         if p0 is None:
-            if name == "power_log":
-                p0 = [y[-1]/x[-1]**.6, .6, 0.0]
-            elif name == "two_power":
-                p0 = [y[-1]/x[-1]**.7, .7, y[-1]/x[-1]**.5, .5]
-            else:
-                p0 = np.ones(len(names))
+            p0 = np.ones(len(names))
         params, _ = curve_fit(model, x, y, p0=p0, maxfev=500000)
         params = [float(v) for v in params]
     prediction = np.asarray(model(x, *params), float)

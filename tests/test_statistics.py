@@ -1,8 +1,6 @@
 from collections import Counter
-import csv
 import gzip
-import math
-from pathlib import Path
+import json
 import shutil
 
 import numpy as np
@@ -90,15 +88,16 @@ def test_next_block_and_checkpoint_boundary(tmp_path):
         assert cpp_buckets(paths, grid) == expected
 
 
-def test_rebuilt_summary_preserves_legacy_counts():
-    old = pd.read_csv(ROOT/"data/processed/p3_counts.csv")
-    new = pd.read_csv(ROOT/"data/processed/p3_statistics.csv")
-    assert list(old.X) == list(new.X) == checkpoints(BLOCK_SIZE)
-    for column in old:
-        assert np.allclose(old[column], new[column], rtol=0, atol=3e-8), column
-    assert (new.N_divisible == new.N_fields-new.N_trivial).all()
-    assert int(new.iloc[-1].N_fields) == 81_594_634
-    assert int(new.iloc[-1].N_divisible) == 34_689_718
+def test_current_summary_matches_manifest_and_count_identities():
+    data = pd.read_csv(ROOT/"data/processed/p3_statistics.csv")
+    manifest = json.loads((ROOT/"data/processed/p3_statistics.manifest.json").read_text())
+    assert list(data.X) == manifest["checkpoints"] == checkpoints(BLOCK_SIZE)
+    assert (data.N_divisible == data.N_fields-data.N_trivial).all()
+    assert np.array_equal(data.N_other,
+                          data.N_fields-sum(data[f"N_{g}"] for g in TARGETS))
+    assert int(data.iloc[-1].N_fields) == manifest["fields"] == 81_594_634
+    assert int(data.iloc[-1].N_divisible) == 34_689_718
+    assert int(data.iloc[-1].S_torsion3) == 158_806_032
 
 
 def test_every_type_and_rank_contributes():
@@ -135,7 +134,7 @@ def test_fits_recover_known_secondary_terms():
         fit_model(x[:2], y[:2])
 
 
-def test_existing_c9_fit_is_reproduced():
+def test_c9_fit_reference_value():
     df, _ = load_series("sylow", "C9", error="conditional")
     df = select_range(df, 1e6)
     fit = fit_model(df.X, df.error)

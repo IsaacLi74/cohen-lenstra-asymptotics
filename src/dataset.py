@@ -30,20 +30,11 @@ class FieldRecord:
     D_K: int
     h_K: int
     Cl_K_invariants: tuple[int, ...]
-    Cl3_K_invariants: tuple[int, ...]
+    sylow3_invariants: tuple[int, ...]
 
     @property
     def Cl_K(self) -> str:
         return group_label(self.Cl_K_invariants)
-
-    @property
-    def Cl3_K(self) -> str:
-        return group_label(self.Cl3_K_invariants)
-
-    @property
-    def sylow3_invariants(self) -> tuple[int, ...]:
-        """Entire Sylow 3 subgroup; Cl3_K_invariants is the legacy alias."""
-        return self.Cl3_K_invariants
 
     @property
     def rank3(self) -> int:
@@ -168,7 +159,7 @@ def iter_file(path: Path) -> Iterator[FieldRecord]:
                 D_K=D,
                 h_K=h,
                 Cl_K_invariants=invariants,
-                Cl3_K_invariants=p_primary_group(invariants, 3),
+                sylow3_invariants=p_primary_group(invariants, 3),
             )
 
 
