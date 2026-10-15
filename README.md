@@ -8,25 +8,22 @@ All sums run over negative fundamental discriminants $D$ with $-X\le D<0$. The c
 
 | Symbol | Meaning |
 |---|---|
-| $X$ | Positive bound on the absolute discriminant. |
-| $D$ | Fundamental discriminant of the imaginary quadratic field $\mathbb Q(\sqrt D)$. |
-| $\mathrm{Cl}_D$ | Ideal class group of that field, written additively. |
-| $h_D=\lvert\mathrm{Cl}_D\rvert$ | Class number; $\lvert H\rvert$ denotes the number of elements of a finite group $H$. |
-| $\mathrm{Cl}_D[3]$ | Elements $g$ satisfying $3g=0$, including the identity. |
-| $\mathrm{Cl}_D[3^\infty]$ | Elements killed by some power of 3: the whole Sylow 3 subgroup. |
-| $C_n$, $G$ | Cyclic group of order $n$, and a finite abelian 3-group, respectively. |
-| $\mathbf1[\mathcal A]$ | Indicator: 1 if the condition $\mathcal A$ holds, otherwise 0. |
-| $3\mid h_D$, $\cong$ | “3 divides the class number,” and “is isomorphic to,” respectively. |
-| $\mathrm{Aut}(G)$ | Group of automorphisms of $G$. |
+| $X$ | Bound on the absolute discriminant. |
+| $D$ | Discriminant of the quadratic field $\mathbb Q(\sqrt D)$. |
+| $\mathrm{Cl}_D$ | Ideal class group of the quadratic field with discriminant $D$. |
+| $h_D=\lvert\mathrm{Cl}_D\rvert$ | Class number. |
+| $\mathrm{Cl}_D[3]$ | Elements $g$ satisfying $3g=0$. |
+| $\mathrm{Cl}_D[3^\infty]$ | The whole Sylow 3 subgroup in $\mathrm{Cl}_D$. |
+| $G_3$ | A finite abelian 3-group. |
 
 The field count and the CL predicted proportions are
 
 $$N(X)=\sum_D1\sim\frac{3}{\pi^2}X,$$
 
 $$p_3=1-\prod_{j=1}^{\infty}(1-3^{-j})\approx0.439873922,\qquad
-P_{\mathrm{CL}}(G)=\frac{1-p_3}{\lvert\mathrm{Aut}(G)\rvert}.$$
+P_{\mathrm{CL}}(G_3)=\frac{1-p_3}{\lvert\mathrm{Aut}(G_3)\rvert}.$$
 
-Here $p_3$ is the predicted limiting proportion with $3\mid h_D$; $P_{\mathrm{CL}}(G)$ is the predicted proportion with Sylow 3 subgroup $G$. The product runs over positive integers $j$; $\sim$ means the ratio tends to 1 as $X\to\infty$.
+Here $p_3$ is the predicted limiting proportion with $3\mid h_D$; $P_{\mathrm{CL}}(G_3)$ is the predicted proportion with Sylow 3 subgroup $G_3$.
 
 ## What we fit
 
@@ -34,7 +31,7 @@ Here $p_3$ is the predicted limiting proportion with $3\mid h_D$; $P_{\mathrm{CL
 |---|---|---|
 | $3\mid h_D$ | $N_3(X)=\sum_D\mathbf1[3\mid h_D]$ | $E(X)=N_3(X)-p_3\frac{3}{\pi^2}X$ |
 | 3-torsion | $S_3(X)=\sum_D\lvert\mathrm{Cl}_D[3]\rvert$ | $E_{\mathrm{tor}}(X)=S_3(X)-\frac{6}{\pi^2}X$ |
-| Sylow 3 type $G$ | $N_G(X)=\sum_D\mathbf1[\mathrm{Cl}_D[3^\infty]\cong G]$ | $E_G(X)=N_G(X)-P_{\mathrm{CL}}(G)\frac{3}{\pi^2}X$ |
+| Sylow 3 type $G_3$ | $N_{G_3}(X)=\sum_D\mathbf1[\mathrm{Cl}_D[3^\infty]\cong G_3]$ | $E_{G_3}(X)=N_{G_3}(X)-P_{\mathrm{CL}}(G_3)\frac{3}{\pi^2}X$ |
 
 Thus $N_3$ counts **all fields with nontrivial Sylow 3 subgroup**, rather than only those of type $C_3$. For $C_9$, the group $\mathrm{Cl}_D[3]$ is $C_3$ and has size 3; for $C_3\times C_3$, it has size 9.
 
@@ -49,7 +46,7 @@ Fits minimize the unweighted sum of squared differences between the observed err
 $$\widehat N_3(X)=p_3\frac{3}{\pi^2}X+\widehat E(X),\qquad
 \text{fitted proportion}=\frac{\widehat N_3(X)}{N(X)}.$$
 
-A hat denotes a fitted quantity. Likewise, $S_3(X)/N(X)$ is the mean torsion size, and $N_G(X)/N(X)$ is the proportion of type $G$; their fitted curves use the same reconstruction.
+A hat denotes a fitted quantity. Likewise, $S_3(X)/N(X)$ is the mean torsion size, and $N_{G_3}(X)/N(X)$ is the proportion of type $G_3$; their fitted curves use the same reconstruction.
 
 The default Sylow fits cover the trivial group, $C_3$, $C_9$, $C_3\times C_3$, and their complement “other.” Every proportion uses **all fields** as its denominator.
 
@@ -81,7 +78,7 @@ python -m experiments.fit --group C9 --error conditional --model power
 python -m experiments.fit --group C3xC3 --error conditional --model power
 ~~~
 
-xuzhu uses the errors in the table. conditional replaces their leading terms by $p_3N(X)$, $2N(X)$, and $P_{\mathrm{CL}}(G)N(X)$, respectively; the same three models are fitted again. Use --xmin and --xmax to select checkpoints. Custom outputs include coefficients, fitted errors, residuals, and reconstructed ratios under results/custom/.
+xuzhu uses the errors in the table. conditional replaces their leading terms by $p_3N(X)$, $2N(X)$, and $P_{\mathrm{CL}}(G_3)N(X)$, respectively; the same three models are fitted again. Use --xmin and --xmax to select checkpoints. Custom outputs include coefficients, fitted errors, residuals, and reconstructed ratios under results/custom/.
 
 ## Extend the raw data
 
