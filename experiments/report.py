@@ -3,11 +3,9 @@ import argparse
 import json
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
-from src.fitting import (ROOT, CAUTION, load_series, fit_model, plot_fits,
-                         predict, select_range)
+from src.fitting import ROOT, CAUTION, load_series, fit_model, plot_fits, select_range
 from src.statistics import DENSITY, TARGETS, cl_probability
 
 
@@ -39,14 +37,13 @@ def generate(data_dir=ROOT/"data", output_dir=ROOT/"results", figures_dir=ROOT/"
     data_dir, output_dir, figures_dir = map(Path, (data_dir, output_dir, figures_dir))
     output_dir.mkdir(parents=True, exist_ok=True)
     figures_dir.mkdir(parents=True, exist_ok=True)
-    jobs = [("divisible", None, "repo"), ("torsion", None, "repo")]
-    jobs += [("sylow", g, "repo") for g in [*TARGETS, "other"]]
-    jobs += [("divisible", None, "published"), ("divisible", None, "combined")]
+    jobs = [("divisible", None), ("torsion", None)]
+    jobs += [("sylow", g) for g in [*TARGETS, "other"]]
     results, sensitivity, last_rows = [], [], []
-    for observable, group, source in jobs:
-        label = f"{observable}_{group or 'all'}_{source}"
+    for observable, group in jobs:
+        label = f"sylow_{group}" if observable == "sylow" else observable
         for convention in ["xuzhu", "conditional"]:
-            df, metadata = load_series(observable, group, source, convention, data_dir)
+            df, metadata = load_series(observable, group, convention, data_dir)
             selected = select_range(df, xmin, xmax)
             fits = []
             for model in ["power", "five_sixths", "five_sixths_plus_two_thirds"]:
@@ -63,20 +60,19 @@ def generate(data_dir=ROOT/"data", output_dir=ROOT/"results", figures_dir=ROOT/"
             if convention == "xuzhu":
                 plot_fits(selected, metadata, fits, figures_dir/f"{label}.png")
                 last_rows.append({"observable": observable, "group": group or "",
-                                  "source": source, "X": int(selected.iloc[-1]["X"]),
+                                  "X": int(selected.iloc[-1]["X"]),
                                   "N_fields": int(selected.iloc[-1]["N_fields"]),
                                   "count": int(selected.iloc[-1]["count"]),
                                   "ratio": float(selected.iloc[-1]["ratio"]),
                                   "leading_ratio": metadata["ratio_leading_term"]})
-            starts = ([1e11, 3e11, 6e11] if source == "published" else
-                      [1e5, 3e5, 1e6, 3e6, 1e7, 3e7, 1e8])
+            starts = [1e5, 3e5, 1e6, 3e6, 1e7, 3e7, 1e8]
             for start in starts:
                 sub = select_range(df, start, xmax)
                 if len(sub) < 4:
                     continue
                 fit = fit_model(sub["X"], sub["error"], "power")
                 sensitivity.append({"observable": observable, "group": group or "",
-                                    "source": source, "error": convention,
+                                    "error": convention,
                                     "requested_xmin": int(start), **fit["parameters"],
                                     "actual_xmin": fit["xmin"], "xmax": fit["xmax"],
                                     "points": fit["points"], "RMSE": fit["RMSE"]})
@@ -89,7 +85,7 @@ def generate(data_dir=ROOT/"data", output_dir=ROOT/"results", figures_dir=ROOT/"
     for row in results:
         fit = row["fit"]
         flat.append({"observable": row["observable"], "group": row["group"],
-                     "source": row["source"], "error": row["error_convention"],
+                     "error": row["error_convention"],
                      "model": fit["model"], **fit["parameters"],
                      "xmin": fit["xmin"], "xmax": fit["xmax"],
                      "points": fit["points"], "RMSE": fit["RMSE"],
