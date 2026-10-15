@@ -7,7 +7,7 @@ import pandas as pd
 
 from src import ROOT
 from src.fitting import (FIT_CASES, GROUP_LABELS, NOTE, fit_power, fitted_ratio,
-                         load_series, plot_fit, predict, select_range)
+                         load_series, plot_fit, select_range)
 from src.statistics import SYLOW_TYPES
 from experiments.calculations import write_calculations
 
@@ -16,7 +16,7 @@ def comparison(data_dir, results, output):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    fig, axes = plt.subplots(1, 2, figsize=(11, 4.5), constrained_layout=True)
+    fig, ax = plt.subplots(figsize=(8, 5), constrained_layout=True)
     for entry in results:
         if entry["observable"] != "sylow":
             continue
@@ -24,19 +24,12 @@ def comparison(data_dir, results, output):
         df, _ = load_series("sylow", entry["group"], data_dir)
         df = select_range(df, fit["xmin"], fit["xmax"])
         color = f"C{SYLOW_TYPES.index(entry['group'])}"
-        curve = predict(fit, df["X"])
-        axes[0].plot(df["X"], df["ratio"], ".", color=color, label=GROUP_LABELS[entry["group"]])
-        axes[0].plot(df["X"], fitted_ratio(df, fit), color=color)
-        axes[0].axhline(entry["ratio_leading_term"], color=color, linestyle="--")
-        axes[1].plot(df["X"], df["error"]/curve, ".", color=color,
-                     label=GROUP_LABELS[entry["group"]])
-    axes[0].set(xscale="log", xlabel="X", ylabel="Proportion of all fields",
-                title="Observed (dots), count fit (solid), CL (dashed)")
-    axes[0].legend(fontsize=8)
-    axes[1].axhline(1, color="black", linestyle="--")
-    axes[1].set(xscale="log", xlabel="X", ylabel=r"$E(X)/(cX^\theta)$",
-                title="Counting error relative to its fitted power")
-    axes[1].legend(fontsize=8)
+        ax.plot(df["X"], df["ratio"], ".", color=color, label=GROUP_LABELS[entry["group"]])
+        ax.plot(df["X"], fitted_ratio(df, fit), color=color)
+        ax.axhline(entry["ratio_leading_term"], color=color, linestyle="--")
+    ax.set(xscale="log", xlabel="X", ylabel="Proportion of all fields",
+           title="Sylow 3 proportions\nObserved (dots), fitted (solid), CL (dashed)")
+    ax.legend()
     fig.savefig(output, dpi=160)
     plt.close(fig)
 

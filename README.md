@@ -69,7 +69,7 @@ This generates **5 power fits, 6 plots, and the calculation report** from commit
 python -m scripts.reproduce --rebuild --check
 ~~~
 
-Each fit plot shows the counting error, error divided by its fitted power, residuals, and the ratio defined above. A separate plot compares the three Sylow types.
+Each plot shows the observed proportion or mean, its fitted curve, and the leading-value reference line. A separate plot compares the three Sylow types.
 
 [Calculations and fitted coefficients](results/calculations.md) · [Fit table](results/fit_summary.csv) · [Plots](figures/statistics) · [Data format](DATA_FORMAT.md)
 

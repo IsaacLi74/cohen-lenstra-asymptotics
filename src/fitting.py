@@ -98,47 +98,25 @@ def plot_fit(df, metadata, fit, output):
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     plt.rcParams.update({"font.size": 10, "axes.spines.top": False, "axes.spines.right": False})
-    fig, axes = plt.subplots(2, 2, figsize=(11, 7.5), constrained_layout=True)
-    x, y = df["X"].to_numpy(float), df["error"].to_numpy(float)
-    curve = predict(fit, x)
-    negative = np.all(y < 0) and np.all(curve < 0)
-    positive = np.all(y > 0) and np.all(curve > 0)
-    sign = -1 if negative else 1
-    c, theta = fit["parameters"]["c"], fit["parameters"]["theta"]
-
-    ax = axes[0, 0]
-    ax.plot(x, sign*y, ".", label="Observed")
-    ax.plot(x, sign*curve, color="C2", label=r"Fit: $cX^\theta$")
-    ax.set(xscale="log", yscale="log" if negative or positive else "symlog",
-           xlabel="X", ylabel="-E(X)" if negative else "E(X)",
-           title="Counting error and fitted correction")
-    ax.legend(fontsize=8)
-
-    ax = axes[0, 1]
-    ax.plot(x, y/x**theta, ".", label="Observed")
-    ax.axhline(c, color="C2", label="Fitted c")
-    ax.set(xscale="log", xlabel="X", ylabel=rf"$E(X)/X^{{{theta:.6f}}}$",
-           title="Error scaled by the fitted exponent")
-    ax.legend(fontsize=8)
-
-    ax = axes[1, 0]
-    ax.plot(x, y-curve, ".", color="C2")
-    ax.axhline(0, color="gray", linewidth=.7)
-    ax.set(xscale="log", xlabel="X", ylabel="Observed E - fitted E", title="Residuals")
-
-    ax = axes[1, 1]
+    fig, ax = plt.subplots(figsize=(8, 5), constrained_layout=True)
+    x = df["X"].to_numpy(float)
     ax.plot(x, df["ratio"], ".", label="Observed")
-    ax.plot(x, fitted_ratio(df, fit), color="C2", label="From count fit")
+    ax.plot(x, fitted_ratio(df, fit), color="C2", label="Fitted curve")
     leading = metadata["ratio_leading_term"]
     ax.axhline(leading, color="black", linestyle=":", label=f"Leading value: {leading:.6f}")
-    ylabel = r"Mean $|\mathrm{Cl}_D[3]|$" if metadata["observable"] == "torsion" else "Proportion of all fields"
-    ax.set(xscale="log", xlabel="X", ylabel=ylabel, title="(Main term + fitted error) / N(X)")
-    ax.legend(fontsize=8)
+    ylabel = {
+        "divisible": r"$N_3(X)/N(X)$",
+        "torsion": r"$S_3(X)/N(X)$",
+        "sylow": r"$N_{G_3}(X)/N(X)$",
+    }[metadata["observable"]]
+    ax.set(xscale="log", xlabel="X", ylabel=ylabel)
+    ax.legend()
     label = FIT_CASES[metadata["observable"], metadata["group"]][2]
-    if metadata["observable"] == "sylow":
+    if metadata["observable"] == "torsion":
+        label = "Mean 3-torsion size"
+    elif metadata["observable"] == "sylow":
         label = "Sylow "+GROUP_LABELS[metadata["group"]]
-    fig.suptitle(f"{label}\n{fit['xmin']:,} <= X <= {fit['xmax']:,}; "
-                 f"c = {c:.6g}, theta = {theta:.6f}", fontsize=12)
+    ax.set_title(f"{label}\n{fit['xmin']:,} <= X <= {fit['xmax']:,}")
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(output, dpi=160)
