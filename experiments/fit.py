@@ -9,12 +9,11 @@ from src.fitting import ROOT, fit_model, load_series, plot_fits, predict, select
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--observable", choices=["divisible", "torsion", "sylow"])
-    parser.add_argument("--group", help="e.g. C9, C3xC3, C27xC3, trivial, other")
-    parser.add_argument("--error", choices=["xuzhu", "conditional"], default="conditional")
-    parser.add_argument("--model", default="power")
+    parser.add_argument("--group", choices=["C3", "C9", "C3xC3"])
+    parser.add_argument("--error", choices=["xuzhu", "conditional"], default="xuzhu")
+    parser.add_argument("--model", choices=["power"], default="power")
     parser.add_argument("--xmin", type=float, default=1e6)
     parser.add_argument("--xmax", type=float)
-    parser.add_argument("--p0", help="Comma-separated initial guesses for custom models")
     parser.add_argument("--data-dir", type=Path, default=ROOT/"data")
     parser.add_argument("--output-dir", type=Path, default=ROOT/"results/custom")
     args = parser.parse_args()
@@ -24,8 +23,7 @@ def main():
     try:
         frame, metadata = load_series(observable, args.group, args.error, args.data_dir)
         selected = select_range(frame, args.xmin, args.xmax)
-        p0 = [float(v) for v in args.p0.split(",")] if args.p0 else None
-        result = fit_model(selected["X"], selected["error"], args.model, p0)
+        result = fit_model(selected["X"], selected["error"], args.model)
     except (ValueError, FileNotFoundError) as error:
         parser.error(str(error))
     label = f"sylow_{args.group}" if observable == "sylow" else observable
