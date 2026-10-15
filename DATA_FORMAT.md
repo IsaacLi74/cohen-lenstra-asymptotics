@@ -1,183 +1,54 @@
-# Data format
+# 数据与计算入口
 
-## Source
+## 原始输入
 
-Raw data comes from the LMFDB quadratic imaginary class-group tables:
+数据来自 [LMFDB 虚二次域类群表](https://www.lmfdb.org/NumberField/QuadraticImaginaryClassGroups)。四个 Git LFS 文件位于 `data/raw/`：
 
-https://www.lmfdb.org/NumberField/QuadraticImaginaryClassGroups
+| 文件 | 同余条件 |
+|---|---|
+| cl3mod8.0.gz | $\lvert D\rvert\equiv3\pmod8$ |
+| cl7mod8.0.gz | $\lvert D\rvert\equiv7\pmod8$ |
+| cl4mod16.0.gz | $\lvert D\rvert\equiv4\pmod{16}$ |
+| cl8mod16.0.gz | $\lvert D\rvert\equiv8\pmod{16}$ |
 
-The current repo contains the four `k = 0` files:
+文件名一般为 `cl{r}mod{m}.{k}.gz`；块 k 覆盖 $k2^{28}\le|D|<(k+1)2^{28}$。当前四个文件均为 k=0。
 
-- `cl3mod8.0.gz`
-- `cl7mod8.0.gz`
-- `cl4mod16.0.gz`
-- `cl8mod16.0.gz`
+每行记录为 `a h c1 ... ct`。从 $D_0=-k2^{28}-r$ 开始，更新 $D_i=D_{i-1}-ma_i$；该域的类群为 $\prod_j C_{c_j}$，类数必须等于 $\prod_j c_j$。
 
-Together they cover all imaginary quadratic fundamental discriminants with
-
-`0 < |D_K| < 2^28`.
-
-## Mathematical notation
-
-We write `K = Q(sqrt(d))`, with `d < 0` squarefree, and expose:
-
-- `d`
-- `D_K`
-- `h_K`
-- `Cl_K`
-
-For quadratic fields:
-
-- `D_K = d` if `d ≡ 1 (mod 4)`
-- `D_K = 4d` if `d ≡ 2 or 3 (mod 4)`
-
-So the decoder recovers:
-
-- `d = D_K` if `D_K ≡ 1 (mod 4)`
-- `d = D_K / 4` otherwise
-
-Example:
-
-`D_K = -20` gives `d = -5`, so `K = Q(sqrt(-5))`.
-
-## Raw LMFDB encoding
-
-A file has the form:
+例如 `cl3mod8.0.gz` 开头四行：
 
 ```text
-cl{r}mod{m}.{k}.gz
+0 1 1
+1 1 1
+1 1 1
+2 2 2
 ```
 
-For example, `cl3mod8.0.gz` means:
+依次对应 D = −3、−11、−19、−35，类数为 1、1、1、2。
 
-```text
-r = 3
-m = 8
-k = 0
-```
+`src/dataset.py` 的每条 `FieldRecord` 包含 `d`、`D_K`、`h_K`、`Cl_K_invariants`、`sylow3_invariants`，并提供 `rank3`、`torsion3_size`。其中 $K=\mathbb Q(\sqrt d)$，d 为无平方因子的负数；当 $D\equiv1\pmod4$ 时 d=D，否则 d=D/4。
 
-LMFDB stores discriminants by delta encoding.
+## 本轮汇总文件
 
-Initialize:
+| 文件 | 内容 |
+|---|---|
+| p3_statistics.csv | 三个核心统计、所选四种 Sylow 类型与 other，以及两种误差 |
+| sylow3_types.csv | 每个检查点的全部实际出现的 Sylow 类型及比例 |
+| rank3_counts.csv | 每个检查点的 3-rank 分布 |
+| p3_statistics.manifest.json | 输入 SHA-256、文件大小、数据范围、完整检查点列表 |
 
-`D_0 = -k * 2^28 - r`
+以上文件均位于 `data/processed/`。`N_divisible = N_fields - N_trivial`；`S_torsion3 = sum_r 3^r N_rank`；`Avg_torsion3 = S_torsion3 / N_fields`。类型比例的分母始终为全部域，`other` 为四种所选类型的补集。
 
-Each line is:
+类型键按因子降序，例如 `C9xC3`；平凡群为 `trivial`。完整计算过程、当前数字、所有拟合系数见 [自动生成的计算说明](results/calculations.md)。
 
-```text
-a   h   c1 c2 ... ct
-```
-
-The next discriminant is:
-
-`D_i = D_(i-1) - m * a`
-
-The remaining columns mean:
-
-- `h = h_K`
-- `Cl_K = C_c1 x C_c2 x ... x C_ct`
-
-Integrity check:
-
-`h_K = product(c_j)`
-
-Example from `cl3mod8.0.gz`:
-
-```text
-0  1  1
-1  1  1
-1  1  1
-2  2  2
-```
-
-This decodes to:
-
-```text
-D_K = -3    h_K = 1    Cl_K = 1
-D_K = -11   h_K = 1    Cl_K = 1
-D_K = -19   h_K = 1    Cl_K = 1
-D_K = -35   h_K = 2    Cl_K = C2
-```
-
-## Python representation
-
-`src/dataset.py` exposes a `FieldRecord` with:
-
-```text
-d
-D_K
-h_K
-Cl_K_invariants
-Cl3_K_invariants
-```
-
-Example:
-
-```text
-d = -59
-D_K = -59
-h_K = 3
-Cl_K_invariants = (3,)
-```
-
-means `Cl_K = C3`.
-
-The 3-primary part keeps only the largest power of 3 in each invariant factor.
-
-Example:
-
-`C18 x C12 -> C9 x C3`.
-
-## Useful commands
-
-List small fields:
+## 重建与检查
 
 ```bash
 python -m scripts.list_fields --max-D 100
-```
-
-Inspect the first records:
-
-```bash
-python -m scripts.show_fields --n 20
-```
-
-Rebuild processed statistics:
-
-```bash
 python -m scripts.build_stats
+python -m scripts.reproduce --rebuild --check
 ```
 
-The current dataset contains imaginary quadratic fields only, so `D_K < 0`.
+默认使用 C++ gzip 扫描器；`--engine python` 使用参考实现。测试比较两者在类型分类、检查点边界和块边界的结果。扫描器的内存占用由检查点和群类型数量决定，不随记录总数线性增长。
 
-## New summaries (original p3_counts.csv preserved)
-
-`python -m scripts.build_stats` now writes these independent files:
-
-- `data/processed/p3_statistics.csv`: divisibility, complete torsion sum and mean, original four Sylow counts, and the remaining `other` types.
-- `data/processed/sylow3_types.csv`: every observed Sylow type at every checkpoint, with count, proportion, CL probability, and both counting errors.
-- `data/processed/rank3_counts.csv`: counts by 3-rank; weighting rank r by `3^r` recovers the torsion sum.
-- `data/processed/p3_statistics.manifest.json`: source, range, checkpoint grid, input file sizes and SHA-256 hashes.
-
-The original four gzip files, the original `p3_counts.csv`, and the two original figures remain unchanged. `--output-dir` selects a different destination for new summaries.
-
-Key columns:
-
-| Column | Definition |
-|---|---|
-| `N_fields` | All fields with `0 < |D_K| <= X` |
-| `N_divisible` | Number with `3 | h_K`; exactly `N_fields - N_trivial` |
-| `P_divisible` | `N_divisible / N_fields` |
-| `S_torsion3` | Sum of `3^rank3` over all fields, including identity elements |
-| `Avg_torsion3` | `S_torsion3 / N_fields` |
-| `N_C9`, `N_C3xC3` | Counts of the entire corresponding Sylow 3 subgroup |
-| `P_C9`, `P_C3xC3` | Counts divided by all fields |
-| `N_other` | Every type outside `trivial`, `C3`, `C9`, `C3xC3` |
-
-The canonical group key orders factors in decreasing order: `C9xC3`, not `C3xC9`. The trivial group is `trivial`. Both scanners verify that invariant factors multiply to the recorded class number.
-
-## Coverage and larger ranges
-
-Each block k requires all four residue files. Rebuilds reject missing blocks, incomplete residue coverage, and Git LFS pointer stubs. The four checked-in files cover only k=0. `--xmax` is configurable; it is no longer hard-coded into the aggregation loop. Extra records beyond the requested bound do not enter checkpoint counts.
-
-The source tables have k=0,...,4095, covering `|D| < 2^40`. Download blocks with `python -m scripts.download_data --xmax BOUND`. Additional blocks are ignored by Git; the committed baseline is retained. Files are processed one at a time, with bounded-memory checkpoint histograms.
+每个所需数据块的四个同余类必须齐全；程序拒绝缺失块、LFS 指针、错误类数或越界记录。LMFDB 原表有 k=0,…,4095。扩展命令见 README；额外原始文件被 Git 忽略，不自动上传。

@@ -17,7 +17,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y g++ zlib1g-dev
           python -m pip install -r requirements.txt
-      - name: Test mathematics, scanner parity, and preserved counts
+      - name: Test mathematics, scanner parity, and count identities
         run: python -m pytest -q
       - name: Reproduce all fits and plots from committed summaries
         run: python -m scripts.reproduce

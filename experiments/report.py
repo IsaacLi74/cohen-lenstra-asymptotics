@@ -7,6 +7,7 @@ import pandas as pd
 
 from src.fitting import ROOT, CAUTION, load_series, fit_model, plot_fits, select_range
 from src.statistics import DENSITY, TARGETS, cl_probability
+from experiments.calculations import write_calculations
 
 
 def composition(data_dir, output):
@@ -92,6 +93,7 @@ def generate(data_dir=ROOT/"data", output_dir=ROOT/"results", figures_dir=ROOT/"
                      "relative_RMSE": fit["relative_RMSE"]})
     pd.DataFrame(flat).to_csv(output_dir/"fit_summary.csv", index=False)
     composition(data_dir, figures_dir/"sylow_composition.png")
+    write_calculations(data_dir, output_dir, results, sensitivity, xmin, xmax)
     print(f"Saved {len(results)} fits and {len(jobs)+1} plots. {CAUTION}")
     return results
 
