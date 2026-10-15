@@ -181,5 +181,3 @@ The canonical group key orders factors in decreasing order: `C9xC3`, not `C3xC9`
 Each block k requires all four residue files. Rebuilds reject missing blocks, incomplete residue coverage, and Git LFS pointer stubs. The four checked-in files cover only k=0. `--xmax` is configurable; it is no longer hard-coded into the aggregation loop. Extra records beyond the requested bound do not enter checkpoint counts.
 
 The source tables have k=0,...,4095, covering `|D| < 2^40`. Download blocks with `python -m scripts.download_data --xmax BOUND`. Additional blocks are ignored by Git; the committed baseline is retained. Files are processed one at a time, with bounded-memory checkpoint histograms.
-
-Published large-range aggregates are separate: `data/published/mosunov_jacobson_2015.csv` and `data/published/provenance.json`. Only total fields and `3 | h_D` counts are transcribed. These aggregates must not be substituted for missing raw torsion or Sylow data.

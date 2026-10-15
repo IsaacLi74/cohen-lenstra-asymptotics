@@ -4,7 +4,6 @@
     {
       "observable": "divisible",
       "group": null,
-      "source": "repo",
       "error_convention": "xuzhu",
       "ratio_leading_term": 0.43987392207205156,
       "linear_count_coefficient": 0.13370563931321314,
@@ -39,7 +38,6 @@
     {
       "observable": "divisible",
       "group": null,
-      "source": "repo",
       "error_convention": "xuzhu",
       "ratio_leading_term": 0.43987392207205156,
       "linear_count_coefficient": 0.13370563931321314,
@@ -67,7 +65,6 @@
     {
       "observable": "divisible",
       "group": null,
-      "source": "repo",
       "error_convention": "xuzhu",
       "ratio_leading_term": 0.43987392207205156,
       "linear_count_coefficient": 0.13370563931321314,
@@ -96,7 +93,6 @@
     {
       "observable": "divisible",
       "group": null,
-      "source": "repo",
       "error_convention": "conditional",
       "ratio_leading_term": 0.43987392207205156,
       "linear_count_coefficient": 0.13370563931321314,
@@ -131,7 +127,6 @@
     {
       "observable": "divisible",
       "group": null,
-      "source": "repo",
       "error_convention": "conditional",
       "ratio_leading_term": 0.43987392207205156,
       "linear_count_coefficient": 0.13370563931321314,
@@ -159,7 +154,6 @@
     {
       "observable": "divisible",
       "group": null,
-      "source": "repo",
       "error_convention": "conditional",
       "ratio_leading_term": 0.43987392207205156,
       "linear_count_coefficient": 0.13370563931321314,
@@ -188,7 +182,6 @@
     {
       "observable": "torsion",
       "group": null,
-      "source": "repo",
       "error_convention": "xuzhu",
       "ratio_leading_term": 2.0,
       "linear_count_coefficient": 0.6079271018540267,
@@ -223,7 +216,6 @@
     {
       "observable": "torsion",
       "group": null,
-      "source": "repo",
       "error_convention": "xuzhu",
       "ratio_leading_term": 2.0,
       "linear_count_coefficient": 0.6079271018540267,
@@ -251,7 +243,6 @@
     {
       "observable": "torsion",
       "group": null,
-      "source": "repo",
       "error_convention": "xuzhu",
       "ratio_leading_term": 2.0,
       "linear_count_coefficient": 0.6079271018540267,
@@ -280,7 +271,6 @@
     {
       "observable": "torsion",
       "group": null,
-      "source": "repo",
       "error_convention": "conditional",
       "ratio_leading_term": 2.0,
       "linear_count_coefficient": 0.6079271018540267,
@@ -315,7 +305,6 @@
     {
       "observable": "torsion",
       "group": null,
-      "source": "repo",
       "error_convention": "conditional",
       "ratio_leading_term": 2.0,
       "linear_count_coefficient": 0.6079271018540267,
@@ -343,7 +332,6 @@
     {
       "observable": "torsion",
       "group": null,
-      "source": "repo",
       "error_convention": "conditional",
       "ratio_leading_term": 2.0,
       "linear_count_coefficient": 0.6079271018540267,
@@ -372,7 +360,6 @@
     {
       "observable": "sylow",
       "group": "trivial",
-      "source": "repo",
       "error_convention": "xuzhu",
       "ratio_leading_term": 0.5601260779279484,
       "linear_count_coefficient": 0.1702579116138002,
@@ -407,7 +394,6 @@
     {
       "observable": "sylow",
       "group": "trivial",
-      "source": "repo",
       "error_convention": "xuzhu",
       "ratio_leading_term": 0.5601260779279484,
       "linear_count_coefficient": 0.1702579116138002,
@@ -435,7 +421,6 @@
     {
       "observable": "sylow",
       "group": "trivial",
-      "source": "repo",
       "error_convention": "xuzhu",
       "ratio_leading_term": 0.5601260779279484,
       "linear_count_coefficient": 0.1702579116138002,
@@ -464,7 +449,6 @@
     {
       "observable": "sylow",
       "group": "trivial",
-      "source": "repo",
       "error_convention": "conditional",
       "ratio_leading_term": 0.5601260779279484,
       "linear_count_coefficient": 0.1702579116138002,
@@ -499,7 +483,6 @@
     {
       "observable": "sylow",
       "group": "trivial",
-      "source": "repo",
       "error_convention": "conditional",
       "ratio_leading_term": 0.5601260779279484,
       "linear_count_coefficient": 0.1702579116138002,
@@ -527,7 +510,6 @@
     {
       "observable": "sylow",
       "group": "trivial",
-      "source": "repo",
       "error_convention": "conditional",
       "ratio_leading_term": 0.5601260779279484,
       "linear_count_coefficient": 0.1702579116138002,
@@ -556,7 +538,6 @@
     {
       "observable": "sylow",
       "group": "C3",
-      "source": "repo",
       "error_convention": "xuzhu",
       "ratio_leading_term": 0.2800630389639742,
       "linear_count_coefficient": 0.0851289558069001,
@@ -591,7 +572,6 @@
     {
       "observable": "sylow",
       "group": "C3",
-      "source": "repo",
       "error_convention": "xuzhu",
       "ratio_leading_term": 0.2800630389639742,
       "linear_count_coefficient": 0.0851289558069001,
@@ -619,7 +599,6 @@
     {
       "observable": "sylow",
       "group": "C3",
-      "source": "repo",
       "error_convention": "xuzhu",
       "ratio_leading_term": 0.2800630389639742,
       "linear_count_coefficient": 0.0851289558069001,
@@ -648,7 +627,6 @@
     {
       "observable": "sylow",
       "group": "C3",
-      "source": "repo",
       "error_convention": "conditional",
       "ratio_leading_term": 0.2800630389639742,
       "linear_count_coefficient": 0.0851289558069001,
@@ -683,7 +661,6 @@
     {
       "observable": "sylow",
       "group": "C3",
-      "source": "repo",
       "error_convention": "conditional",
       "ratio_leading_term": 0.2800630389639742,
       "linear_count_coefficient": 0.0851289558069001,
@@ -711,7 +688,6 @@
     {
       "observable": "sylow",
       "group": "C3",
-      "source": "repo",
       "error_convention": "conditional",
       "ratio_leading_term": 0.2800630389639742,
       "linear_count_coefficient": 0.0851289558069001,
@@ -740,7 +716,6 @@
     {
       "observable": "sylow",
       "group": "C9",
-      "source": "repo",
       "error_convention": "xuzhu",
       "ratio_leading_term": 0.09335434632132474,
       "linear_count_coefficient": 0.02837631860230003,
@@ -775,7 +750,6 @@
     {
       "observable": "sylow",
       "group": "C9",
-      "source": "repo",
       "error_convention": "xuzhu",
       "ratio_leading_term": 0.09335434632132474,
       "linear_count_coefficient": 0.02837631860230003,
@@ -803,7 +777,6 @@
     {
       "observable": "sylow",
       "group": "C9",
-      "source": "repo",
       "error_convention": "xuzhu",
       "ratio_leading_term": 0.09335434632132474,
       "linear_count_coefficient": 0.02837631860230003,
@@ -832,7 +805,6 @@
     {
       "observable": "sylow",
       "group": "C9",
-      "source": "repo",
       "error_convention": "conditional",
       "ratio_leading_term": 0.09335434632132474,
       "linear_count_coefficient": 0.02837631860230003,
@@ -867,7 +839,6 @@
     {
       "observable": "sylow",
       "group": "C9",
-      "source": "repo",
       "error_convention": "conditional",
       "ratio_leading_term": 0.09335434632132474,
       "linear_count_coefficient": 0.02837631860230003,
@@ -895,7 +866,6 @@
     {
       "observable": "sylow",
       "group": "C9",
-      "source": "repo",
       "error_convention": "conditional",
       "ratio_leading_term": 0.09335434632132474,
       "linear_count_coefficient": 0.02837631860230003,
@@ -924,7 +894,6 @@
     {
       "observable": "sylow",
       "group": "C3xC3",
-      "source": "repo",
       "error_convention": "xuzhu",
       "ratio_leading_term": 0.011669293290165592,
       "linear_count_coefficient": 0.003547039825287504,
@@ -959,7 +928,6 @@
     {
       "observable": "sylow",
       "group": "C3xC3",
-      "source": "repo",
       "error_convention": "xuzhu",
       "ratio_leading_term": 0.011669293290165592,
       "linear_count_coefficient": 0.003547039825287504,
@@ -987,7 +955,6 @@
     {
       "observable": "sylow",
       "group": "C3xC3",
-      "source": "repo",
       "error_convention": "xuzhu",
       "ratio_leading_term": 0.011669293290165592,
       "linear_count_coefficient": 0.003547039825287504,
@@ -1016,7 +983,6 @@
     {
       "observable": "sylow",
       "group": "C3xC3",
-      "source": "repo",
       "error_convention": "conditional",
       "ratio_leading_term": 0.011669293290165592,
       "linear_count_coefficient": 0.003547039825287504,
@@ -1051,7 +1017,6 @@
     {
       "observable": "sylow",
       "group": "C3xC3",
-      "source": "repo",
       "error_convention": "conditional",
       "ratio_leading_term": 0.011669293290165592,
       "linear_count_coefficient": 0.003547039825287504,
@@ -1079,7 +1044,6 @@
     {
       "observable": "sylow",
       "group": "C3xC3",
-      "source": "repo",
       "error_convention": "conditional",
       "ratio_leading_term": 0.011669293290165592,
       "linear_count_coefficient": 0.003547039825287504,
@@ -1108,7 +1072,6 @@
     {
       "observable": "sylow",
       "group": "other",
-      "source": "repo",
       "error_convention": "xuzhu",
       "ratio_leading_term": 0.054787243496587035,
       "linear_count_coefficient": 0.016653325078725512,
@@ -1143,7 +1106,6 @@
     {
       "observable": "sylow",
       "group": "other",
-      "source": "repo",
       "error_convention": "xuzhu",
       "ratio_leading_term": 0.054787243496587035,
       "linear_count_coefficient": 0.016653325078725512,
@@ -1171,7 +1133,6 @@
     {
       "observable": "sylow",
       "group": "other",
-      "source": "repo",
       "error_convention": "xuzhu",
       "ratio_leading_term": 0.054787243496587035,
       "linear_count_coefficient": 0.016653325078725512,
@@ -1200,7 +1161,6 @@
     {
       "observable": "sylow",
       "group": "other",
-      "source": "repo",
       "error_convention": "conditional",
       "ratio_leading_term": 0.054787243496587035,
       "linear_count_coefficient": 0.016653325078725512,
@@ -1235,7 +1195,6 @@
     {
       "observable": "sylow",
       "group": "other",
-      "source": "repo",
       "error_convention": "conditional",
       "ratio_leading_term": 0.054787243496587035,
       "linear_count_coefficient": 0.016653325078725512,
@@ -1263,7 +1222,6 @@
     {
       "observable": "sylow",
       "group": "other",
-      "source": "repo",
       "error_convention": "conditional",
       "ratio_leading_term": 0.054787243496587035,
       "linear_count_coefficient": 0.016653325078725512,
@@ -1287,398 +1245,6 @@
         "relative_RMSE": 0.0029950064815299406,
         "AIC_diagnostic": 1039.3320009339175,
         "BIC_diagnostic": 1044.353719946951
-      }
-    },
-    {
-      "observable": "divisible",
-      "group": null,
-      "source": "published",
-      "error_convention": "xuzhu",
-      "ratio_leading_term": 0.43987392207205156,
-      "linear_count_coefficient": 0.13370563931321314,
-      "input_files": [
-        {
-          "path": "published/mosunov_jacobson_2015.csv",
-          "sha256": "f27a21b5a069d19b2f8f7afe5ee9348fc6828af6a6b0778856738ebe81432c86"
-        }
-      ],
-      "caution": "Finite-range fits with a fixed conjectural CL leading coefficient, except for the proved torsion mean 2. Cumulative checkpoints are correlated. RMSE/AIC/BIC are descriptive diagnostics, not independent-error inference or a proof of a remainder.",
-      "fit": {
-        "model": "power",
-        "parameters": {
-          "A": -0.11090246621222809,
-          "theta": 0.8337324258637697
-        },
-        "points": 11,
-        "xmin": 100000000000,
-        "xmax": 1099511627776,
-        "RMSE": 40513.21067704617,
-        "relative_RMSE": 5.140541584198116e-05,
-        "AIC_diagnostic": 237.4064345681877,
-        "BIC_diagnostic": 238.20222511378444
-      },
-      "derived_asymptotic_ratio_model": {
-        "leading": 0.43987392207205156,
-        "A": -0.36485448953995675,
-        "theta": -0.16626757413623028,
-        "note": "Uses N(X) ~ (3/pi^2)X; a finite-range candidate, not a proved asymptotic"
-      }
-    },
-    {
-      "observable": "divisible",
-      "group": null,
-      "source": "published",
-      "error_convention": "xuzhu",
-      "ratio_leading_term": 0.43987392207205156,
-      "linear_count_coefficient": 0.13370563931321314,
-      "input_files": [
-        {
-          "path": "published/mosunov_jacobson_2015.csv",
-          "sha256": "f27a21b5a069d19b2f8f7afe5ee9348fc6828af6a6b0778856738ebe81432c86"
-        }
-      ],
-      "caution": "Finite-range fits with a fixed conjectural CL leading coefficient, except for the proved torsion mean 2. Cumulative checkpoints are correlated. RMSE/AIC/BIC are descriptive diagnostics, not independent-error inference or a proof of a remainder.",
-      "fit": {
-        "model": "five_sixths",
-        "parameters": {
-          "A": -0.11212161484095505
-        },
-        "points": 11,
-        "xmin": 100000000000,
-        "xmax": 1099511627776,
-        "RMSE": 123790.89405066948,
-        "relative_RMSE": 0.0001570727740354264,
-        "AIC_diagnostic": 259.9796798219776,
-        "BIC_diagnostic": 260.377575094776
-      }
-    },
-    {
-      "observable": "divisible",
-      "group": null,
-      "source": "published",
-      "error_convention": "xuzhu",
-      "ratio_leading_term": 0.43987392207205156,
-      "linear_count_coefficient": 0.13370563931321314,
-      "input_files": [
-        {
-          "path": "published/mosunov_jacobson_2015.csv",
-          "sha256": "f27a21b5a069d19b2f8f7afe5ee9348fc6828af6a6b0778856738ebe81432c86"
-        }
-      ],
-      "caution": "Finite-range fits with a fixed conjectural CL leading coefficient, except for the proved torsion mean 2. Cumulative checkpoints are correlated. RMSE/AIC/BIC are descriptive diagnostics, not independent-error inference or a proof of a remainder.",
-      "fit": {
-        "model": "five_sixths_plus_two_thirds",
-        "parameters": {
-          "A": -0.112370424684778,
-          "B": 0.02387188057014433
-        },
-        "points": 11,
-        "xmin": 100000000000,
-        "xmax": 1099511627776,
-        "RMSE": 44639.18331546698,
-        "relative_RMSE": 5.6640679492680357e-05,
-        "AIC_diagnostic": 239.54008064363535,
-        "BIC_diagnostic": 240.33587118923208
-      }
-    },
-    {
-      "observable": "divisible",
-      "group": null,
-      "source": "published",
-      "error_convention": "conditional",
-      "ratio_leading_term": 0.43987392207205156,
-      "linear_count_coefficient": 0.13370563931321314,
-      "input_files": [
-        {
-          "path": "published/mosunov_jacobson_2015.csv",
-          "sha256": "f27a21b5a069d19b2f8f7afe5ee9348fc6828af6a6b0778856738ebe81432c86"
-        }
-      ],
-      "caution": "Finite-range fits with a fixed conjectural CL leading coefficient, except for the proved torsion mean 2. Cumulative checkpoints are correlated. RMSE/AIC/BIC are descriptive diagnostics, not independent-error inference or a proof of a remainder.",
-      "fit": {
-        "model": "power",
-        "parameters": {
-          "A": -0.11090266258051507,
-          "theta": 0.8337323610428261
-        },
-        "points": 11,
-        "xmin": 100000000000,
-        "xmax": 1099511627776,
-        "RMSE": 40511.4584130835,
-        "relative_RMSE": 5.140319273484871e-05,
-        "AIC_diagnostic": 237.40548301089987,
-        "BIC_diagnostic": 238.2012735564966
-      },
-      "derived_asymptotic_ratio_model": {
-        "leading": 0.43987392207205156,
-        "A": -0.3648551355657265,
-        "theta": -0.1662676389571739,
-        "note": "Uses N(X) ~ (3/pi^2)X; a finite-range candidate, not a proved asymptotic"
-      }
-    },
-    {
-      "observable": "divisible",
-      "group": null,
-      "source": "published",
-      "error_convention": "conditional",
-      "ratio_leading_term": 0.43987392207205156,
-      "linear_count_coefficient": 0.13370563931321314,
-      "input_files": [
-        {
-          "path": "published/mosunov_jacobson_2015.csv",
-          "sha256": "f27a21b5a069d19b2f8f7afe5ee9348fc6828af6a6b0778856738ebe81432c86"
-        }
-      ],
-      "caution": "Finite-range fits with a fixed conjectural CL leading coefficient, except for the proved torsion mean 2. Cumulative checkpoints are correlated. RMSE/AIC/BIC are descriptive diagnostics, not independent-error inference or a proof of a remainder.",
-      "fit": {
-        "model": "five_sixths",
-        "parameters": {
-          "A": -0.11212161426797335
-        },
-        "points": 11,
-        "xmin": 100000000000,
-        "xmax": 1099511627776,
-        "RMSE": 123772.37346798115,
-        "relative_RMSE": 0.0001570492748927932,
-        "AIC_diagnostic": 259.97638811538485,
-        "BIC_diagnostic": 260.37428338818324
-      }
-    },
-    {
-      "observable": "divisible",
-      "group": null,
-      "source": "published",
-      "error_convention": "conditional",
-      "ratio_leading_term": 0.43987392207205156,
-      "linear_count_coefficient": 0.13370563931321314,
-      "input_files": [
-        {
-          "path": "published/mosunov_jacobson_2015.csv",
-          "sha256": "f27a21b5a069d19b2f8f7afe5ee9348fc6828af6a6b0778856738ebe81432c86"
-        }
-      ],
-      "caution": "Finite-range fits with a fixed conjectural CL leading coefficient, except for the proved torsion mean 2. Cumulative checkpoints are correlated. RMSE/AIC/BIC are descriptive diagnostics, not independent-error inference or a proof of a remainder.",
-      "fit": {
-        "model": "five_sixths_plus_two_thirds",
-        "parameters": {
-          "A": -0.1123703866826562,
-          "B": 0.02386828945835911
-        },
-        "points": 11,
-        "xmin": 100000000000,
-        "xmax": 1099511627776,
-        "RMSE": 44632.74992133383,
-        "relative_RMSE": 5.663251673387485e-05,
-        "AIC_diagnostic": 239.53690977758504,
-        "BIC_diagnostic": 240.33270032318177
-      }
-    },
-    {
-      "observable": "divisible",
-      "group": null,
-      "source": "combined",
-      "error_convention": "xuzhu",
-      "ratio_leading_term": 0.43987392207205156,
-      "linear_count_coefficient": 0.13370563931321314,
-      "input_files": [
-        {
-          "path": "processed/p3_statistics.csv",
-          "sha256": "4b5be6f12759c9b1056ebb56413bc3a0dec5f46c9f0a5c9c285ae8226d764129"
-        },
-        {
-          "path": "published/mosunov_jacobson_2015.csv",
-          "sha256": "f27a21b5a069d19b2f8f7afe5ee9348fc6828af6a6b0778856738ebe81432c86"
-        }
-      ],
-      "caution": "Finite-range fits with a fixed conjectural CL leading coefficient, except for the proved torsion mean 2. Cumulative checkpoints are correlated. RMSE/AIC/BIC are descriptive diagnostics, not independent-error inference or a proof of a remainder.",
-      "fit": {
-        "model": "power",
-        "parameters": {
-          "A": -0.11091088790895298,
-          "theta": 0.8337296556006618
-        },
-        "points": 102,
-        "xmin": 1030400,
-        "xmax": 1099511627776,
-        "RMSE": 15432.467939546696,
-        "relative_RMSE": 5.9628080498514375e-05,
-        "AIC_diagnostic": 1971.4226908677167,
-        "BIC_diagnostic": 1976.6726364942851
-      },
-      "derived_asymptotic_ratio_model": {
-        "leading": 0.43987392207205156,
-        "A": -0.3648821958116436,
-        "theta": -0.1662703443993382,
-        "note": "Uses N(X) ~ (3/pi^2)X; a finite-range candidate, not a proved asymptotic"
-      }
-    },
-    {
-      "observable": "divisible",
-      "group": null,
-      "source": "combined",
-      "error_convention": "xuzhu",
-      "ratio_leading_term": 0.43987392207205156,
-      "linear_count_coefficient": 0.13370563931321314,
-      "input_files": [
-        {
-          "path": "processed/p3_statistics.csv",
-          "sha256": "4b5be6f12759c9b1056ebb56413bc3a0dec5f46c9f0a5c9c285ae8226d764129"
-        },
-        {
-          "path": "published/mosunov_jacobson_2015.csv",
-          "sha256": "f27a21b5a069d19b2f8f7afe5ee9348fc6828af6a6b0778856738ebe81432c86"
-        }
-      ],
-      "caution": "Finite-range fits with a fixed conjectural CL leading coefficient, except for the proved torsion mean 2. Cumulative checkpoints are correlated. RMSE/AIC/BIC are descriptive diagnostics, not independent-error inference or a proof of a remainder.",
-      "fit": {
-        "model": "five_sixths",
-        "parameters": {
-          "A": -0.11212161897405735
-        },
-        "points": 102,
-        "xmin": 1030400,
-        "xmax": 1099511627776,
-        "RMSE": 41171.10968089745,
-        "relative_RMSE": 0.00015907722937656257,
-        "AIC_diagnostic": 2169.600381878018,
-        "BIC_diagnostic": 2172.2253546913025
-      }
-    },
-    {
-      "observable": "divisible",
-      "group": null,
-      "source": "combined",
-      "error_convention": "xuzhu",
-      "ratio_leading_term": 0.43987392207205156,
-      "linear_count_coefficient": 0.13370563931321314,
-      "input_files": [
-        {
-          "path": "processed/p3_statistics.csv",
-          "sha256": "4b5be6f12759c9b1056ebb56413bc3a0dec5f46c9f0a5c9c285ae8226d764129"
-        },
-        {
-          "path": "published/mosunov_jacobson_2015.csv",
-          "sha256": "f27a21b5a069d19b2f8f7afe5ee9348fc6828af6a6b0778856738ebe81432c86"
-        }
-      ],
-      "caution": "Finite-range fits with a fixed conjectural CL leading coefficient, except for the proved torsion mean 2. Cumulative checkpoints are correlated. RMSE/AIC/BIC are descriptive diagnostics, not independent-error inference or a proof of a remainder.",
-      "fit": {
-        "model": "five_sixths_plus_two_thirds",
-        "parameters": {
-          "A": -0.11236605891789267,
-          "B": 0.023452445585393486
-        },
-        "points": 102,
-        "xmin": 1030400,
-        "xmax": 1099511627776,
-        "RMSE": 17323.675440112893,
-        "relative_RMSE": 6.693534162647548e-05,
-        "AIC_diagnostic": 1995.005190962296,
-        "BIC_diagnostic": 2000.2551365888644
-      }
-    },
-    {
-      "observable": "divisible",
-      "group": null,
-      "source": "combined",
-      "error_convention": "conditional",
-      "ratio_leading_term": 0.43987392207205156,
-      "linear_count_coefficient": 0.13370563931321314,
-      "input_files": [
-        {
-          "path": "processed/p3_statistics.csv",
-          "sha256": "4b5be6f12759c9b1056ebb56413bc3a0dec5f46c9f0a5c9c285ae8226d764129"
-        },
-        {
-          "path": "published/mosunov_jacobson_2015.csv",
-          "sha256": "f27a21b5a069d19b2f8f7afe5ee9348fc6828af6a6b0778856738ebe81432c86"
-        }
-      ],
-      "caution": "Finite-range fits with a fixed conjectural CL leading coefficient, except for the proved torsion mean 2. Cumulative checkpoints are correlated. RMSE/AIC/BIC are descriptive diagnostics, not independent-error inference or a proof of a remainder.",
-      "fit": {
-        "model": "power",
-        "parameters": {
-          "A": -0.11091108583001758,
-          "theta": 0.8337295902738906
-        },
-        "points": 102,
-        "xmin": 1030400,
-        "xmax": 1099511627776,
-        "RMSE": 15432.618284324799,
-        "relative_RMSE": 5.962866170608354e-05,
-        "AIC_diagnostic": 1971.4246782481835,
-        "BIC_diagnostic": 1976.674623874752
-      },
-      "derived_asymptotic_ratio_model": {
-        "leading": 0.43987392207205156,
-        "A": -0.364882846945847,
-        "theta": -0.1662704097261094,
-        "note": "Uses N(X) ~ (3/pi^2)X; a finite-range candidate, not a proved asymptotic"
-      }
-    },
-    {
-      "observable": "divisible",
-      "group": null,
-      "source": "combined",
-      "error_convention": "conditional",
-      "ratio_leading_term": 0.43987392207205156,
-      "linear_count_coefficient": 0.13370563931321314,
-      "input_files": [
-        {
-          "path": "processed/p3_statistics.csv",
-          "sha256": "4b5be6f12759c9b1056ebb56413bc3a0dec5f46c9f0a5c9c285ae8226d764129"
-        },
-        {
-          "path": "published/mosunov_jacobson_2015.csv",
-          "sha256": "f27a21b5a069d19b2f8f7afe5ee9348fc6828af6a6b0778856738ebe81432c86"
-        }
-      ],
-      "caution": "Finite-range fits with a fixed conjectural CL leading coefficient, except for the proved torsion mean 2. Cumulative checkpoints are correlated. RMSE/AIC/BIC are descriptive diagnostics, not independent-error inference or a proof of a remainder.",
-      "fit": {
-        "model": "five_sixths",
-        "parameters": {
-          "A": -0.112121618402204
-        },
-        "points": 102,
-        "xmin": 1030400,
-        "xmax": 1099511627776,
-        "RMSE": 41165.33499132049,
-        "relative_RMSE": 0.00015905491790127867,
-        "AIC_diagnostic": 2169.571766683852,
-        "BIC_diagnostic": 2172.196739497136
-      }
-    },
-    {
-      "observable": "divisible",
-      "group": null,
-      "source": "combined",
-      "error_convention": "conditional",
-      "ratio_leading_term": 0.43987392207205156,
-      "linear_count_coefficient": 0.13370563931321314,
-      "input_files": [
-        {
-          "path": "processed/p3_statistics.csv",
-          "sha256": "4b5be6f12759c9b1056ebb56413bc3a0dec5f46c9f0a5c9c285ae8226d764129"
-        },
-        {
-          "path": "published/mosunov_jacobson_2015.csv",
-          "sha256": "f27a21b5a069d19b2f8f7afe5ee9348fc6828af6a6b0778856738ebe81432c86"
-        }
-      ],
-      "caution": "Finite-range fits with a fixed conjectural CL leading coefficient, except for the proved torsion mean 2. Cumulative checkpoints are correlated. RMSE/AIC/BIC are descriptive diagnostics, not independent-error inference or a proof of a remainder.",
-      "fit": {
-        "model": "five_sixths_plus_two_thirds",
-        "parameters": {
-          "A": -0.11236602038508332,
-          "B": 0.023448803475022716
-        },
-        "points": 102,
-        "xmin": 1030400,
-        "xmax": 1099511627776,
-        "RMSE": 17322.45637509363,
-        "relative_RMSE": 6.693063173589924e-05,
-        "AIC_diagnostic": 1994.9908350009805,
-        "BIC_diagnostic": 2000.240780627549
       }
     }
   ]

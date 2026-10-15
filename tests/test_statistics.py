@@ -112,16 +112,13 @@ def test_every_type_and_rank_contributes():
     assert len(types.group.unique()) == 37
 
 
-def test_main_term_conventions_and_sources():
-    linear, _ = load_series("divisible", source="repo", error="xuzhu")
-    conditional, _ = load_series("divisible", source="repo", error="conditional")
+def test_main_term_conventions():
+    linear, metadata = load_series("divisible", error="xuzhu")
+    conditional, _ = load_series("divisible", error="conditional")
     assert np.allclose(linear.error-conditional.error,
                        P_DIVISIBLE*(linear.N_fields-DENSITY*linear.X), atol=1e-8)
-    published, _ = load_series("divisible", source="published")
-    assert len(published) == 11 and published.iloc[-1].X == 2**40
-    assert published.iloc[-1]["count"] == 145_797_270_882
-    with pytest.raises(ValueError, match="only"):
-        load_series("torsion", source="published")
+    assert len(linear) == 202 and linear.iloc[-1].X == 2**28
+    assert metadata["input_files"][0]["path"] == "processed/p3_statistics.csv"
 
 
 def test_fits_recover_known_secondary_terms():

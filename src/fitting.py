@@ -17,53 +17,32 @@ CAUTION = ("Finite-range fits with a fixed conjectural CL leading coefficient, e
            "are descriptive diagnostics, not independent-error inference or a proof of a remainder.")
 
 
-def load_series(observable="divisible", group=None, source="repo", error="xuzhu", data_dir=None):
+def load_series(observable="divisible", group=None, error="xuzhu", data_dir=None):
     data_dir = Path(data_dir) if data_dir else ROOT/"data"
     if observable not in {"divisible", "torsion", "sylow"}:
         raise ValueError("Unknown observable")
     if error not in {"xuzhu", "conditional"}:
         raise ValueError("Unknown main-term convention")
-    if source not in {"repo", "published", "combined"}:
-        raise ValueError("Unknown data source")
-    if observable != "divisible" and source != "repo":
-        raise ValueError("Published aggregates contain divisibility counts only; no full torsion or Sylow data")
     if observable == "sylow" and not group:
         raise ValueError("--group is required for Sylow statistics")
-    paths, frames = [], []
-    if source in {"repo", "combined"}:
-        path = data_dir/"processed/p3_statistics.csv"
-        df = pd.read_csv(path)
+    path = data_dir/"processed/p3_statistics.csv"
+    df = pd.read_csv(path)
+    paths = [path]
+    if observable == "divisible":
+        count = df["N_divisible"]
+    elif observable == "torsion":
+        count = df["S_torsion3"]
+    elif group in TARGETS or group == "other":
+        count = df[f"N_{group}"]
+    else:
+        path = data_dir/"processed/sylow3_types.csv"
+        types = pd.read_csv(path)
+        selected = types[types["group"] == group].set_index("X")["N_group"]
+        if selected.empty:
+            raise ValueError(f"No observed Sylow type {group}; see sylow3_types.csv")
+        count = df["X"].map(selected)
         paths.append(path)
-        if observable == "divisible":
-            count = df["N_divisible"]
-        elif observable == "torsion":
-            count = df["S_torsion3"]
-        elif group in TARGETS or group == "other":
-            count = df[f"N_{group}"]
-        else:
-            path = data_dir/"processed/sylow3_types.csv"
-            types = pd.read_csv(path)
-            selected = types[types["group"] == group].set_index("X")["N_group"]
-            if selected.empty:
-                raise ValueError(f"No observed Sylow type {group}; see sylow3_types.csv")
-            count = df["X"].map(selected)
-            paths.append(path)
-        frames.append(pd.DataFrame({"X": df["X"], "N_fields": df["N_fields"],
-                                    "count": count, "data_source": "repo"}))
-    if source in {"published", "combined"}:
-        path = data_dir/"published/mosunov_jacobson_2015.csv"
-        if not path.is_file():
-            path = ROOT/"data/published/mosunov_jacobson_2015.csv"
-        df = pd.read_csv(path)
-        paths.append(path)
-        frames.append(pd.DataFrame({"X": df["X"], "N_fields": df["N_fields"],
-                                    "count": df["N_divisible"], "data_source": "published"}))
-    df = pd.concat(frames, ignore_index=True).sort_values("X").reset_index(drop=True)
-    if df["X"].duplicated().any():
-        for _, overlaps in df[df["X"].duplicated(keep=False)].groupby("X"):
-            if overlaps["N_fields"].nunique() != 1 or overlaps["count"].nunique() != 1:
-                raise ValueError("Conflicting counts at an overlapping X; inspect the two sources")
-        df = df.drop_duplicates("X").reset_index(drop=True)
+    df = pd.DataFrame({"X": df["X"], "N_fields": df["N_fields"], "count": count})
     if observable == "divisible":
         leading = P_DIVISIBLE
     elif observable == "torsion":
@@ -75,11 +54,10 @@ def load_series(observable="divisible", group=None, source="repo", error="xuzhu"
     df["baseline"] = leading * (df["N_fields"] if error == "conditional" else DENSITY*df["X"])
     df["error"] = df["count"] - df["baseline"]
     df["ratio"] = df["count"] / df["N_fields"]
-    metadata = {"observable": observable, "group": group, "source": source,
+    metadata = {"observable": observable, "group": group,
                 "error_convention": error, "ratio_leading_term": leading,
                 "linear_count_coefficient": leading*DENSITY,
-                "input_files": [{"path": str(p.relative_to(data_dir)) if p.is_relative_to(data_dir)
-                                 else "repository/data/published/"+p.name,
+                "input_files": [{"path": str(p.relative_to(data_dir)),
                                  "sha256": hashlib.sha256(p.read_bytes()).hexdigest()} for p in paths],
                 "caution": CAUTION}
     return df, metadata
@@ -167,21 +145,15 @@ def plot_fits(df, metadata, fits, output):
     all_positive = np.all(y > 0) and all(np.all(curve > 0) for curve in curves)
     sign = -1 if all_negative else 1
     ax = axes[0,0]
-    for source, points in df.groupby("data_source"):
-        ax.plot(points["X"], sign*points["error"], ".", label=f"Observed: {source}")
+    ax.plot(x, sign*y, ".", label="Observed")
     for fit_index, fit in enumerate(fits):
-        # Draw only where observations exist, so the gap between sources stays visible.
-        for i, (_, points) in enumerate(df.groupby("data_source")):
-            ax.plot(points["X"], sign*predict(fit, points["X"]),
-                    color=f"C{fit_index+2}",
-                    label=fit["model"] if i == 0 else None)
+        ax.plot(x, sign*predict(fit, x), color=f"C{fit_index+2}", label=fit["model"])
     ax.set(xscale="log", yscale="log" if all_negative or all_positive else "symlog",
            xlabel="X", ylabel="-E(X)" if all_negative else "E(X)",
            title="Counting error and fitted correction")
     ax.legend(fontsize=8)
     ax = axes[0,1]
-    for source, points in df.groupby("data_source"):
-        ax.plot(points["X"], points["error"]/points["X"]**(5/6), ".", label=source)
+    ax.plot(x, y/x**(5/6), ".", label="Observed")
     ax.set(xscale="log", xlabel="X", ylabel="E(X) / X^(5/6)", title="Scaled counting error")
     ax.legend(fontsize=8)
     ax = axes[1,0]
@@ -191,20 +163,17 @@ def plot_fits(df, metadata, fits, output):
     ax.set(xscale="log", xlabel="X", ylabel="Observed E - fitted E", title="Residuals")
     ax.legend(fontsize=8)
     ax = axes[1,1]
-    for source, points in df.groupby("data_source"):
-        ax.plot(points["X"], points["ratio"], ".", label=f"Observed: {source}")
+    ax.plot(x, df["ratio"], ".", label="Observed")
     for fit_index, fit in enumerate(fits):
-        for i, (_, points) in enumerate(df.groupby("data_source")):
-            ax.plot(points["X"], (points["baseline"]+predict(fit, points["X"]))/points["N_fields"],
-                    color=f"C{fit_index+2}",
-                    label=fit["model"] if i == 0 else None)
+        ax.plot(x, (df["baseline"]+predict(fit, x))/df["N_fields"],
+                color=f"C{fit_index+2}", label=fit["model"])
     leading = metadata["ratio_leading_term"]
     ax.axhline(leading, color="black", linestyle=":", label=f"Leading value: {leading:.6f}")
     ylabel = "Mean |Cl_D[3]|" if metadata["observable"] == "torsion" else "Proportion of fields"
     ax.set(xscale="log", xlabel="X", ylabel=ylabel, title="Mean / proportion, reconstructed from count fit")
     ax.legend(fontsize=8)
     label = metadata["observable"] + (f": {metadata['group']}" if metadata["group"] else "")
-    fig.suptitle(f"{label} | {metadata['source']} | {metadata['error_convention']} main term\n"
+    fig.suptitle(f"{label} | {metadata['error_convention']} main term\n"
                  f"{int(x.min()):,} <= X <= {int(x.max()):,}; finite-range fit", fontsize=12)
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)
