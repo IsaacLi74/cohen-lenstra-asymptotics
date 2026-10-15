@@ -149,3 +149,37 @@ python -m scripts.build_stats
 ```
 
 The current dataset contains imaginary quadratic fields only, so `D_K < 0`.
+
+## New summaries (original p3_counts.csv preserved)
+
+`python -m scripts.build_stats` now writes these independent files:
+
+- `data/processed/p3_statistics.csv`: divisibility, complete torsion sum and mean, original four Sylow counts, and the remaining `other` types.
+- `data/processed/sylow3_types.csv`: every observed Sylow type at every checkpoint, with count, proportion, CL probability, and both counting errors.
+- `data/processed/rank3_counts.csv`: counts by 3-rank; weighting rank r by `3^r` recovers the torsion sum.
+- `data/processed/p3_statistics.manifest.json`: source, range, checkpoint grid, input file sizes and SHA-256 hashes.
+
+The original four gzip files, the original `p3_counts.csv`, and the two original figures remain unchanged. `--output-dir` selects a different destination for new summaries.
+
+Key columns:
+
+| Column | Definition |
+|---|---|
+| `N_fields` | All fields with `0 < |D_K| <= X` |
+| `N_divisible` | Number with `3 | h_K`; exactly `N_fields - N_trivial` |
+| `P_divisible` | `N_divisible / N_fields` |
+| `S_torsion3` | Sum of `3^rank3` over all fields, including identity elements |
+| `Avg_torsion3` | `S_torsion3 / N_fields` |
+| `N_C9`, `N_C3xC3` | Counts of the entire corresponding Sylow 3 subgroup |
+| `P_C9`, `P_C3xC3` | Counts divided by all fields |
+| `N_other` | Every type outside `trivial`, `C3`, `C9`, `C3xC3` |
+
+The canonical group key orders factors in decreasing order: `C9xC3`, not `C3xC9`. The trivial group is `trivial`. Both scanners verify that invariant factors multiply to the recorded class number.
+
+## Coverage and larger ranges
+
+Each block k requires all four residue files. Rebuilds reject missing blocks, incomplete residue coverage, and Git LFS pointer stubs. The four checked-in files cover only k=0. `--xmax` is configurable; it is no longer hard-coded into the aggregation loop. Extra records beyond the requested bound do not enter checkpoint counts.
+
+The source tables have k=0,...,4095, covering `|D| < 2^40`. Download blocks with `python -m scripts.download_data --xmax BOUND`. Additional blocks are ignored by Git; the committed baseline is retained. Files are processed one at a time, with bounded-memory checkpoint histograms.
+
+Published large-range aggregates are separate: `data/published/mosunov_jacobson_2015.csv` and `data/published/provenance.json`. Only total fields and `3 | h_D` counts are transcribed. These aggregates must not be substituted for missing raw torsion or Sylow data.

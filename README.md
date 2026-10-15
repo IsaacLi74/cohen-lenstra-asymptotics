@@ -1,181 +1,133 @@
 # Cohen–Lenstra Asymptotics
 
-A reproducible playground for testing finite-`X` corrections to Cohen–Lenstra statistics for imaginary quadratic class groups.
+Reproducible statistics for imaginary quadratic fields, with separate experiments for:
 
-## Purpose
+1. Class-number divisibility: how often does `3 | h_D`?
+2. The size of `Cl_D[3]`, including its mean and secondary correction.
+3. The entire Sylow 3 subgroup, including the distinct types `C9` and `C3 x C3`.
 
-This initial repo provides a reproducible setup for exploring finite-`X` corrections to Cohen–Lenstra statistics for imaginary quadratic class groups.
+All original raw files, the original `data/processed/p3_counts.csv`, and the two original C9 figures are preserved. New statistics and figures live in separate files.
 
-Known benchmark for the 3-torsion average:
+## Reproduce in GitHub Codespaces
 
-`Avg |Cl_K[3]| = 2 + c * X^(-1/6) + o(X^(-1/6))`.
+Open this repository in a Codespace. Its setup installs the pinned Python dependencies, Git LFS, and the C++/zlib scanner, and retrieves the four original gzip files (about 363 MB in total).
 
-The initial experiment tests whether fixed 3-groups show a corresponding `X^(5/6)` counting correction.
-
-## Scope
-
-Cohen–Lenstra applies to any fixed odd prime `p`. The current implementation only handles `p = 3`, using `1`, `C3`, `C9`, and `C3 x C3`.
-
-The raw LMFDB files contain the full class-group structure, so other odd primes can be added later without recomputing class groups.
-
-## Quick start
-
-A new Codespace should configure itself automatically. Run the data-integrity and test checks first:
+After setup:
 
 ```bash
-gzip -t data/raw/*.gz && echo "raw data OK"
-pytest -q
+source .venv/bin/activate
+python -m scripts.reproduce --check
 ```
 
-List all fields with `|D_K| <= 100`:
+This regenerates **all 10 plots and 54 model fits** from the committed summaries. It also runs the mathematical and data-integrity tests. The figures appear under `figures/statistics/`; coefficients and range checks appear under `results/`.
+
+To rebuild the summaries from **all 81,594,634 original records**, then regenerate the same report:
 
 ```bash
-python -m scripts.list_fields --max-D 100
+python -m scripts.reproduce --rebuild --check
 ```
 
-Example output:
+The default scanner is C++ for speed and bounded memory. `--engine python` uses the independently tested reference decoder. The two implementations are compared on synthetic fixtures, including block and checkpoint boundaries.
+
+GitHub Actions runs the tests and complete summary-to-report reproduction on Ubuntu with Python 3.12. It uploads the resulting plots and fit tables. CI does not download the large LFS files or rerun the full 81-million-record scan.
+
+## Mathematical objects
+
+Write `K_D = Q(sqrt(D))` for negative fundamental discriminants `D`, and let `N(X)` count these fields with `0 < |D| <= X`. Then `N(X) ~ (3/pi^2) X`.
+
+| Object | Meaning | Example when the Sylow 3 subgroup is C9 |
+|---|---|---|
+| `Cl_D[3^infinity]` | Entire Sylow 3 subgroup | C9 |
+| `Cl_D[3]` | Elements annihilated by 3, including the identity | C3, size 3 |
+| `1[3 divides h_D]` | Whether the Sylow 3 subgroup is nontrivial | 1 |
+
+If the Sylow subgroup is `C_(3^a1) x ... x C_(3^ar)`, then `|Cl_D[3]| = 3^r`. In particular, `C3 x C3` contributes **9** to the torsion sum; `C9` contributes **3**.
+
+The decoder's old `Cl3_K_invariants` name is retained for compatibility. Its explicit alias `sylow3_invariants` describes the entire primary part. `rank3` and `torsion3_size` describe the torsion statistic.
+
+## 1. Divisibility and its secondary term
+
+Define
 
 ```text
-     d    D_K   h_K            Cl_K
---------------------------------------
-    -3     -3     1               1
-    -1     -4     1               1
-   -15    -15     2              C2
-   -23    -23     3              C3
+N_div(X) = # {D : 0 < |D| <= X, 3 divides h_D}
+p3       = 1 - product_(j>=1)(1 - 3^(-j)) = 0.439873922072...
+E_div(X) = N_div(X) - p3 * (3/pi^2) * X
 ```
 
-So, for example:
+`N_div(X) = N(X) - N_trivial(X)` exactly. Use the full CL constant, rather than rounding it to `0.44` and introducing a spurious linear error.
 
-`K = Q(sqrt(-23)), D_K = -23, h_K = 3, Cl_K = C3`.
+Fit `E_div(X)` to `A X^theta`, `A X^(5/6)`, and `A X^(5/6) + B X^(2/3)`. The report shows the error, scaled error, residuals, and the divisibility proportion reconstructed from each count fit.
 
-Fit the `C9` error to a free power law:
+![Divisibility fits](figures/statistics/divisible_all_repo.png)
 
-```bash
-python -m experiments.fit \
-  --group C9 \
-  --error conditional \
-  --model power \
-  --xmin 1000000
-```
+The CL leading coefficient here is conjectural. A good finite-range fit does not prove the asymptotic or an `o(X^theta)` remainder.
 
-## Data
-
-Source: LMFDB quadratic imaginary class-group tables:
-
-https://www.lmfdb.org/NumberField/QuadraticImaginaryClassGroups
-
-The repo currently contains all imaginary quadratic fields with
-
-`0 < |D_K| < 2^28`
-
-for a total of **81,594,634 fields**.
-
-The raw LMFDB files are stored in Git LFS under `data/raw/`. We do **not** recompute class groups.
-
-The mathematical interface uses
-
-`K = Q(sqrt(d))`, together with `D_K`, `h_K`, and `Cl_K`.
-
-See [DATA_FORMAT.md](DATA_FORMAT.md) for the raw encoding and reconstruction.
-
-## Processed statistics
-
-Run:
-
-```bash
-python -m scripts.build_stats
-```
-
-This creates:
+## 2. Torsion sum and mean
 
 ```text
-data/processed/p3_counts.csv
+S3(X)       = sum_D |Cl_D[3]|
+Avg3(X)     = S3(X) / N(X)
+E_torsion(X)= S3(X) - (6/pi^2) * X
 ```
 
-The file contains cumulative statistics at about 200 values of `X` for:
+The Davenport–Heilbronn mean is **2**, including the identity. The known secondary term has scale `X^(5/6)` in the sum and `X^(-1/6)` in the mean. The main coefficient of the sum is **6/pi^2**, not `3/pi^2`.
 
-- `1`
-- `C3`
-- `C9`
-- `C3 x C3`
+The complete histogram of Sylow types is included in this sum; it is not approximated using only the four original target groups.
 
-Once this file exists, asymptotic fits are essentially instantaneous.
+![Torsion sum and average fits](figures/statistics/torsion_all_repo.png)
 
-## Error definitions
+The mean curves are obtained by dividing the fitted total by the actual `N(X)`. They are not separate unweighted least-squares fits to the mean. See [Bhargava–Shankar–Tsimerman, Theorems 2 and 4](https://arxiv.org/abs/1005.0672).
 
-Conditional error:
+## 3. Sylow types and their proportions
 
-`E_G^cond(X) = N_G(X) - P_CL(G) * N(X)`
-
-Use:
-
-```bash
---error conditional
-```
-
-Xu–Zhu-style error:
-
-`E_G^XZ(X) = N_G(X) - P_CL(G) * (3/pi^2) * X`
-
-Use:
-
-```bash
---error xuzhu
-```
-
-## Testing asymptotic functions
-
-Built-in examples include:
-
-- `A * X^theta`
-- `A * X^(5/6)`
-- `A * X^(5/6) + B * X^(2/3)`
-- `A * X^theta * (log X)^beta`
-
-To add your own model, edit `experiments/models.py`:
-
-```python
-def my_model(x, A, B):
-    return A * x**(5/6) + B * x**0.5 * np.log(x)
-```
-
-Fits use ordinary nonlinear least squares on the raw counting error `E(X)`, not least squares in log-space. For the free power model `E(X) = A * X^theta`, the parameters are chosen to minimize `sum_i (E(X_i) - A * X_i^theta)^2`.
-
-Then run:
-
-```bash
-python -m experiments.fit \
-  --group C9 \
-  --error conditional \
-  --model my_model \
-  --xmin 1000000
-```
-
-See [EXPERIMENTS.md](EXPERIMENTS.md) for more examples.
-
-## Current baseline
-
-For `C9` on `10^6 <= X <= 2^28`, a free power fit gives approximately
-
-`E_C9(X) = A * X^theta`
-
-with
-
-`theta = 0.832998`.
-
-This is numerically close to `5/6 = 0.833333...`.
-
-This is an empirical finite-range observation, not a theorem.
-
-## Repo layout
+For a fixed finite abelian 3-group `G`, define
 
 ```text
-data/raw/              original LMFDB files
-data/processed/        small summary tables
-src/dataset.py         LMFDB decoder
-scripts/build_stats.py generate p3_counts.csv
-scripts/list_fields.py inspect fields by |D_K|
-experiments/models.py  candidate asymptotic functions
-experiments/fit.py     generic fitter
-figures/               generated plots
+N_G(X) = # {D : Cl_D[3^infinity] is isomorphic to G}
+P_CL(G)= eta3 / |Aut(G)|,  eta3 = product_(j>=1)(1 - 3^(-j))
+E_G(X) = N_G(X) - P_CL(G) * (3/pi^2) * X
 ```
+
+The default report fits `trivial`, `C3`, `C9`, `C3xC3`, and `other`. Proportions always use **all fields** as the denominator; the four selected types are not renormalized to sum to one. `other` contains every remaining type and has CL mass equal to one minus the four selected masses. The baseline data contains 37 observed Sylow types; `sylow3_types.csv` records all of them, and any observed type can be fitted by name.
+
+![Sylow decomposition](figures/statistics/sylow_composition.png)
+
+## Data ranges and preserved baseline
+
+| Data source | Range | Available statistics |
+|---|---|---|
+| Four original LMFDB files, `k=0` | `|D| < 2^28` | All three observables; 81,594,634 fields |
+| Mosunov–Jacobson, Tables 7–8 | 11 checkpoints from `10^11` to `2^40` | Divisibility counts and total field counts |
+
+The paper's large-range aggregates are committed separately under `data/published/`, with provenance. They are **not** additional raw records. Published, repository, and combined fits are labelled separately; no observations are invented across the gap between `2^28` and `10^11`. Published rank-2/rank-3 tables are not used to reconstruct a torsion sum, because higher ranks also occur.
+
+The full [LMFDB source tables](https://www.lmfdb.org/NumberField/QuadraticImaginaryClassGroups) cover `|D| < 2^40`. To extend the raw-data analysis to `10^10`:
+
+```bash
+# Inspect the 152 required files first; the original four are already present.
+python -m scripts.download_data --xmax 10000000000 --dry-run
+
+# Download the remaining blocks, rebuild all three statistics, and refit.
+python -m scripts.reproduce --download --xmax 10000000000
+```
+
+This is a multi-gigabyte download and a scan of about 3.04 billion records. Downloads are sequential, validated as gzip, and written atomically. Extra raw blocks are ignored by Git. The builder rejects missing blocks or residue classes, and never extends a cumulative count beyond the requested verified input range. `--xmax` requires `--rebuild` or `--download`.
+
+Bounds other than `2^28` write separate `data/extended_BOUND/`, `results/extended_BOUND/`, and `figures/statistics/extended_BOUND/` directories by default. The committed baseline summaries and results remain intact. Explicit directory flags can select another destination.
+
+## Individual experiments
+
+```bash
+python -m experiments.fit --observable divisible --error xuzhu --model power --xmin 1000000
+python -m experiments.fit --observable torsion --error xuzhu --model five_sixths --xmin 1000000
+python -m experiments.fit --observable sylow --group C3xC3 --error conditional --model power
+python -m experiments.fit --observable divisible --source published --error xuzhu --model power --xmin 100000000000
+
+# The previous interface remains valid:
+python -m experiments.fit --group C9 --error conditional --model power --xmin 1000000
+```
+
+Custom runs write JSON, plotted data/residual CSV, and PNG to `results/custom/`. See [EXPERIMENTS.md](EXPERIMENTS.md) for loss functions, error conventions, and range checks; [DATA_FORMAT.md](DATA_FORMAT.md) for decoding and column definitions.
+
+The report uses cumulative checkpoints, so residuals are correlated. Reported RMSE and AIC/BIC are descriptive; no independent-error confidence intervals are claimed. The original C9 baseline (`theta ~ 0.832998`, conditional error, `X >= 10^6`) remains reproducible.

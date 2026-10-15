@@ -1,5 +1,6 @@
 from itertools import islice
 from pathlib import Path
+import gzip
 
 from src.dataset import (
     group_label,
@@ -30,8 +31,11 @@ def test_group_label():
     assert group_label((9, 3)) == "C9 x C3"
 
 
-def test_first_lmfdb_records():
-    path = Path("data/raw/cl3mod8.0.gz")
+def test_first_lmfdb_records(tmp_path):
+    # The documented first records; unit tests do not require an LFS download.
+    path = tmp_path / "cl3mod8.0.gz"
+    with gzip.open(path, "wt") as f:
+        f.write("0 1 1\n1 1 1\n1 1 1\n2 2 2\n")
     records = list(islice(iter_file(path), 4))
 
     assert records[0].D_K == -3

@@ -1,134 +1,163 @@
+"""Rebuild full statistics; the legacy p3_counts.csv is never overwritten."""
+import argparse
+from collections import Counter
 import csv
-import math
+import hashlib
+import json
 from pathlib import Path
+import shutil
+import subprocess
+import tempfile
 
-from src.dataset import iter_all_fields
+from src.dataset import iter_file
+from src.statistics import (BLOCK_SIZE, RESIDUES, DENSITY, group_key,
+                            group_parts, cl_probability, summary_row)
 
-
-OUTPUT = Path("data/processed/p3_counts.csv")
-
-X_MAX = 2**28
-N_CHECKPOINTS = 200
-
-TARGETS = {
-    "trivial": (),
-    "C3": (3,),
-    "C9": (9,),
-    "C3xC3": (3, 3),
-}
+ROOT = Path(__file__).resolve().parents[1]
 
 
-# Cohen-Lenstra normalization constant for p = 3
-eta3 = 1.0
-for j in range(1, 100):
-    eta3 *= 1 - 3 ** (-j)
-
-CL = {
-    "trivial": eta3,
-    "C3": eta3 / 2,
-    "C9": eta3 / 6,
-    "C3xC3": eta3 / 48,
-}
+def checkpoints(xmax, n=200, xmin=1000):
+    # Keep the original grid exactly when rebuilding the original data range.
+    import math
+    if not 1 <= xmin <= xmax or n < 1:
+        raise ValueError("Require 1 <= xmin <= xmax and checkpoints >= 1")
+    values = {int(10**(math.log10(xmin) + i*(math.log10(xmax)-math.log10(xmin))/n))
+              for i in range(n+1)}
+    return sorted({max(1, min(x, xmax)) for x in values} | {xmax})
 
 
-# Logarithmically spaced X-values
-log_min = math.log10(1_000)
-log_max = math.log10(X_MAX)
-
-checkpoints = sorted(set(
-    int(10 ** (
-        log_min
-        + i * (log_max - log_min) / N_CHECKPOINTS
-    ))
-    for i in range(N_CHECKPOINTS + 1)
-))
-
-if checkpoints[-1] != X_MAX:
-    checkpoints.append(X_MAX)
-
-
-counts = {name: 0 for name in TARGETS}
-total = 0
-checkpoint_index = 0
-rows = []
+def input_files(raw_dir, xmax):
+    if not 1 <= xmax <= 2**40:
+        raise ValueError("xmax must be between 1 and 2^40")
+    paths = []
+    for k in range((xmax-1)//BLOCK_SIZE + 1):
+        for r, m in RESIDUES:
+            path = raw_dir / f"cl{r}mod{m}.{k}.gz"
+            if not path.is_file():
+                raise ValueError(f"Missing {path}; download all four residues in every required block")
+            with path.open("rb") as f:
+                if f.read(2) != b"\x1f\x8b":
+                    raise ValueError(f"{path} is not gzip data (possibly an LFS pointer); run git lfs pull")
+            paths.append(path)
+    return paths
 
 
-def save_row(X):
-    row = {
-        "X": X,
-        "N_fields": total,
-    }
-
-    for name in TARGETS:
-        n = counts[name]
-        p_cl = CL[name]
-
-        row[f"N_{name}"] = n
-        row[f"P_{name}"] = n / total if total else float("nan")
-
-        # Xu-Zhu style:
-        # N_G(X) - P_CL(G) * (3/pi^2) * X
-        row[f"E_xuzhu_{name}"] = (
-            n - p_cl * (3 / math.pi**2) * X
-        )
-
-        # Pure class-group-distribution error:
-        # N_G(X) - P_CL(G) * actual number of fields
-        row[f"E_conditional_{name}"] = (
-            n - p_cl * total
-        )
-
-    rows.append(row)
+def python_buckets(paths, xs):
+    buckets = [Counter() for _ in xs]
+    for path in paths:
+        index = 0
+        processed = 0
+        for record in iter_file(path):
+            x = abs(record.D_K)
+            while index < len(xs) and xs[index] < x:
+                index += 1
+            if index == len(xs):
+                break
+            if (record.h_K % 3 == 0) != bool(record.sylow3_invariants):
+                raise ValueError(f"Inconsistent class number and Sylow subgroup at {record.D_K}")
+            buckets[index][group_key(record.sylow3_invariants)] += 1
+            processed += 1
+            if processed % 2_000_000 == 0:
+                print(f"{path.name}: {processed:,} records", flush=True)
+        print(f"Read {path.name}: {processed:,} records", flush=True)
+    return buckets
 
 
-for record in iter_all_fields():
-    x = abs(record.D_K)
-
-    while (
-        checkpoint_index < len(checkpoints)
-        and checkpoints[checkpoint_index] < x
-    ):
-        save_row(checkpoints[checkpoint_index])
-        checkpoint_index += 1
-
-    total += 1
-
-    for name, group in TARGETS.items():
-        if record.Cl3_K_invariants == group:
-            counts[name] += 1
-
-    while (
-        checkpoint_index < len(checkpoints)
-        and checkpoints[checkpoint_index] == x
-    ):
-        save_row(checkpoints[checkpoint_index])
-        checkpoint_index += 1
-
-    if total % 5_000_000 == 0:
-        print(f"processed {total:,} fields...")
+def cpp_buckets(paths, xs):
+    compiler = shutil.which("c++")
+    if not compiler:
+        raise RuntimeError("C++ compiler missing; use --engine python or install g++ and zlib1g-dev")
+    with tempfile.TemporaryDirectory(prefix="cl-statistics-") as work:
+        binary = Path(work)/"aggregate"
+        subprocess.run([compiler, "-O3", "-std=c++17", str(ROOT/"scripts/aggregate.cpp"),
+                        "-lz", "-o", str(binary)], check=True)
+        grid = Path(work)/"checkpoints.txt"
+        grid.write_text("\n".join(map(str, xs))+"\n")
+        result = subprocess.run([str(binary), str(grid), *map(str, paths)],
+                                check=True, text=True, stdout=subprocess.PIPE)
+    buckets = [Counter() for _ in xs]
+    for line in result.stdout.splitlines():
+        index, group, count = line.split()
+        group_parts(group)
+        buckets[int(index)][group] += int(count)
+    return buckets
 
 
-while checkpoint_index < len(checkpoints):
-    save_row(checkpoints[checkpoint_index])
-    checkpoint_index += 1
+def write_csv(path, rows):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix+".tmp")
+    with temporary.open("w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+    temporary.replace(path)
 
 
-OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+def build(raw_dir, output_dir, xmax, n=200, xmin=1000, engine="auto"):
+    paths = input_files(raw_dir, xmax)
+    xs = checkpoints(xmax, n, xmin)
+    chosen = "cpp" if engine == "auto" and shutil.which("c++") else engine
+    if chosen == "auto":
+        chosen = "python"
+    buckets = cpp_buckets(paths, xs) if chosen == "cpp" else python_buckets(paths, xs)
+    all_groups = sorted({g for b in buckets for g in b},
+                        key=lambda g: (len(group_parts(g)), group_parts(g)))
+    totals = Counter()
+    rows, types, ranks = [], [], []
+    for X, bucket in zip(xs, buckets):
+        totals.update(bucket)
+        row = summary_row(X, totals)
+        rows.append(row)
+        for group in all_groups:
+            count = totals[group]
+            p = cl_probability(group_parts(group))
+            types.append({"X": X, "group": group, "N_fields": row["N_fields"],
+                          "N_group": count, "P_group": count/row["N_fields"] if row["N_fields"] else float("nan"),
+                          "P_CL": p, "E_xuzhu": count-p*DENSITY*X,
+                          "E_conditional": count-p*row["N_fields"]})
+        rank_counts = Counter()
+        for group, count in totals.items():
+            rank_counts[len(group_parts(group))] += count
+        for rank in range(max(rank_counts, default=0)+1):
+            ranks.append({"X": X, "rank3": rank, "N_rank": rank_counts[rank]})
+    write_csv(output_dir/"p3_statistics.csv", rows)
+    write_csv(output_dir/"sylow3_types.csv", types)
+    write_csv(output_dir/"rank3_counts.csv", ranks)
+    inputs = []
+    for path in paths:
+        digest = hashlib.sha256()
+        with path.open("rb") as f:
+            for chunk in iter(lambda: f.read(8*1024*1024), b""):
+                digest.update(chunk)
+        inputs.append({"filename": path.name, "bytes": path.stat().st_size,
+                       "sha256": digest.hexdigest()})
+    manifest = {"source": "https://www.lmfdb.org/NumberField/QuadraticImaginaryClassGroups",
+                "xmax": xmax, "comparison": "0 < |D| <= X", "checkpoints": xs,
+                "fields": rows[-1]["N_fields"], "inputs": inputs,
+                "observables": {"divisible": "h_D % 3 == 0",
+                                "torsion": "|Cl_D[3]| = 3^rank3, identity included",
+                                "sylow": "Cl_D[3^infinity], full isomorphism type"}}
+    (output_dir/"p3_statistics.manifest.json").write_text(json.dumps(manifest, indent=2)+"\n")
+    print(f"Saved {len(rows)} checkpoints, {len(all_groups)} Sylow types, {manifest['fields']:,} fields")
+    return rows
 
-with OUTPUT.open("w", newline="") as f:
-    writer = csv.DictWriter(
-        f,
-        fieldnames=rows[0].keys(),
-    )
-    writer.writeheader()
-    writer.writerows(rows)
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--raw-dir", type=Path, default=ROOT/"data/raw")
+    parser.add_argument("--output-dir", type=Path)
+    parser.add_argument("--xmax", type=int, default=BLOCK_SIZE)
+    parser.add_argument("--xmin", type=int, default=1000)
+    parser.add_argument("--checkpoints", type=int, default=200)
+    parser.add_argument("--engine", choices=["auto", "python", "cpp"], default="auto")
+    args = parser.parse_args()
+    output_dir = args.output_dir or ((ROOT/"data") if args.xmax == BLOCK_SIZE else
+                                     (ROOT/f"data/extended_{args.xmax}"))/"processed"
+    try:
+        build(args.raw_dir, output_dir, args.xmax, args.checkpoints, args.xmin, args.engine)
+    except (ValueError, RuntimeError, subprocess.CalledProcessError) as error:
+        parser.exit(1, f"{error}\n")
 
 
-print()
-print(f"fields processed: {total:,}")
-print(f"checkpoints:      {len(rows)}")
-print(f"saved:            {OUTPUT}")
-
-print()
-print("Final checkpoint:")
-print(rows[-1])
+if __name__ == "__main__":
+    main()
