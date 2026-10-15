@@ -23,8 +23,6 @@ $$N(X)=\sum_D1\sim\frac{3}{\pi^2}X,$$
 $$p_3=1-\prod_{j=1}^{\infty}(1-3^{-j})\approx0.439873922,\qquad
 P_{\mathrm{CL}}(G_3)=\frac{1-p_3}{\lvert\mathrm{Aut}(G_3)\rvert}.$$
 
-Here $p_3$ is the predicted limiting proportion with $3\mid h_D$; $P_{\mathrm{CL}}(G_3)$ is the predicted proportion with Sylow 3 subgroup $G_3$.
-
 ## What we fit
 
 | Statistic | Counting function | Error after subtracting the leading term |
