@@ -1,27 +1,38 @@
 import argparse
 
 from src.dataset import group_label, iter_all_fields
+from src.statistics import DATA_BOUND
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="List imaginary quadratic fields by discriminant bound."
+        description="List class numbers and class-group decompositions from the committed data."
     )
-    parser.add_argument(
+    bounds = parser.add_mutually_exclusive_group(required=True)
+    bounds.add_argument(
         "--max-D",
         type=int,
-        required=True,
         help="List all fields with |D_K| <= this bound.",
+    )
+    bounds.add_argument(
+        "--max-d",
+        type=int,
+        help="List all fields Q(sqrt(d)) with squarefree d < 0 and |d| <= this bound.",
     )
     args = parser.parse_args()
 
-    bound = args.max_D
+    radicand = args.max_d is not None
+    bound = args.max_d if radicand else args.max_D
+    maximum = DATA_BOUND//4 if radicand else DATA_BOUND
+    if not 1 <= bound <= maximum:
+        parser.error(f"Bound must be between 1 and {maximum} for complete coverage by the committed data.")
+    discriminant_bound = 4*bound if radicand else bound
 
     print(
         f"{'d':>6} "
-        f"{'D_K':>6} "
-        f"{'h_K':>5} "
-        f"{'Cl_K':>15} "
+        f"{'D':>6} "
+        f"{'h_D':>5} "
+        f"{'Cl_D':>15} "
         f"{'Sylow3':>15} "
         f"{'|Cl[3]|':>8} "
         f"{'3|h':>4}"
@@ -31,8 +42,10 @@ def main():
     count = 0
 
     for record in iter_all_fields():
-        if abs(record.D_K) > bound:
+        if abs(record.D_K) > discriminant_bound:
             break
+        if radicand and abs(record.d) > bound:
+            continue
 
         print(
             f"{record.d:6d} "
