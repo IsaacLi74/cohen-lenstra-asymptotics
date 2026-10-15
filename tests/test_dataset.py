@@ -1,5 +1,8 @@
 from itertools import islice
 import gzip
+import sys
+
+import pytest
 
 from src.dataset import (
     group_label,
@@ -46,3 +49,32 @@ def test_first_lmfdb_records(tmp_path):
     assert records[3].D_K == -35
     assert records[3].h_K == 2
     assert records[3].Cl_K == "C2"
+
+
+@pytest.mark.parametrize("option,bound,discriminants", [
+    ("--max-D", "40", [-3, -4, -7, -8, -20, -39, -40]),
+    ("--max-d", "10", [-3, -4, -7, -8, -20, -40]),
+    ("--max-D", "4027", [-3, -4, -7, -8, -20, -39, -40, -4027]),
+])
+def test_terminal_field_selection(tmp_path, monkeypatch, capsys, option, bound, discriminants):
+    import src.dataset as dataset
+    from scripts.list_fields import main
+
+    records = {
+        "cl3mod8.0.gz": "0 1 1\n503 9 3 3\n",
+        "cl7mod8.0.gz": "0 1 1\n4 4 4\n",
+        "cl4mod16.0.gz": "0 1 1\n1 2 2\n",
+        "cl8mod16.0.gz": "0 1 1\n2 2 2\n",
+    }
+    for name, text in records.items():
+        with gzip.open(tmp_path/name, "wt") as f:
+            f.write(text)
+    monkeypatch.setattr(dataset, "RAW_DIR", tmp_path)
+    monkeypatch.setattr(sys, "argv", ["list_fields", option, bound])
+    main()
+    lines = capsys.readouterr().out.splitlines()
+    rows = [line.split() for line in lines[2:-2]]
+    assert [int(row[1]) for row in rows] == discriminants
+    assert lines[-1] == f"total fields: {len(discriminants)}"
+    if -4027 in discriminants:
+        assert rows[-1] == ["-4027", "-4027", "9", "C3", "x", "C3", "C3", "x", "C3", "9", "1"]

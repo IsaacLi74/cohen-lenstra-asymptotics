@@ -73,6 +73,22 @@ Each figure has two panels: the final proportion or mean curve with its leading-
 
 [Calculations and fitted coefficients](results/calculations.md) · [Fit table](results/fit_summary.csv) · [Plots](figures/statistics) · [Data format](DATA_FORMAT.md)
 
+## Inspect individual fields
+
+List all fields with $\lvert D\rvert\le100$:
+
+~~~bash
+python -m scripts.list_fields --max-D 100
+~~~
+
+For $K=\mathbb Q(\sqrt d)$ with squarefree $d<0$, select $\lvert d\rvert\le100$ instead:
+
+~~~bash
+python -m scripts.list_fields --max-d 100
+~~~
+
+Rows are ordered by $\lvert D\rvert$ and show d, D, h_D, the full class-group decomposition, the Sylow 3 subgroup, the 3-torsion size, and whether 3 divides h_D. Cn denotes a cyclic group of order n; x denotes a direct product; 1 denotes the trivial group. Both bounds include the endpoint. Complete coverage allows --max-D up to 268435456 and --max-d up to 67108864.
+
 ## Individual fits
 
 ~~~bash
