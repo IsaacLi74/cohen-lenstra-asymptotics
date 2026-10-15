@@ -1,287 +1,120 @@
-# 本轮计算说明
+# Counting-error fits
 
-本说明由复现程序根据当前汇总表和实际拟合结果自动生成。所有数字来自原始 LMFDB 记录。
-重新运行复现命令会同时更新本说明、系数表和图像。
+Generated from the current summaries and fitted coefficients.
 
-## 1. 数据范围与输入
+## What is fitted
 
-- 输入数据覆盖上限：268,435,456；累计检查点：202 个。
-- 本报告统计端点：X = 268,435,456，包含 81,594,634 个域、37 种实际出现的 Sylow 3 类型。
-- 请求拟合下界：1e+06；上界：全部可用检查点。
-- 实际拟合区间：1,030,400 ≤ X ≤ 268,435,456，共 91 个点。
+Let $N(X)$ count negative fundamental discriminants with $0<\lvert D\rvert\le X$.
+Set $\rho=3/\pi^2$, $\eta_3=\prod_{j\ge1}(1-3^{-j})$, and $p_3=1-\eta_3$.
 
-每个数据块的四个同余类必须齐全。程序检查 gzip 数据、判别式次序和块范围，并验证类数等于循环因子阶数的乘积。
+| Observable | Count T(X) | Leading value per field L |
+|---|---|---|
+| Divisibility | $N_{\rm div}(X)=\sum_D\mathbf1_{\{3\mid h_D\}}$ | $p_3$ |
+| 3-torsion | $S_3(X)=\sum_D\#\mathrm{Cl}_D[3]$ | 2 |
+| Sylow type G | $N_G(X)=\sum_D\mathbf1_{\{\mathrm{Cl}_D[3^\infty]\cong G\}}$ | $P_{\rm CL}(G)$ |
 
-| 输入文件 | 字节数 | SHA-256 |
-|---|---:|---|
-| cl3mod8.0.gz | 113,740,185 | 3abc1a9044e7e6f9bf6c52c94ad16325a05435fa6b76fbaca96587d03fa3914b |
-| cl7mod8.0.gz | 135,449,175 | 1e37f94365e6999a12840f96e80cb7a6aebe2078cc06c4d08d7fb724a8c0c61b |
-| cl4mod16.0.gz | 56,849,892 | 09c7a0b2683321fa7946413cb313928925c3542d8a08155f82eb9c4d0576b4fe |
-| cl8mod16.0.gz | 57,165,418 | d2ef3bab41f24baeb01454fda34279fdd73dc39f7665b67a0313d86d73a3ab2d |
+We fit the counting error after subtracting a fixed leading term:
 
-## 2. 从原始记录到三个统计对象
+$$E_{\rm linear}(X)=T(X)-L\rho X,\qquad E_{\rm empirical}(X)=T(X)-LN(X).$$
 
-令 $D<0$ 为基本判别式，$A_D=\mathrm{Cl}(\mathbb Q(\sqrt D))$，$h_D=|A_D|$。
-文件名给出 r、m、k；每行是 a、h、c₁、…、cₜ。
+The CLI flags are xuzhu and conditional, respectively. Each error is fitted to
 
-$$D_0=-k\,2^{28}-r,\qquad D_i=D_{i-1}-ma_i,\qquad A_{D_i}\cong\prod_j C_{c_j},\qquad h_{D_i}=\prod_j c_j.$$
+$$AX^\theta,\qquad AX^{5/6},\qquad AX^{5/6}+BX^{2/3}.$$
 
-提取每个 cⱼ 中的最大 3 次幂，删除等于 1 的因子，按降序排列：
+The loss is the unweighted sum of squared counting errors:
 
-$$q_j=3^{v_3(c_j)},\qquad G_D=A_D[3^\infty]\cong\prod_{q_j>1}C_{q_j}.$$
+$$\mathrm{RSS}=\sum_i(E(X_i)-f(X_i))^2,\qquad\mathrm{RMSE}=\sqrt{\mathrm{RSS}/n_{\rm points}}.$$
 
-令 r₃(D) 是保留下来的因子个数，则
+The free-power fit profiles out amplitude and optimizes theta in [-1,2]; fixed-power models use scaled linear least squares. For $t_i=X_i/X_{\max}$, the profiled amplitude is
 
-$$A_D[3]\cong C_3^{\,r_3(D)},\qquad |A_D[3]|=3^{r_3(D)},\qquad\mathbf1_{\{3\mid h_D\}}=\mathbf1_{\{r_3(D)>0\}}.$$
+$$b(\theta)=\frac{\sum_i E_it_i^\theta}{\sum_i t_i^{2\theta}},\qquad A=b(\theta)X_{\max}^{-\theta}.$$
 
-| 示例类群 | Sylow 3 类型 | 3-rank | 3-torsion 大小 | 3 整除类数 |
-|---|---|---:|---:|---:|
-| C18 | C9 | 1 | 3 | 1 |
-| C3 × C3 | C3 × C3 | 2 | 9 | 1 |
-| C18 × C12 | C9 × C3 | 2 | 9 | 1 |
-| C2 | 平凡 | 0 | 1 | 0 |
+## Data and normalization
 
-C9 和 C3 × C3 的阶都为 9，但对 torsion 总和的贡献分别为 3 与 9。单位元也计入 torsion。
+Input coverage: 268,435,456; cumulative checkpoints: 202. Requested fit limits: 1e+06 to the data maximum. Actual fit: **1,030,400 <= X <= 268,435,456, 91 points**.
 
-## 3. 累计计数与实际代入
+At X = 268,435,456:
 
-$$N(X)=\sum_{\substack{-X\le D<0\\D\ {\rm fundamental}}}1,\quad N_{\rm div}(X)=\sum_D\mathbf1_{\{3\mid h_D\}},\quad S_3(X)=\sum_D3^{r_3(D)},\quad N_G(X)=\sum_D\mathbf1_{\{G_D\cong G\}}.$$
+- N = 81,594,634; N_div = 81,594,634 - 46,904,916 = 34,689,718.
+- Divisibility proportion = 0.425147050724.
+- Torsion sum = 158,806,032; mean = 1.946280339955.
 
-$$P_{\rm div}(X)=N_{\rm div}(X)/N(X),\qquad M_3(X)=S_3(X)/N(X),\qquad P_G(X)=N_G(X)/N(X).$$
+For Sylow factors $C_{3^{a_1}},\ldots,C_{3^{a_r}}$, the torsion size is $3^r$. Thus C9 contributes 3 and C3 x C3 contributes 9, including the identity. All observed types enter the torsion sum.
 
-所有比例的分母均为全部域的数量。其他类型是所选四种类型的补集，不对四类比例重新归一化。
-
-在 X = 268,435,456：
-
-- N(X) = 81,594,634。
-- N_div(X) = 81,594,634 − 46,904,916 = 34,689,718。
-- P_div(X) = 34,689,718 / 81,594,634 = 0.425147050724 = 42.51470507%。
-- S₃(X) = 158,806,032；M₃(X) = 158,806,032 / 81,594,634 = 1.946280339955。
-
-| Sylow 类型 | 实测数量 | 实测比例 |
-|---|---:|---:|
-| trivial | 46,904,916 | 0.574852949276 |
-| C3 | 22,300,589 | 0.273309504642 |
-| C9 | 7,423,339 | 0.090978274380 |
-| C3xC3 | 772,494 | 0.009467460814 |
-| other | 4,193,296 | 0.051391810888 |
-
-完整秩分布提供加权校验：
-
-| r | 秩为 r 的域数量 M_r(X) | 对 S₃ 的贡献 3ʳ M_r(X) |
+| Rank r | Number of fields | Contribution to torsion sum |
 |---:|---:|---:|
 | 0 | 46,904,916 | 46,904,916 |
 | 1 | 33,391,882 | 100,175,646 |
 | 2 | 1,295,339 | 11,658,051 |
 | 3 | 2,497 | 67,419 |
 
-加权总和：46,904,916 + 100,175,646 + 11,658,051 + 67,419 = 158,806,032。
+Constants: rho = 0.303963550927013, eta3 = 0.560126077927948, p3 = 0.439873922072052. The product uses j = 1,...,99 in double precision.
 
-## 4. 主项与 CL 常数
+$$P_{\rm CL}(G)=\eta_3/\#\mathrm{Aut}(G).$$
 
-$$\rho=\frac3{\pi^2},\qquad N(X)\sim\rho X,\qquad\eta_3=\prod_{j=1}^{\infty}(1-3^{-j}),\qquad p_3=1-\eta_3.$$
-
-- ρ = 0.303963550927013。
-- η₃ = 0.560126077927948。
-- p₃ = 0.439873922072052。
-- 代码使用 j = 1,…,99 的乘积，以双精度计算；不把 p₃ 取整为 0.44。
-
-$$P_{\rm CL}(G)=\eta_3/|\mathrm{Aut}(G)|.$$
-
-若 $G=\prod_i C_{3^{\lambda_i}}$，令 $\lambda'_j=\#\{i:\lambda_i\ge j\}$，$m_a=\#\{i:\lambda_i=a\}$，则
-
-$$|\mathrm{Aut}(G)|=3^{\sum_j(\lambda'_j)^2}\prod_{a\ge1}\prod_{j=1}^{m_a}(1-3^{-j}).$$
-
-| 类型 | 自同构群大小 | CL 主项比例 |
-|---|---:|---:|
-| trivial | 1 | 0.560126077928 |
-| C3 | 2 | 0.280063038964 |
-| C9 | 6 | 0.093354346321 |
-| C3xC3 | 48 | 0.011669293290 |
-| other | 不对应单个群 | 0.054787243497 |
-
-CL 整除概率和固定 Sylow 类型分布是猜想输入，不是从样本拟合出的极限。3-torsion 平均值趋于 2，以及总和中的 X^(5/6) 次主项，是已知定理。
-定理依据：[Bhargava–Shankar–Tsimerman，定理 2 与 4](https://arxiv.org/abs/1005.0672)。
-
-$$N_{\rm div}(X)\text{ 的主项为 }p_3\rho X,\quad S_3(X)\text{ 的主项为 }2\rho X=\frac6{\pi^2}X,\quad N_G(X)\text{ 的主项为 }P_{\rm CL}(G)\rho X.$$
-
-减掉单位元后，非平凡 3-torsion 元素的平均数量趋于 1。这个加权平均不能直接换成整除概率。
-
-## 5. 两种误差的定义和实际数值
-
-为每个对象写 T(X)，每域主项常数写 L：整除计数用 p₃，torsion 总和用 2，Sylow 计数用 P_CL(G)。
-
-$$E_{\rm linear}(X)=T(X)-L\rho X,\qquad E_{\rm empirical}(X)=T(X)-LN(X).$$
-
-CLI 中 xuzhu 对应 linear，conditional 对应 empirical；conditional 不表示以 3 整除类数为条件的概率。
-
-$$E_{\rm linear}-E_{\rm empirical}=L(N(X)-\rho X).$$
-
-本端点 N(X) − ρX = 39.599527955。
-
-| 对象 | L | T(X) | E_linear(X) | E_empirical(X) |
+| Sylow type | Observed count | Observed proportion | Aut(G) size | CL proportion |
 |---|---:|---:|---:|---:|
-| 3 整除类数 | 0.439873922072 | 34,689,718 | -1201616.258814 | -1201633.677614 |
-| 3-torsion 总和 | 2.000000000000 | 158,806,032 | -4383156.800944 | -4383236.000000 |
-| Sylow 平凡 | 0.560126077928 | 46,904,916 | 1201655.858342 | 1201633.677614 |
-| Sylow C3 | 0.280063038964 | 22,300,589 | -551041.070829 | -551052.161193 |
-| Sylow C9 | 0.093354346321 | 7,423,339 | -193871.023610 | -193874.720398 |
-| Sylow C3 × C3 | 0.011669293290 | 772,494 | -179657.252951 | -179657.715050 |
-| Sylow 其他类型 | 0.054787243497 | 4,193,296 | -277046.911424 | -277049.080973 |
+| trivial | 46,904,916 | 0.574852949276 | 1 | 0.560126077928 |
+| C3 | 22,300,589 | 0.273309504642 | 2 | 0.280063038964 |
+| C9 | 7,423,339 | 0.090978274380 | 6 | 0.093354346321 |
+| C3xC3 | 772,494 | 0.009467460814 | 48 | 0.011669293290 |
+| other | 4,193,296 | 0.051391810888 | - | 0.054787243497 |
 
-## 6. 最小二乘、数值方法与残差
+All proportions use N(X). Other is the complement of the four selected types.
 
-实际选中的检查点为 $(X_i,E_i)$，最小化
+For $G=\prod_i C_{3^{\lambda_i}}$, $\lambda'_j=\#\{i:\lambda_i\ge j\}$ and $m_a=\#\{i:\lambda_i=a\}$ give
 
-$$\mathrm{RSS}=\sum_i(E_i-f(X_i))^2,\qquad\mathrm{RMSE}=\sqrt{\mathrm{RSS}/n_{\rm points}}.$$
+$$\#\mathrm{Aut}(G)=3^{\sum_j(\lambda'_j)^2}\prod_a\prod_{j=1}^{m_a}(1-3^{-j}).$$
 
-这是未加权的计数误差最小二乘，不是在 log(E) 上拟合，也不是直接对比例或平均值做最小二乘。较大的 X 通常有较大的计数误差，因此更能影响此损失。
+## Fitted corrections
 
-| 模型 | f(X) | 待拟合参数 |
-|---|---|---|
-| power | A X^θ | A、θ |
-| five_sixths | A X^(5/6) | A |
-| five_sixths_plus_two_thirds | A X^(5/6) + B X^(2/3) | A、B |
+The table below uses the linear main term. Full coefficients for both normalizations are in [fit_summary.csv](fit_summary.csv).
 
-自由幂次模型先消去振幅：令 $X_*$ 为拟合区间最大值，$t_i=X_i/X_*$，则
-
-$$b(\theta)=\frac{\sum_i E_it_i^\theta}{\sum_i t_i^{2\theta}},\qquad A(\theta)=b(\theta)X_*^{-\theta}.$$
-
-代码在 θ∈[−1,2] 上扫描 601 个点，再在最佳网格点两侧做有界最小化。若最优值位于搜索边界则报错。固定幂次模型对缩放后的基函数做线性最小二乘。
-
-残差为 $r_i=E_i-\widehat f(X_i)$；图中的归一化误差为 $E_i/X_i^{5/6}$。
-
-## 7. 本轮拟合系数
-
-所有拟合均使用 91 个点，区间为 [1,030,400, 268,435,456]。
-
-### 减去线性主项
-
-| 对象 | 自由 A | 自由 θ | 自由 RMSE | 固定 5/6 的 A | 固定 RMSE |
+| Observable | Free A | Free theta | Free RMSE | Fixed-5/6 A | Fixed RMSE |
 |---|---:|---:|---:|---:|---:|
-| 3 整除类数 | -0.1286144497 | 0.826916132 | 564.548966 | -0.1139320473 | 1701.171544 |
-| 3-torsion 总和 | -0.4122145302 | 0.833651532 | 594.803273 | -0.4146997942 | 661.187545 |
-| Sylow 平凡 | 0.1285837376 | 0.826929298 | 567.821600 | 0.1139331696 | 1699.143885 |
-| Sylow C3 | -0.04707144381 | 0.838457807 | 882.745839 | -0.05185623094 | 1055.588459 |
-| Sylow C9 | -0.01853524736 | 0.832990102 | 574.539199 | -0.01841545737 | 574.706550 |
-| Sylow C3 × C3 | -0.01351838847 | 0.845309608 | 170.032475 | -0.01695078029 | 473.536222 |
-| Sylow 其他类型 | -0.06098681006 | 0.789608796 | 401.948309 | -0.02670957865 | 2648.439800 |
+| Divisibility | -0.12861445 | 0.826916132 | 564.549 | -0.113932047 | 1701.172 |
+| Torsion sum | -0.41221453 | 0.833651532 | 594.803 | -0.414699794 | 661.188 |
+| Sylow trivial | 0.128583738 | 0.826929298 | 567.822 | 0.11393317 | 1699.144 |
+| Sylow C3 | -0.0470714438 | 0.838457807 | 882.746 | -0.0518562309 | 1055.588 |
+| Sylow C9 | -0.0185352474 | 0.832990102 | 574.539 | -0.0184154574 | 574.707 |
+| Sylow C3 x C3 | -0.0135183885 | 0.845309608 | 170.032 | -0.0169507803 | 473.536 |
+| Sylow other | -0.0609868101 | 0.789608796 | 401.948 | -0.0267095786 | 2648.440 |
 
-| 对象 | 双幂次 A | 双幂次 B | 双幂次 RMSE |
+| Observable | Two-power A | Two-power B | RMSE |
 |---|---:|---:|---:|
-| 3 整除类数 | -0.109898994 | -0.09347718806 | 451.962291 |
-| 3-torsion 总和 | -0.4153875846 | 0.01594145069 | 599.118570 |
-| Sylow 平凡 | 0.1099071265 | 0.09331470773 | 454.661998 |
-| Sylow C3 | -0.0531862699 | 0.03082733922 | 906.498361 |
-| Sylow C9 | -0.01841471181 | -1.728044291e-05 | 574.706470 |
-| Sylow C3 × C3 | -0.01806066549 | 0.02572466566 | 143.300261 |
-| Sylow 其他类型 | -0.02023734677 | -0.1500119125 | 295.319297 |
+| Divisibility | -0.109898994 | -0.0934771881 | 451.962 |
+| Torsion sum | -0.415387585 | 0.0159414507 | 599.119 |
+| Sylow trivial | 0.109907126 | 0.0933147077 | 454.662 |
+| Sylow C3 | -0.0531862699 | 0.0308273392 | 906.498 |
+| Sylow C9 | -0.0184147118 | -1.72804429e-05 | 574.706 |
+| Sylow C3 x C3 | -0.0180606655 | 0.0257246657 | 143.300 |
+| Sylow other | -0.0202373468 | -0.150011913 | 295.319 |
 
-### 减去实际域总数主项
+## Reconstructing counts, proportions, and means
 
-| 对象 | 自由 A | 自由 θ | 自由 RMSE | 固定 5/6 的 A | 固定 RMSE |
-|---|---:|---:|---:|---:|---:|
-| 3 整除类数 | -0.1286009395 | 0.826921923 | 565.922686 | -0.1139325409 | 1700.256457 |
-| 3-torsion 总和 | -0.4121597569 | 0.833658853 | 599.710333 | -0.4147020388 | 668.513608 |
-| Sylow 平凡 | 0.1286009395 | 0.826921923 | 565.922686 | 0.1139325409 | 1700.256457 |
-| Sylow C3 | -0.0470643408 | 0.838466116 | 883.700425 | -0.05185654526 | 1056.899641 |
-| Sylow C9 | -0.01853267445 | 0.832997752 | 574.068028 | -0.01841556214 | 574.228134 |
-| Sylow C3 × C3 | -0.01351812654 | 0.845310674 | 170.002298 | -0.01695079339 | 473.561831 |
-| Sylow 其他类型 | -0.06098366683 | 0.789611648 | 402.197232 | -0.02670964014 | 2648.303713 |
+$$\widehat T(X)=L\rho X+\widehat E_{\rm linear}(X),\qquad\widehat R(X)=\widehat T(X)/N(X).$$
 
-| 对象 | 双幂次 A | 双幂次 B | 双幂次 RMSE |
-|---|---:|---:|---:|
-| 3 整除类数 | -0.1099025712 | -0.0934057172 | 453.065940 |
-| 3-torsion 总和 | -0.4154038496 | 0.01626641137 | 604.535206 |
-| Sylow 平凡 | 0.1099025712 | 0.0934057172 | 453.065940 |
-| Sylow C3 | -0.05318854751 | 0.03087284395 | 907.548835 |
-| Sylow C9 | -0.01841547101 | -2.112197285e-06 | 574.228132 |
-| Sylow C3 × C3 | -0.01806076039 | 0.0257265617 | 143.280112 |
-| Sylow 其他类型 | -0.02023779233 | -0.1500030107 | 295.490701 |
+These reconstructed ratios are plotted alongside observations; proportions and means are not fitted independently. Using N(X) ~ rho X, a free-power correction gives
 
-## 8. 从 E 还原计数、比例与平均值
+$$R(X)\approx L+(A/\rho)X^{\theta-1}.$$
 
-线性主项下，拟合计数为 $\widehat T(X)=L\rho X+\widehat E(X)$。图中每域值严格使用 $\widehat T(X)/N(X)$。精确恒等式为
+For a fixed 5/6 count correction, the ratio correction has exponent -1/6 and coefficient A/rho. The two normalizations satisfy
 
-$$\frac{T(X)}{N(X)}-L=\frac{E_{\rm linear}(X)}{N(X)}+L\frac{\rho X-N(X)}{N(X)}.$$
+$$E_{\rm linear}-E_{\rm empirical}=L(N(X)-\rho X),\qquad T(X)/N(X)-L=E_{\rm empirical}(X)/N(X).$$
 
-用 $N(X)\sim\rho X$ 作渐近近似，自由幂次模型对应
+## Checks and reproducibility
 
-$$\frac{T(X)}{N(X)}\approx L+\frac A\rho X^{\theta-1}.$$
+The report contains 42 fits and 98 cutoff checks. Inspect [fit_sensitivity.csv](fit_sensitivity.csv) for exponent drift and the plots for residual structure.
 
-固定 θ=5/6 时，每域修正指数是 −1/6，系数是 A/ρ，与计数修正系数 A 不同。如果使用 empirical 误差，则 T/N − L = E_empirical/N 是精确等式。torsion 平均值由总和拟合再除以 N(X) 得到，没有另外优化平均值误差。
-
-四个核心对象的自由幂次模型，使用本轮 linear 拟合系数：
-
-**3 整除类数**
-
-$$N_{\rm div}(X)\approx 0.133705639313X -0.1286144497X^{0.826916132}.$$
-
-$$\frac{N_{\rm div}(X)}{N(X)}\approx 0.439873922072 -0.4231245797X^{-0.173083868}.$$
-
-**3-torsion 总和**
-
-$$S_3(X)\approx 0.607927101854X -0.4122145302X^{0.833651532}.$$
-
-$$\frac{S_3(X)}{N(X)}\approx 2 -1.356131447X^{-0.166348468}.$$
-
-**Sylow C9**
-
-$$N_{C_9}(X)\approx 0.0283763186023X -0.01853524736X^{0.832990102}.$$
-
-$$\frac{N_{C_9}(X)}{N(X)}\approx 0.0933543463213 -0.06097851964X^{-0.167009898}.$$
-
-**Sylow C3 × C3**
-
-$$N_{C_3\times C_3}(X)\approx 0.00354703982529X -0.01351838847X^{0.845309608}.$$
-
-$$\frac{N_{C_3\times C_3}(X)}{N(X)}\approx 0.0116692932902 -0.04447371544X^{-0.154690392}.$$
-
-这些是有限范围内的数值模型，不能据此写出已证明的 little-o 余项。
-
-## 9. 拟合区间检查
-
-下表是 linear 误差下的自由指数；全部截点结果见 fit_sensitivity.csv。
-
-| 对象 | 请求下界 | 实际首个 X | 点数 | θ | RMSE |
-|---|---:|---:|---:|---:|---:|
-| 3 整除类数 | 1,000,000 | 1,030,400 | 91 | 0.826916132 | 564.548966 |
-| 3 整除类数 | 10,000,000 | 10,407,382 | 54 | 0.827417301 | 563.800389 |
-| 3 整除类数 | 100,000,000 | 105,117,951 | 17 | 0.830223537 | 496.187414 |
-| 3-torsion 总和 | 1,000,000 | 1,030,400 | 91 | 0.833651532 | 594.803273 |
-| 3-torsion 总和 | 10,000,000 | 10,407,382 | 54 | 0.833670727 | 746.450598 |
-| 3-torsion 总和 | 100,000,000 | 105,117,951 | 17 | 0.833952121 | 719.709177 |
-| Sylow C9 | 1,000,000 | 1,030,400 | 91 | 0.832990102 | 574.539199 |
-| Sylow C9 | 10,000,000 | 10,407,382 | 54 | 0.833406102 | 741.297298 |
-| Sylow C9 | 100,000,000 | 105,117,951 | 17 | 0.809854793 | 293.480987 |
-| Sylow C3 × C3 | 1,000,000 | 1,030,400 | 91 | 0.845309608 | 170.032475 |
-| Sylow C3 × C3 | 10,000,000 | 10,407,382 | 54 | 0.844496543 | 189.847942 |
-| Sylow C3 × C3 | 100,000,000 | 105,117,951 | 17 | 0.841212314 | 254.735235 |
-
-累计检查点相关，因此不把普通最小二乘标准误当作独立样本置信区间。AIC/BIC 仅作描述性诊断。比较模型时还应检查残差形状和指数随截点的漂移，不能仅凭一次拟合接近 5/6 就断言存在该次主项。
-
-## 10. 复现与文件对应
+CL leading values for divisibility and Sylow types are fixed conjectural inputs. The torsion mean 2 and its X^(5/6) secondary scale are proved ([Bhargava–Shankar–Tsimerman, Theorems 2 and 4](https://arxiv.org/abs/1005.0672)). Finite-range fits do not prove an asymptotic or remainder. Cumulative checkpoints are correlated; AIC/BIC are descriptive diagnostics.
 
 ```bash
 source .venv/bin/activate
 python -m scripts.reproduce --check
 python -m scripts.reproduce --rebuild --check
-
-python -m experiments.fit --observable divisible --error xuzhu --model power
-python -m experiments.fit --observable torsion --error xuzhu --model five_sixths
-python -m experiments.fit --group C9 --error conditional --model power
-python -m experiments.fit --group C3xC3 --error conditional --model power
 ```
 
-第一条复现命令从汇总表生成图像、拟合结果和本说明；第二条先从原始 gzip 记录重新累计。独立拟合还输出逐点 fitted_error、residual、fitted_ratio 的 CSV。
-
-| 文件 | 内容 |
-|---|---|
-| [p3_statistics.csv](../data/processed/p3_statistics.csv) | 三个统计的总表及两种误差 |
-| [sylow3_types.csv](../data/processed/sylow3_types.csv) | 每个检查点的完整 Sylow 同构类型分布 |
-| [rank3_counts.csv](../data/processed/rank3_counts.csv) | 按 3-rank 统计，重建 torsion 总和 |
-| [p3_statistics.manifest.json](../data/processed/p3_statistics.manifest.json) | 输入哈希和检查点列表 |
-| [fit_summary.csv](fit_summary.csv) | 42 组模型比较及 RMSE |
-| [fits.json](fits.json) | 未舍入的参数、损失诊断和输入哈希 |
-| [fit_sensitivity.csv](fit_sensitivity.csv) | 拟合截点结果 |
-| [final_statistics.csv](final_statistics.csv) | 本报告端点的实测值 |
+- [Summary counts](../data/processed/p3_statistics.csv).
+- [Complete Sylow histogram](../data/processed/sylow3_types.csv).
+- [Input hashes and checkpoint grid](../data/processed/p3_statistics.manifest.json).
+- [Full parameters and diagnostics](fits.json).

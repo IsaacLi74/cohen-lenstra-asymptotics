@@ -1,63 +1,60 @@
 # Cohen–Lenstra Asymptotics
 
-本轮只使用原始 LMFDB 数据，研究三个对象：
+We fit **counting errors after subtracting a fixed leading term** for imaginary quadratic class groups. Write $\rho=3/\pi^2$, $\eta_3=\prod_{j\ge1}(1-3^{-j})$, and $p_3=1-\eta_3$.
 
-| 对象 | 统计与拟合 |
-|---|---|
-| $3\mid h_D$ | 整除计数、整除比例及候选二阶项 |
-| $\mathrm{Cl}_D[3]$ | torsion 总和、平均值及修正项 |
-| Sylow $3$ 子群 | 完整类型分布，包含 $C_9$、$C_3\times C_3$ 的比例与拟合 |
+| Statistic | Quantity counted, $T(X)$ | Error fitted, $E(X)$ |
+|---|---|---|
+| Class-number divisibility | $N_{\rm div}(X)=\#\{D:3\mid h_D\}$ | $N_{\rm div}(X)-p_3\rho X$ |
+| 3-torsion | $S_3(X)=\sum_D\#\mathrm{Cl}_D[3]$ | $S_3(X)-2\rho X$ |
+| Sylow 3 type $G$ | $N_G(X)=\#\{D:\mathrm{Cl}_D[3^\infty]\cong G\}$ | $N_G(X)-P_{\rm CL}(G)\rho X$ |
 
-当前数据覆盖 $|D|<2^{28}$，包含 **81,594,634 个虚二次域、37 种实际出现的 Sylow 类型**。
+All sums run over negative fundamental discriminants with $0<\lvert D\rvert\le X$, and $P_{\rm CL}(G)=\eta_3/\#\mathrm{Aut}(G)$. The current dataset contains **81,594,634 fields below $2^{28}$** and 37 observed Sylow types.
 
-## Codespaces 一键复现
+We compare three correction models:
 
-打开 Codespace 后会自动安装锁定版本的依赖，并取回四个原始 Git LFS 文件。随后运行：
+$$E(X)\approx AX^\theta,\qquad AX^{5/6},\qquad AX^{5/6}+BX^{2/3}.$$
 
-```bash
+Fits minimize squared **counting errors**. Proportions and the torsion mean are reconstructed by dividing the fitted count by the actual number of fields $N(X)$. We also repeat the fits with the empirical normalization $E(X)=T(X)-LN(X)$, where $L=p_3,2,$ or $P_{\rm CL}(G)$.
+
+For Sylow type $C_9$, the 3-torsion size is 3; for $C_3\times C_3$, it is 9. The default report fits trivial, C3, C9, C3xC3, and other; proportions use all fields as the denominator.
+
+## Reproduce in Codespaces
+
+Setup installs pinned dependencies and retrieves the four Git LFS input files.
+
+~~~bash
 source .venv/bin/activate
 python -m scripts.reproduce --check
-```
+~~~
 
-从当前汇总表生成 **8 张图、42 组拟合和完整计算说明**。如果要从全部原始记录重新计算：
+This generates **8 plots, 42 fits, and the calculation report** from committed summaries. Add --rebuild to first scan every raw record:
 
-```bash
+~~~bash
 python -m scripts.reproduce --rebuild --check
-```
+~~~
 
-## 计算说明与结果
+Each fit plot shows the counting error, scaled error, residuals, and reconstructed proportion or mean.
 
-**[本轮完整计算说明](results/calculations.md)** 随复现命令自动更新，包含：
+[Calculations and fitted coefficients](results/calculations.md) · [Fit table](results/fit_summary.csv) · [Plots](figures/statistics) · [Data format](DATA_FORMAT.md)
 
-- 每条原始记录如何变成 Sylow 类型、3-rank、torsion 大小及整除指标。
-- 主项常数、自同构群大小、两种误差的定义及当前端点的数值代入。
-- 最小二乘目标、实际拟合区间、所有系数、RMSE、残差和截点检查。
-- 如何从拟合的计数误差还原计数、整除比例、Sylow 比例及 torsion 平均值。
+## Individual fits
 
-[数据格式](DATA_FORMAT.md) · [当前汇总](data/processed) · [拟合系数](results/fit_summary.csv) · [全部图像](figures/statistics)
-
-![整除计数与比例](figures/statistics/divisible.png)
-![torsion 总和与平均值](figures/statistics/torsion.png)
-![Sylow 分解](figures/statistics/sylow_composition.png)
-
-## 单独拟合
-
-```bash
+~~~bash
 python -m experiments.fit --observable divisible --error xuzhu --model power
 python -m experiments.fit --observable torsion --error xuzhu --model five_sixths
 python -m experiments.fit --group C9 --error conditional --model power
 python -m experiments.fit --group C3xC3 --error conditional --model power
-```
+~~~
 
-用 `--xmin`、`--xmax` 选择区间；单独拟合的逐点数据、残差、图像和参数写入 `results/custom/`。
+xuzhu subtracts $L\rho X$; conditional subtracts $LN(X)$. Use --xmin and --xmax to select checkpoints. Custom outputs include coefficients, fitted errors, residuals, and reconstructed ratios under results/custom/.
 
-## 扩展原始数据
+## Extend the raw data
 
-```bash
+~~~bash
 python -m scripts.download_data --xmax 10000000000 --dry-run
 python -m scripts.reproduce --download --xmax 10000000000
-```
+~~~
 
-扩展到 $10^{10}$ 需要 152 个文件，扫描约 30.4 亿条记录。扩展数据与结果默认写入独立的 `extended_BOUND` 目录。
+Coverage to $10^{10}$ requires 152 files and about 3.04 billion records. Extended data and outputs use separate extended_BOUND directories.
 
-CL 的整除概率和固定 Sylow 类型分布是猜想输入；数值拟合不构成二阶项或余项的证明。累计检查点彼此相关。GitHub Actions 在 Ubuntu/Python 3.12 上验证测试及完整的汇总表到报告流程。
+The CL leading values for divisibility and Sylow types are conjectural; the torsion mean 2 is proved. These are finite-range fits. Cumulative checkpoints are correlated, so diagnostic scores do not establish an asymptotic or its remainder. GitHub Actions checks reproduction on Ubuntu/Python 3.12.
