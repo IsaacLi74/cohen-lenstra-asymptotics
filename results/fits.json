@@ -1,10 +1,10 @@
 {
-  "caution": "Finite-range fits with a fixed conjectural CL leading coefficient, except for the proved torsion mean 2. Cumulative checkpoints are correlated. RMSE/AIC/BIC are descriptive diagnostics, not independent-error inference or a proof of a remainder.",
+  "model": "c*X**theta",
+  "note": "Finite-range least-squares fits; cumulative checkpoints are correlated.",
   "fits": [
     {
       "observable": "divisible",
       "group": null,
-      "error_convention": "xuzhu",
       "ratio_leading_term": 0.43987392207205156,
       "linear_count_coefficient": 0.13370563931321314,
       "input_files": [
@@ -13,9 +13,7 @@
           "sha256": "4b5be6f12759c9b1056ebb56413bc3a0dec5f46c9f0a5c9c285ae8226d764129"
         }
       ],
-      "caution": "Finite-range fits with a fixed conjectural CL leading coefficient, except for the proved torsion mean 2. Cumulative checkpoints are correlated. RMSE/AIC/BIC are descriptive diagnostics, not independent-error inference or a proof of a remainder.",
       "fit": {
-        "model": "power",
         "parameters": {
           "c": -0.12861444972322295,
           "theta": 0.8269161322871322
@@ -24,15 +22,12 @@
         "xmin": 1030400,
         "xmax": 268435456,
         "RMSE": 564.5489656658226,
-        "relative_RMSE": 0.0013419324761530663,
-        "AIC_diagnostic": 1157.1569361103914,
-        "BIC_diagnostic": 1162.178655123425
+        "relative_RMSE": 0.0013419324761530663
       }
     },
     {
       "observable": "torsion",
       "group": null,
-      "error_convention": "xuzhu",
       "ratio_leading_term": 2.0,
       "linear_count_coefficient": 0.6079271018540267,
       "input_files": [
@@ -41,9 +36,7 @@
           "sha256": "4b5be6f12759c9b1056ebb56413bc3a0dec5f46c9f0a5c9c285ae8226d764129"
         }
       ],
-      "caution": "Finite-range fits with a fixed conjectural CL leading coefficient, except for the proved torsion mean 2. Cumulative checkpoints are correlated. RMSE/AIC/BIC are descriptive diagnostics, not independent-error inference or a proof of a remainder.",
       "fit": {
-        "model": "power",
         "parameters": {
           "c": -0.41221453019257037,
           "theta": 0.8336515318861913
@@ -52,15 +45,12 @@
         "xmin": 1030400,
         "xmax": 268435456,
         "RMSE": 594.8032733476382,
-        "relative_RMSE": 0.00038843467243479036,
-        "AIC_diagnostic": 1166.6579906478444,
-        "BIC_diagnostic": 1171.679709660878
+        "relative_RMSE": 0.00038843467243479036
       }
     },
     {
       "observable": "sylow",
       "group": "C3",
-      "error_convention": "xuzhu",
       "ratio_leading_term": 0.2800630389639742,
       "linear_count_coefficient": 0.0851289558069001,
       "input_files": [
@@ -69,9 +59,7 @@
           "sha256": "4b5be6f12759c9b1056ebb56413bc3a0dec5f46c9f0a5c9c285ae8226d764129"
         }
       ],
-      "caution": "Finite-range fits with a fixed conjectural CL leading coefficient, except for the proved torsion mean 2. Cumulative checkpoints are correlated. RMSE/AIC/BIC are descriptive diagnostics, not independent-error inference or a proof of a remainder.",
       "fit": {
-        "model": "power",
         "parameters": {
           "c": -0.047071443807751925,
           "theta": 0.8384578068625941
@@ -80,15 +68,12 @@
         "xmin": 1030400,
         "xmax": 268435456,
         "RMSE": 882.7458391726918,
-        "relative_RMSE": 0.00461006057012812,
-        "AIC_diagnostic": 1238.5127924791793,
-        "BIC_diagnostic": 1243.534511492213
+        "relative_RMSE": 0.00461006057012812
       }
     },
     {
       "observable": "sylow",
       "group": "C9",
-      "error_convention": "xuzhu",
       "ratio_leading_term": 0.09335434632132474,
       "linear_count_coefficient": 0.02837631860230003,
       "input_files": [
@@ -97,9 +82,7 @@
           "sha256": "4b5be6f12759c9b1056ebb56413bc3a0dec5f46c9f0a5c9c285ae8226d764129"
         }
       ],
-      "caution": "Finite-range fits with a fixed conjectural CL leading coefficient, except for the proved torsion mean 2. Cumulative checkpoints are correlated. RMSE/AIC/BIC are descriptive diagnostics, not independent-error inference or a proof of a remainder.",
       "fit": {
-        "model": "power",
         "parameters": {
           "c": -0.018535247358649237,
           "theta": 0.8329901020400677
@@ -108,15 +91,12 @@
         "xmin": 1030400,
         "xmax": 268435456,
         "RMSE": 574.53919884833,
-        "relative_RMSE": 0.008448899494586517,
-        "AIC_diagnostic": 1160.349435368913,
-        "BIC_diagnostic": 1165.3711543819466
+        "relative_RMSE": 0.008448899494586517
       }
     },
     {
       "observable": "sylow",
       "group": "C3xC3",
-      "error_convention": "xuzhu",
       "ratio_leading_term": 0.011669293290165592,
       "linear_count_coefficient": 0.003547039825287504,
       "input_files": [
@@ -125,9 +105,7 @@
           "sha256": "4b5be6f12759c9b1056ebb56413bc3a0dec5f46c9f0a5c9c285ae8226d764129"
         }
       ],
-      "caution": "Finite-range fits with a fixed conjectural CL leading coefficient, except for the proved torsion mean 2. Cumulative checkpoints are correlated. RMSE/AIC/BIC are descriptive diagnostics, not independent-error inference or a proof of a remainder.",
       "fit": {
-        "model": "power",
         "parameters": {
           "c": -0.013518388467735256,
           "theta": 0.845309607696559
@@ -136,9 +114,7 @@
         "xmin": 1030400,
         "xmax": 268435456,
         "RMSE": 170.03247508435308,
-        "relative_RMSE": 0.0027164908873459526,
-        "AIC_diagnostic": 938.7500796660084,
-        "BIC_diagnostic": 943.7717986790421
+        "relative_RMSE": 0.0027164908873459526
       }
     }
   ]

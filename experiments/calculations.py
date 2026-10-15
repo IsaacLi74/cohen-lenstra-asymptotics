@@ -5,18 +5,12 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.statistics import DENSITY, ETA3, P_DIVISIBLE, TARGETS, aut_size, cl_probability
-
-LABELS = {
-    ("divisible", None): "Divisibility",
-    ("torsion", None): "Torsion sum",
-    ("sylow", "C3"): "Sylow C3",
-    ("sylow", "C9"): "Sylow C9",
-    ("sylow", "C3xC3"): "Sylow C3 x C3",
-}
+from src import ROOT
+from src.fitting import FIT_CASES
+from src.statistics import DENSITY, ETA3, P_DIVISIBLE, SYLOW_TYPES, TARGETS, aut_size, cl_probability
 
 
-def write_calculations(data_dir, output_dir, results, sensitivity, requested_xmin, requested_xmax):
+def write_calculations(data_dir, output_dir, results):
     data_dir, output_dir = Path(data_dir), Path(output_dir)
     manifest = json.loads((data_dir/"processed/p3_statistics.manifest.json").read_text())
     summaries = pd.read_csv(data_dir/"processed/p3_statistics.csv").set_index("X")
@@ -28,7 +22,7 @@ def write_calculations(data_dir, output_dir, results, sensitivity, requested_xmi
     ranks = ranks[ranks.X == X]
     if sum(3**int(r.rank3)*int(r.N_rank) for r in ranks.itertuples()) != torsion:
         raise ValueError("Rank counts do not reconstruct the torsion sum")
-    readme = os.path.relpath(Path(__file__).resolve().parents[1]/"README.md", output_dir)
+    readme = os.path.relpath(ROOT/"README.md", output_dir)
     lines = [
         "# Power-law fits", "",
         f"Generated from the current summaries. Notation follows the [README]({readme}#notation).", "",
@@ -53,7 +47,6 @@ def write_calculations(data_dir, output_dir, results, sensitivity, requested_xmi
         r"The code searches $\theta\in[-1,2]$ and rejects an optimum at the boundary.", "",
         "## Data and counts", "",
         f"Raw coverage: {manifest['xmax']:,}; available cumulative checkpoints: {len(summaries)}. "
-        f"Requested fit limits: {requested_xmin:g} to {requested_xmax if requested_xmax is not None else 'the data maximum'}. "
         f"Actual fit: **{first['xmin']:,} <= X <= {X:,}, {first['points']} points**.", "",
         f"At X = {X:,}:", "",
         f"- N(X) = {n:,}; N_3(X) = {n:,} - {int(row['N_trivial']):,} = {ndiv:,}.",
@@ -74,7 +67,7 @@ def write_calculations(data_dir, output_dir, results, sensitivity, requested_xmi
         "| Sylow type | Observed count | Observed / N(X) | Aut size | CL proportion | Observed minus CL |",
         "|---|---:|---:|---:|---:|---:|",
     ])
-    for group in ("C3", "C9", "C3xC3"):
+    for group in SYLOW_TYPES:
         count, probability = int(row[f"N_{group}"]), cl_probability(TARGETS[group])
         lines.append(f"| {group} | {count:,} | {count/n:.12f} | {aut_size(TARGETS[group])} | "
                      f"{probability:.12f} | {count/n-probability:+.12f} |")
@@ -88,23 +81,15 @@ def write_calculations(data_dir, output_dir, results, sensitivity, requested_xmi
     ])
     for entry in results:
         fit = entry["fit"]
-        label = LABELS[entry["observable"], entry["group"]]
+        label = FIT_CASES[entry["observable"], entry["group"]][2]
         lines.append(f"| {label} | {fit['parameters']['c']:.9g} | "
                      f"{fit['parameters']['theta']:.9f} | {fit['RMSE']:.3f} |")
     lines.extend([
-        "", "## Curves shown in the ratio plots", "",
-        "Add the fitted error to the fixed main term, then divide by the actual field count:", "",
-        "| Plot | Observed ratio | Curve from the count fit |",
-        "|---|---|---|",
-        r"| Divisibility proportion | $N_3(X)/N(X)$ | $(p_3\rho X+cX^\theta)/N(X)$ |",
-        r"| Mean torsion size | $S_3(X)/N(X)$ | $(2\rho X+cX^\theta)/N(X)$ |",
-        r"| Sylow type proportion | $N_{G_3}(X)/N(X)$ | $(P_{\mathrm{CL}}(G_3)\rho X+cX^\theta)/N(X)$ |", "",
-        r"Each statistic uses its own fitted $c,\theta$. Ratios are not fitted separately. "
-        "Every denominator includes all fields, including types outside the three Sylow fits. "
-        "The Sylow comparison plot uses the same fits and CL probabilities.", "",
+        "", f"Ratio curves use the [README formulas]({readme}#what-the-ratio-plots-show). "
+        "The three Sylow fits are also shown together in the comparison plot.", "",
         "## Checks and reproducibility", "",
-        f"The report contains {len(results)} power fits and {len(sensitivity)} lower-cutoff checks. "
-        "See [fit_sensitivity.csv](fit_sensitivity.csv) for changes with the fitted range.", "",
+        f"The report contains {len(results)} power fits. Use --xmin and --xmax with experiments.fit "
+        "to change the fitted range.", "",
         "The CL leading values for divisibility and Sylow types are conjectural; the torsion mean 2 is proved. "
         "Finite-range fits do not establish an asymptotic. Cumulative checkpoints are correlated.", "",
         "~~~bash", "source .venv/bin/activate", "python -m scripts.reproduce --check", "~~~", "",

@@ -2,14 +2,16 @@ from collections import Counter
 import gzip
 import json
 import shutil
+import sys
 
 import numpy as np
 import pandas as pd
 import pytest
 
 from scripts.build_stats import cpp_buckets, python_buckets, input_files, checkpoints
+from src import ROOT
 from src.dataset import FieldRecord, p_part
-from src.fitting import load_series, fit_model, predict, select_range, ROOT
+from src.fitting import load_series, fit_power, predict, select_range
 from src.statistics import (aut_size, cl_probability, ETA3, TARGETS, P_DIVISIBLE,
                             DENSITY, group_parts, summary_row, RESIDUES, BLOCK_SIZE)
 
@@ -111,33 +113,52 @@ def test_every_type_and_rank_contributes():
     assert len(types.group.unique()) == 37
 
 
-def test_main_term_conventions():
-    linear, metadata = load_series("divisible", error="xuzhu")
-    conditional, _ = load_series("divisible", error="conditional")
-    assert np.allclose(linear.error-conditional.error,
-                       P_DIVISIBLE*(linear.N_fields-DENSITY*linear.X), atol=1e-8)
-    assert len(linear) == 202 and linear.iloc[-1].X == 2**28
-    assert metadata["input_files"][0]["path"] == "processed/p3_statistics.csv"
+def test_fixed_main_terms():
+    cases = [("divisible", None, P_DIVISIBLE), ("torsion", None, 2),
+             ("sylow", "C3", ETA3/2), ("sylow", "C9", ETA3/6),
+             ("sylow", "C3xC3", ETA3/48)]
+    for observable, group, leading in cases:
+        df, metadata = load_series(observable, group)
+        assert np.allclose(df.baseline, leading*DENSITY*df.X)
+        assert np.allclose(df.error+df.baseline, df["count"])
+        assert len(df) == 202 and df.iloc[-1].X == 2**28
+        assert metadata["input_files"][0]["path"] == "processed/p3_statistics.csv"
 
 
 def test_fits_recover_known_secondary_terms():
     x = np.geomspace(1e6, 2**28, 80)
     y = -.13*x**.827
-    fit = fit_model(x, y)
+    fit = fit_power(x, y)
     assert fit["parameters"]["c"] == pytest.approx(-.13, rel=1e-5)
     assert fit["parameters"]["theta"] == pytest.approx(.827, abs=1e-6)
     assert np.allclose(predict(fit, x), y, rtol=1e-6)
-    fit = fit_model(x, -y)
+    fit = fit_power(x, -y)
     assert fit["parameters"]["c"] == pytest.approx(.13, rel=1e-5)
     assert np.allclose(predict(fit, x), -y, rtol=1e-6)
     with pytest.raises(ValueError, match="more"):
-        fit_model(x[:2], y[:2])
-    with pytest.raises(ValueError, match="Only the power"):
-        fit_model(x, y, "unsupported")
+        fit_power(x[:2], y[:2])
 
 
 def test_c9_fit_reference_value():
-    df, _ = load_series("sylow", "C9", error="conditional")
+    df, _ = load_series("sylow", "C9")
     df = select_range(df, 1e6)
-    fit = fit_model(df.X, df.error)
-    assert fit["parameters"]["theta"] == pytest.approx(.83299775, abs=2e-6)
+    fit = fit_power(df.X, df.error)
+    assert fit["parameters"]["theta"] == pytest.approx(.83299010, abs=2e-6)
+
+
+def test_cli_preserves_distinct_fit_ranges(tmp_path, monkeypatch):
+    from experiments.fit import main
+
+    for xmin, xmax in [("1.1e6", "1e8"), ("1.9e6", "1e8"), ("1.1e6", "2e8")]:
+        monkeypatch.setattr(sys, "argv", ["fit", "--group", "C9", "--xmin", xmin,
+                                        "--xmax", xmax, "--output-dir", str(tmp_path)])
+        main()
+    assert len(list(tmp_path.glob("*.json"))) == 3
+    for path in tmp_path.glob("*.json"):
+        fit = json.loads(path.read_text())["fit"]
+        assert path.stem.endswith(f"_{fit['xmin']}_{fit['xmax']}")
+        table = pd.read_csv(path.with_suffix(".csv"))
+        assert table.X.min() == fit["xmin"] and table.X.max() == fit["xmax"]
+        assert np.allclose(table.fitted_ratio,
+                           (table.baseline+table.fitted_error)/table.N_fields)
+        assert path.with_suffix(".png").stat().st_size > 0

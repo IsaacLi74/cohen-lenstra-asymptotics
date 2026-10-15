@@ -7,8 +7,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterator
 
+from src import ROOT
 
-RAW_DIR = Path("data/raw")
+RAW_DIR = ROOT / "data/raw"
 
 FILE_RE = re.compile(
     r"cl(?P<r>\d+)mod(?P<m>\d+)\.(?P<k>\d+)\.gz$"

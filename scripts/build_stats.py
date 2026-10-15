@@ -9,12 +9,10 @@ import shutil
 import subprocess
 import tempfile
 
+from src import ROOT
 from src.dataset import iter_file
 from src.statistics import (BLOCK_SIZE, RESIDUES, DENSITY, group_key,
                             group_parts, cl_probability, summary_row)
-
-ROOT = Path(__file__).resolve().parents[1]
-
 
 def checkpoints(xmax, n=200, xmin=1000):
     # Logarithmic grid; always include the exact integer upper bound.

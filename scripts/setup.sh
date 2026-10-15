@@ -12,25 +12,8 @@ fi
 git lfs install
 git lfs pull
 
-if command -v uv >/dev/null 2>&1; then
-    echo "Using uv"
-
-    if [ ! -d ".venv" ]; then
-        uv venv .venv
-    fi
-
-    uv pip install \
-        --python .venv/bin/python \
-        -r requirements.txt
-else
-    echo "Using standard Python venv"
-
-    if [ ! -d ".venv" ]; then
-        python3 -m venv .venv
-    fi
-
-    .venv/bin/python -m pip install -r requirements.txt
-fi
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
 
 echo
 echo "Environment ready."
