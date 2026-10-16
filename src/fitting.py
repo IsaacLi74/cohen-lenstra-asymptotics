@@ -93,15 +93,29 @@ def select_range(df, xmin, xmax=None):
     return df.loc[mask].copy()
 
 
-def plot_error_fit(ax, df, fit, label=None, color="C2"):
+def plot_labels(observable, group=None):
+    if observable == "divisible":
+        count, main = r"N_3(X)", r"p_3\frac{3}{\pi^2}X"
+    elif observable == "torsion":
+        count, main = r"S_3(X)", r"\frac{6}{\pi^2}X"
+    else:
+        symbol = GROUP_LABELS[group].strip("$") if group else "G_3"
+        count = rf"N_{{{symbol}}}(X)"
+        main = rf"P_{{\mathrm{{CL}}}}({symbol})\frac{{3}}{{\pi^2}}X"
+    return rf"${count}/N(X)$", rf"$\log_{{10}}\left|{count}-{main}\right|$"
+
+
+def plot_error_fit(ax, df, fit, ylabel, label=None, color="C2"):
     x = df["X"].to_numpy(float)
-    ax.plot(x, np.abs(df["error"]), ".", color="C0" if label is None else color,
+    u = np.log10(x)
+    ax.plot(u, np.log10(np.abs(df["error"])), ".", color="C0" if label is None else color,
             label="Observed" if label is None else None)
     c, theta = fit["parameters"]["c"], fit["parameters"]["theta"]
     parameters = rf"$c={c:.6g},\ \theta={theta:.6f}$"
-    ax.plot(x, np.abs(predict(fit, x)), color=color,
-            label=f"{label}: {parameters}" if label else parameters)
-    ax.set(xscale="log", yscale="log", xlabel="X (log scale)", ylabel=r"$|E(X)|$ (log scale)")
+    legend = (f"{label}: {parameters}" if label else
+              r"Fit: $\log_{10}|c|+\theta\log_{10}X$"+"\n"+parameters)
+    ax.plot(u, np.log10(abs(c))+theta*u, color=color, label=legend)
+    ax.set(xlabel=r"$\log_{10}X$", ylabel=ylabel)
 
 
 def plot_fit(df, metadata, fit, output):
@@ -111,17 +125,15 @@ def plot_fit(df, metadata, fit, output):
     plt.rcParams.update({"font.size": 10, "axes.spines.top": False, "axes.spines.right": False})
     fig, (ax, error_ax) = plt.subplots(1, 2, figsize=(12, 5), constrained_layout=True)
     x = df["X"].to_numpy(float)
-    ax.plot(x, df["ratio"], ".", label="Observed")
-    ax.plot(x, fitted_ratio(df, fit), color="C2", label="Fitted curve")
+    u = np.log10(x)
+    ax.plot(u, df["ratio"], ".", label="Observed")
+    fitted_label = "Fitted mean" if metadata["observable"] == "torsion" else "Fitted proportion"
+    ax.plot(u, fitted_ratio(df, fit), color="C2", label=fitted_label)
     leading = metadata["ratio_leading_term"]
     reference = "Proved limit" if metadata["observable"] == "torsion" else "CL prediction"
     ax.axhline(leading, color="black", linestyle="--", label=f"{reference}: {leading:.9g}")
-    ylabel = {
-        "divisible": r"$N_3(X)/N(X)$",
-        "torsion": r"$S_3(X)/N(X)$",
-        "sylow": r"$N_{G_3}(X)/N(X)$",
-    }[metadata["observable"]]
-    ax.set(xscale="log", xlabel="X (log scale)", ylabel=ylabel)
+    ylabel, error_ylabel = plot_labels(metadata["observable"], metadata["group"])
+    ax.set(xlabel=r"$\log_{10}X$", ylabel=ylabel)
     ax.legend()
     label = FIT_CASES[metadata["observable"], metadata["group"]][2]
     if metadata["observable"] == "torsion":
@@ -129,8 +141,8 @@ def plot_fit(df, metadata, fit, output):
     elif metadata["observable"] == "sylow":
         label = "Sylow "+GROUP_LABELS[metadata["group"]]
     ax.set_title(f"{label}\n{fit['xmin']:,} <= X <= {fit['xmax']:,}")
-    plot_error_fit(error_ax, df, fit)
-    error_ax.set_title(r"Power fit: $E(X)\approx cX^\theta$")
+    plot_error_fit(error_ax, df, fit, error_ylabel)
+    error_ax.set_title("Logarithm of counting correction")
     error_ax.legend(fontsize=9)
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)

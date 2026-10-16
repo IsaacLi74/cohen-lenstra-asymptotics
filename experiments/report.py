@@ -3,11 +3,12 @@ import argparse
 import json
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 from src import ROOT
 from src.fitting import (FIT_CASES, GROUP_LABELS, NOTE, fit_power, fitted_ratio,
-                         load_series, plot_error_fit, plot_fit, select_range)
+                         load_series, plot_error_fit, plot_fit, plot_labels, select_range)
 from src.statistics import SYLOW_TYPES
 from experiments.calculations import write_calculations
 
@@ -17,6 +18,7 @@ def comparison(data_dir, results, output):
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     fig, (ax, error_ax) = plt.subplots(1, 2, figsize=(12, 5), constrained_layout=True)
+    ylabel, error_ylabel = plot_labels("sylow")
     for entry in results:
         if entry["observable"] != "sylow":
             continue
@@ -24,16 +26,17 @@ def comparison(data_dir, results, output):
         df, _ = load_series("sylow", entry["group"], data_dir)
         df = select_range(df, fit["xmin"], fit["xmax"])
         color = f"C{SYLOW_TYPES.index(entry['group'])}"
-        ax.plot(df["X"], df["ratio"], ".", color=color)
-        ax.plot(df["X"], fitted_ratio(df, fit), color=color)
+        u = np.log10(df["X"])
+        ax.plot(u, df["ratio"], ".", color=color)
+        ax.plot(u, fitted_ratio(df, fit), color=color)
         leading = entry["ratio_leading_term"]
         ax.axhline(leading, color=color, linestyle="--",
                    label=f"{GROUP_LABELS[entry['group']]} CL: {leading:.9g}")
-        plot_error_fit(error_ax, df, fit, GROUP_LABELS[entry["group"]], color)
-    ax.set(xscale="log", xlabel="X (log scale)", ylabel="Proportion of all fields",
+        plot_error_fit(error_ax, df, fit, error_ylabel, GROUP_LABELS[entry["group"]], color)
+    ax.set(xlabel=r"$\log_{10}X$", ylabel=ylabel,
            title="Sylow 3 proportions\nObserved (dots), fitted (solid), CL (dashed)")
     ax.legend()
-    error_ax.set_title(r"Power fits for $E_{G_3}(X)$")
+    error_ax.set_title("Logarithms of Sylow counting corrections\nDots: observed; solid: fitted")
     error_ax.legend(fontsize=8)
     fig.savefig(output, dpi=160)
     plt.close(fig)
