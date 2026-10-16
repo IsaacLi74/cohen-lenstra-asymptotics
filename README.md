@@ -44,15 +44,15 @@ Sylow fits cover exactly $C_3$, $C_9$, and $C_3\times C_3$. The report lists the
 
 ## What the ratio plots show
 
-Each plot compares the observed ratio with **(fixed main term + fitted error) / actual field count**:
+The left panels show observed proportions or mean torsion size. To obtain the fitted curves, add the fitted correction $cX^\theta$ to the fixed main term, then divide by the observed field count $N(X)$:
 
-| Quantity | Observed ratio | Curve from the count fit |
+| Quantity | Observed proportion or mean | Fitted proportion or mean |
 |---|---|---|
 | Proportion with $3\mid h_D$ | $N_3(X)/N(X)$ | $\bigl(p_3\frac{3}{\pi^2}X+cX^\theta\bigr)/N(X)$ |
 | Mean 3-torsion size | $S_3(X)/N(X)$ | $\bigl(\frac{6}{\pi^2}X+cX^\theta\bigr)/N(X)$ |
 | Proportion of Sylow type $G_3$ | $N_{G_3}(X)/N(X)$ | $\bigl(P_{\mathrm{CL}}(G_3)\frac{3}{\pi^2}X+cX^\theta\bigr)/N(X)$ |
 
-Each row uses its own fitted $c,\theta$. These ratios are not fitted separately; every denominator counts **all fields**.
+Each row uses its own fitted $c,\theta$. The proportions and means are calculated from these count fits, without another fit. Every denominator counts **all fields**, including those with trivial Sylow 3 subgroup.
 
 ## Reproduce in Codespaces
 
@@ -69,7 +69,7 @@ This generates **5 power fits, 6 plots, and the calculation report** from commit
 python -m scripts.reproduce --rebuild --check
 ~~~
 
-Each figure has two panels: the final proportion or mean curve with its leading-value reference, and the fitted counting error $E(X)\approx cX^\theta$. The error panel plots $\lvert E(X)\rvert$ and $\lvert c\rvert X^\theta$ on logarithmic axes, so the power fit is a straight line; its legend gives the signed $c$ and $\theta$. Logarithmic axes are labeled explicitly. Dashed horizontal lines show the CL predictions or proved torsion limit, with numerical values in the legends. A separate figure compares the three Sylow types in the same layout.
+Every horizontal axis is $\log_{10}X$, with ticks showing its numerical value. Left vertical axes show the proportions or mean in the table above. Right vertical axes explicitly show $\log_{10}\lvert\text{count}-\text{main term}\rvert$ for the relevant statistic. The fitted line is $\log_{10}\lvert c\rvert+\theta\log_{10}X$; its legend gives the signed $c$ and $\theta$. Fitting still minimizes squared differences in the original count units, before taking logarithms for display. Dashed horizontal lines show the CL predictions or proved torsion limit, with numerical values in the legends. The comparison figure uses the same coordinates for the three Sylow types.
 
 [Calculations and fitted coefficients](results/calculations.md) · [Fit table](results/fit_summary.csv) · [Plots](figures/statistics) · [Data format](DATA_FORMAT.md)
 
