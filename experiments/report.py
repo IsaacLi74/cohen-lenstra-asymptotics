@@ -24,11 +24,13 @@ def comparison(data_dir, results, output):
         df, _ = load_series("sylow", entry["group"], data_dir)
         df = select_range(df, fit["xmin"], fit["xmax"])
         color = f"C{SYLOW_TYPES.index(entry['group'])}"
-        ax.plot(df["X"], df["ratio"], ".", color=color, label=GROUP_LABELS[entry["group"]])
+        ax.plot(df["X"], df["ratio"], ".", color=color)
         ax.plot(df["X"], fitted_ratio(df, fit), color=color)
-        ax.axhline(entry["ratio_leading_term"], color=color, linestyle="--")
+        leading = entry["ratio_leading_term"]
+        ax.axhline(leading, color=color, linestyle="--",
+                   label=f"{GROUP_LABELS[entry['group']]} CL: {leading:.9g}")
         plot_error_fit(error_ax, df, fit, GROUP_LABELS[entry["group"]], color)
-    ax.set(xscale="log", xlabel="X", ylabel="Proportion of all fields",
+    ax.set(xscale="log", xlabel="X (log scale)", ylabel="Proportion of all fields",
            title="Sylow 3 proportions\nObserved (dots), fitted (solid), CL (dashed)")
     ax.legend()
     error_ax.set_title(r"Power fits for $E_{G_3}(X)$")
