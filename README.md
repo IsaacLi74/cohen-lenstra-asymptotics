@@ -69,7 +69,7 @@ This generates **5 power fits, 6 plots, and the calculation report** from commit
 python -m scripts.reproduce --rebuild --check
 ~~~
 
-Each figure has two panels: the final proportion or mean curve with its leading-value reference, and the fitted counting error $E(X)\approx cX^\theta$. The error panel plots $\lvert E(X)\rvert$ and $\lvert c\rvert X^\theta$ on logarithmic axes, so the power fit is a straight line; its legend gives the signed $c$ and $\theta$. A separate figure compares the three Sylow types in the same layout.
+Each figure has two panels: the final proportion or mean curve with its leading-value reference, and the fitted counting error $E(X)\approx cX^\theta$. The error panel plots $\lvert E(X)\rvert$ and $\lvert c\rvert X^\theta$ on logarithmic axes, so the power fit is a straight line; its legend gives the signed $c$ and $\theta$. Logarithmic axes are labeled explicitly. Dashed horizontal lines show the CL predictions or proved torsion limit, with numerical values in the legends. A separate figure compares the three Sylow types in the same layout.
 
 [Calculations and fitted coefficients](results/calculations.md) · [Fit table](results/fit_summary.csv) · [Plots](figures/statistics) · [Data format](DATA_FORMAT.md)
 

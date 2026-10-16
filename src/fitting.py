@@ -101,7 +101,7 @@ def plot_error_fit(ax, df, fit, label=None, color="C2"):
     parameters = rf"$c={c:.6g},\ \theta={theta:.6f}$"
     ax.plot(x, np.abs(predict(fit, x)), color=color,
             label=f"{label}: {parameters}" if label else parameters)
-    ax.set(xscale="log", yscale="log", xlabel="X", ylabel=r"$|E(X)|$")
+    ax.set(xscale="log", yscale="log", xlabel="X (log scale)", ylabel=r"$|E(X)|$ (log scale)")
 
 
 def plot_fit(df, metadata, fit, output):
@@ -114,13 +114,14 @@ def plot_fit(df, metadata, fit, output):
     ax.plot(x, df["ratio"], ".", label="Observed")
     ax.plot(x, fitted_ratio(df, fit), color="C2", label="Fitted curve")
     leading = metadata["ratio_leading_term"]
-    ax.axhline(leading, color="black", linestyle=":", label=f"Leading value: {leading:.6f}")
+    reference = "Proved limit" if metadata["observable"] == "torsion" else "CL prediction"
+    ax.axhline(leading, color="black", linestyle="--", label=f"{reference}: {leading:.9g}")
     ylabel = {
         "divisible": r"$N_3(X)/N(X)$",
         "torsion": r"$S_3(X)/N(X)$",
         "sylow": r"$N_{G_3}(X)/N(X)$",
     }[metadata["observable"]]
-    ax.set(xscale="log", xlabel="X", ylabel=ylabel)
+    ax.set(xscale="log", xlabel="X (log scale)", ylabel=ylabel)
     ax.legend()
     label = FIT_CASES[metadata["observable"], metadata["group"]][2]
     if metadata["observable"] == "torsion":
