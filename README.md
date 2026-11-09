@@ -1,6 +1,6 @@
 # Cohen–Lenstra Asymptotics
 
-We estimate the **secondary term in three counting functions**, using the blackboard notation below. The current data contain **81,594,634 imaginary quadratic fields up to $2^{28}$**, with 37 observed Sylow 3 types.
+We estimate the **secondary term in three counting functions**, using the blackboard notation below. The current data contain **326,378,404 imaginary quadratic fields up to $2^{30}$**, with 46 observed Sylow 3 types. Of these fields, 139,775,918 have class number divisible by 3.
 
 ## Notation
 
@@ -56,28 +56,21 @@ Each row uses its own fitted $c,\theta$. The proportions and means are calculate
 
 ## Reproduce in Codespaces
 
-Setup installs pinned dependencies and retrieves the four committed Git LFS input files. The default raw rebuild uses these four inputs.
+Setup installs pinned dependencies. Reproduce the fits and plots from the committed summaries:
 
 ~~~bash
 source .venv/bin/activate
 python -m scripts.reproduce --check
 ~~~
 
-This generates **5 power fits, 6 plots, and the calculation report** from committed summaries. Add --rebuild to first scan every raw record:
-
-~~~bash
-python -m scripts.reproduce --rebuild --check
-~~~
-
-To rebuild through $2^{30}$ in Codespaces, download shards 1–3 for all four residue classes:
+To rebuild the summaries through $2^{30}$, download shards 0–3 for all four residue classes:
 
 ~~~bash
 bash scripts/fetch_extended_shards.sh
-python -m scripts.reproduce --rebuild --raw-xmax 1073741824
-python -m pytest -q
+python -m scripts.reproduce --rebuild --check
 ~~~
 
-Commit the generated summaries, results, and plots. The additional raw shards are ignored by Git.
+The manifest records the rebuild bound and all input hashes. Git ignores the additional raw shards.
 
 Every horizontal axis is $\log_{10}X$, with ticks showing its numerical value. Left vertical axes show the proportions or mean in the table above. Right vertical axes explicitly show $\log_{10}\lvert\text{count}-\text{main term}\rvert$ for the relevant statistic. The fitted line is $\log_{10}\lvert c\rvert+\theta\log_{10}X$; its legend gives the signed $c$ and $\theta$. Fitting still minimizes squared differences in the original count units, before taking logarithms for display. Dashed horizontal lines show the CL predictions or proved torsion limit, with numerical values in the legends. The comparison figure uses the same coordinates for the three Sylow types.
 
@@ -97,7 +90,7 @@ For $K=\mathbb Q(\sqrt d)$ with squarefree $d<0$, select $\lvert d\rvert\le100$ 
 python -m scripts.list_fields --max-d 100
 ~~~
 
-Rows are ordered by $\lvert D\rvert$ and show d, D, h_D, the full class-group decomposition, the Sylow 3 subgroup, the 3-torsion size, and whether 3 divides h_D. Cn denotes a cyclic group of order n; x denotes a direct product; 1 denotes the trivial group. Both bounds include the endpoint. Complete coverage allows --max-D up to 268435456 and --max-d up to 67108864.
+Rows are ordered by $\lvert D\rvert$ and show d, D, h_D, the full class-group decomposition, the Sylow 3 subgroup, the 3-torsion size, and whether 3 divides h_D. Cn denotes a cyclic group of order n; x denotes a direct product; 1 denotes the trivial group. Both bounds include the endpoint. This command uses the four shard-0 files, so --max-D is limited to 268435456 and --max-d to 67108864.
 
 ## Individual fits
 

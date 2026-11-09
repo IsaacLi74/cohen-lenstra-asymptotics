@@ -10,7 +10,9 @@ if ! command -v git-lfs >/dev/null 2>&1 || ! command -v c++ >/dev/null 2>&1 || !
 fi
 
 git lfs install
-git lfs pull
+if ! git lfs pull; then
+    echo "Raw Git LFS files are unavailable. The committed summaries are ready to use."
+fi
 
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
@@ -21,5 +23,6 @@ echo "Activate with:"
 echo "source .venv/bin/activate"
 echo "Then reproduce all plots and fits:"
 echo "python -m scripts.reproduce --check"
-echo "Or rebuild from the 81,594,634 original records:"
+echo "To rebuild from the raw records:"
+echo "bash scripts/fetch_extended_shards.sh"
 echo "python -m scripts.reproduce --rebuild --check"

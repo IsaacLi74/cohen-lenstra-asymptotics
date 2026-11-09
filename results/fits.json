@@ -10,19 +10,19 @@
       "input_files": [
         {
           "path": "processed/p3_statistics.csv",
-          "sha256": "4b5be6f12759c9b1056ebb56413bc3a0dec5f46c9f0a5c9c285ae8226d764129"
+          "sha256": "66323c9ed3e2e8ecd9e0bae3a5ed22a6d2e15b303154b1abd578f1c1bf296f2a"
         }
       ],
       "fit": {
         "parameters": {
-          "c": -0.12861444972322295,
-          "theta": 0.8269161322871322
+          "c": -0.12410472113307089,
+          "theta": 0.8287818565299215
         },
-        "points": 91,
+        "points": 116,
         "xmin": 1030400,
-        "xmax": 268435456,
-        "RMSE": 564.5489656658226,
-        "relative_RMSE": 0.0013419324761530663
+        "xmax": 1073741824,
+        "RMSE": 917.5081812936733,
+        "relative_RMSE": 0.0007526764150376687
       }
     },
     {
@@ -33,19 +33,19 @@
       "input_files": [
         {
           "path": "processed/p3_statistics.csv",
-          "sha256": "4b5be6f12759c9b1056ebb56413bc3a0dec5f46c9f0a5c9c285ae8226d764129"
+          "sha256": "66323c9ed3e2e8ecd9e0bae3a5ed22a6d2e15b303154b1abd578f1c1bf296f2a"
         }
       ],
       "fit": {
         "parameters": {
-          "c": -0.41221453019257037,
-          "theta": 0.8336515318861913
+          "c": -0.41382961708702903,
+          "theta": 0.8334466957609523
         },
-        "points": 91,
+        "points": 116,
         "xmin": 1030400,
-        "xmax": 268435456,
-        "RMSE": 594.8032733476382,
-        "relative_RMSE": 0.00038843467243479036
+        "xmax": 1073741824,
+        "RMSE": 855.9969423128294,
+        "relative_RMSE": 0.00019159281268698076
       }
     },
     {
@@ -56,19 +56,19 @@
       "input_files": [
         {
           "path": "processed/p3_statistics.csv",
-          "sha256": "4b5be6f12759c9b1056ebb56413bc3a0dec5f46c9f0a5c9c285ae8226d764129"
+          "sha256": "66323c9ed3e2e8ecd9e0bae3a5ed22a6d2e15b303154b1abd578f1c1bf296f2a"
         }
       ],
       "fit": {
         "parameters": {
-          "c": -0.047071443807751925,
-          "theta": 0.8384578068625941
+          "c": -0.04458392023262888,
+          "theta": 0.8414482580077299
         },
-        "points": 91,
+        "points": 116,
         "xmin": 1030400,
-        "xmax": 268435456,
-        "RMSE": 882.7458391726918,
-        "relative_RMSE": 0.00461006057012812
+        "xmax": 1073741824,
+        "RMSE": 1135.4758616284262,
+        "relative_RMSE": 0.0020057919654665585
       }
     },
     {
@@ -79,19 +79,19 @@
       "input_files": [
         {
           "path": "processed/p3_statistics.csv",
-          "sha256": "4b5be6f12759c9b1056ebb56413bc3a0dec5f46c9f0a5c9c285ae8226d764129"
+          "sha256": "66323c9ed3e2e8ecd9e0bae3a5ed22a6d2e15b303154b1abd578f1c1bf296f2a"
         }
       ],
       "fit": {
         "parameters": {
-          "c": -0.018535247358649237,
-          "theta": 0.8329901020400677
+          "c": -0.019060547099292342,
+          "theta": 0.8311564460525287
         },
-        "points": 91,
+        "points": 116,
         "xmin": 1030400,
-        "xmax": 268435456,
-        "RMSE": 574.53919884833,
-        "relative_RMSE": 0.008448899494586517
+        "xmax": 1073741824,
+        "RMSE": 1021.9435345233031,
+        "relative_RMSE": 0.0052020314372037135
       }
     },
     {
@@ -102,19 +102,19 @@
       "input_files": [
         {
           "path": "processed/p3_statistics.csv",
-          "sha256": "4b5be6f12759c9b1056ebb56413bc3a0dec5f46c9f0a5c9c285ae8226d764129"
+          "sha256": "66323c9ed3e2e8ecd9e0bae3a5ed22a6d2e15b303154b1abd578f1c1bf296f2a"
         }
       ],
       "fit": {
         "parameters": {
-          "c": -0.013518388467735256,
-          "theta": 0.845309607696559
+          "c": -0.015084639245531975,
+          "theta": 0.8396050179948505
         },
-        "points": 91,
+        "points": 116,
         "xmin": 1030400,
-        "xmax": 268435456,
-        "RMSE": 170.03247508435308,
-        "relative_RMSE": 0.0027164908873459526
+        "xmax": 1073741824,
+        "RMSE": 423.86289301217545,
+        "relative_RMSE": 0.002297232517994198
       }
     }
   ]

@@ -7,15 +7,14 @@ import sys
 from experiments.report import generate
 from scripts.build_stats import build
 from src import ROOT
-from src.statistics import DATA_BOUND
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--rebuild", action="store_true", help="Recompute statistics from original gzip records")
     parser.add_argument("--xmin", type=float, default=1e6, help="Lower bound for the baseline fits")
-    parser.add_argument("--raw-xmax", type=int, default=DATA_BOUND,
-                        help="Upper discriminant bound for --rebuild")
+    parser.add_argument("--raw-xmax", type=int,
+                        help="Override the manifest bound for --rebuild")
     parser.add_argument("--raw-dir", type=Path, default=ROOT/"data/raw")
     parser.add_argument("--data-dir", type=Path, default=ROOT/"data")
     parser.add_argument("--output-dir", type=Path, default=ROOT/"results")

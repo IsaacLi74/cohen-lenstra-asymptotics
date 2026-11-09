@@ -26,22 +26,23 @@ The code searches $\theta\in[-1,2]$ and rejects an optimum at the boundary.
 
 ## Data and counts
 
-Raw coverage: 268,435,456; available cumulative checkpoints: 202. Actual fit: **1,030,400 <= X <= 268,435,456, 91 points**.
+Raw coverage: 1,073,741,824; available cumulative checkpoints: 227. Actual fit: **1,030,400 <= X <= 1,073,741,824, 116 points**.
 
-At X = 268,435,456:
+At X = 1,073,741,824:
 
-- N(X) = 81,594,634; N_3(X) = 81,594,634 - 46,904,916 = 34,689,718.
-- Divisibility proportion = 0.425147050724; CL value = 0.439873922072.
-- S_3(X) = 158,806,032; mean torsion size = 1.946280339955; leading mean = 2.
+- N(X) = 326,378,404; N_3(X) = 326,378,404 - 186,602,486 = 139,775,918.
+- Divisibility proportion = 0.428263378603; CL value = 0.439873922072.
+- S_3(X) = 638,841,092; mean torsion size = 1.957363245149; leading mean = 2.
 
 For $r$ nontrivial cyclic Sylow factors, $\lvert\mathrm{Cl}_D[3]\rvert=3^r$. C9 contributes 3; C3 x C3 contributes 9. Every observed type enters the torsion sum.
 
 | 3-rank r | Number of fields | Contribution to S_3(X) |
 |---:|---:|---:|
-| 0 | 46,904,916 | 46,904,916 |
-| 1 | 33,391,882 | 100,175,646 |
-| 2 | 1,295,339 | 11,658,051 |
-| 3 | 2,497 | 67,419 |
+| 0 | 186,602,486 | 186,602,486 |
+| 1 | 134,329,035 | 402,987,105 |
+| 2 | 5,434,133 | 48,907,197 |
+| 3 | 12,749 | 344,223 |
+| 4 | 1 | 81 |
 
 ## Three Sylow types: observed and CL proportions
 
@@ -51,9 +52,9 @@ rho = 0.303963550927013; 1 - p_3 = 0.560126077927948. The infinite product is ev
 
 | Sylow type | Observed count | Observed / N(X) | Aut size | CL proportion | Observed minus CL |
 |---|---:|---:|---:|---:|---:|
-| C3 | 22,300,589 | 0.273309504642 | 2 | 0.280063038964 | -0.006753534322 |
-| C9 | 7,423,339 | 0.090978274380 | 6 | 0.093354346321 | -0.002376071941 |
-| C3xC3 | 772,494 | 0.009467460814 | 48 | 0.011669293290 | -0.002201832477 |
+| C3 | 89,635,292 | 0.274636100004 | 2 | 0.280063038964 | -0.005426938960 |
+| C9 | 29,858,194 | 0.091483362974 | 6 | 0.093354346321 | -0.001870983347 |
+| C3xC3 | 3,232,964 | 0.009905569610 | 48 | 0.011669293290 | -0.001763723680 |
 
 The automorphism sizes are $3(1-1/3)=2$ for $C_3$, $9(1-1/3)=6$ for $C_9$, and $3^4(1-1/3)(1-1/9)=48$ for $C_3\times C_3$.
 
@@ -63,11 +64,11 @@ These are free-power fits to counting errors under the linear main terms above.
 
 | Statistic | c | theta | RMSE |
 |---|---:|---:|---:|
-| Class-number divisibility | -0.12861445 | 0.826916132 | 564.549 |
-| 3-torsion sum | -0.41221453 | 0.833651532 | 594.803 |
-| Sylow C3 | -0.0470714438 | 0.838457807 | 882.746 |
-| Sylow C9 | -0.0185352474 | 0.832990102 | 574.539 |
-| Sylow C3xC3 | -0.0135183885 | 0.845309608 | 170.032 |
+| Class-number divisibility | -0.124104721 | 0.828781857 | 917.508 |
+| 3-torsion sum | -0.413829617 | 0.833446696 | 855.997 |
+| Sylow C3 | -0.0445839202 | 0.841448258 | 1135.476 |
+| Sylow C9 | -0.0190605471 | 0.831156446 | 1021.944 |
+| Sylow C3xC3 | -0.0150846392 | 0.839605018 | 423.863 |
 
 Ratio curves use the [README formulas](../README.md#what-the-ratio-plots-show). The three Sylow fits are also shown together in the comparison plot.
 

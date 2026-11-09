@@ -42,7 +42,7 @@ def input_files(raw_dir, xmax=DATA_BOUND):
             raise ValueError(f"Missing {path}; retrieve the raw shard before rebuilding")
         with path.open("rb") as f:
             if f.read(2) != b"\x1f\x8b":
-                raise ValueError(f"{path} is not gzip data (possibly an LFS pointer); run git lfs pull")
+                raise ValueError(f"{path} is not gzip data (possibly an LFS pointer); run bash scripts/fetch_extended_shards.sh")
         paths.append(path)
     return paths
 
@@ -98,7 +98,10 @@ def write_csv(path, rows):
     temporary.replace(path)
 
 
-def build(raw_dir, output_dir, n=200, xmin=1000, engine="auto", xmax=DATA_BOUND):
+def build(raw_dir, output_dir, n=200, xmin=1000, engine="auto", xmax=None):
+    if xmax is None:
+        existing_manifest = output_dir/"p3_statistics.manifest.json"
+        xmax = json.loads(existing_manifest.read_text())["xmax"] if existing_manifest.is_file() else DATA_BOUND
     paths = input_files(raw_dir, xmax)
     xs = checkpoints(n, xmin, xmax)
     chosen = "cpp" if engine == "auto" and shutil.which("c++") else engine
@@ -152,7 +155,7 @@ def main():
     parser.add_argument("--raw-dir", type=Path, default=ROOT/"data/raw")
     parser.add_argument("--output-dir", type=Path, default=ROOT/"data/processed")
     parser.add_argument("--xmin", type=int, default=1000)
-    parser.add_argument("--xmax", type=int, default=DATA_BOUND)
+    parser.add_argument("--xmax", type=int, help="Upper bound (defaults to the existing manifest)")
     parser.add_argument("--checkpoints", type=int, default=200)
     parser.add_argument("--engine", choices=["auto", "python", "cpp"], default="auto")
     args = parser.parse_args()

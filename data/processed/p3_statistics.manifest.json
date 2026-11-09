@@ -1,6 +1,6 @@
 {
   "source": "https://www.lmfdb.org/NumberField/QuadraticImaginaryClassGroups",
-  "xmax": 268435456,
+  "xmax": 1073741824,
   "comparison": "0 < |D| <= X",
   "checkpoints": [
     1000,
@@ -204,9 +204,34 @@
     236892591,
     252171312,
     268435455,
-    268435456
+    268435456,
+    285748578,
+    304178334,
+    323796743,
+    344680469,
+    366911121,
+    390575569,
+    415766290,
+    442581721,
+    471126651,
+    501512627,
+    533858389,
+    536870912,
+    568290336,
+    604943020,
+    643959671,
+    685492755,
+    729704574,
+    776767896,
+    805306368,
+    826866634,
+    880196560,
+    936966074,
+    997397018,
+    1061725541,
+    1073741824
   ],
-  "fields": 81594634,
+  "fields": 326378404,
   "inputs": [
     {
       "filename": "cl3mod8.0.gz",
@@ -227,6 +252,66 @@
       "filename": "cl8mod16.0.gz",
       "bytes": 57165418,
       "sha256": "d2ef3bab41f24baeb01454fda34279fdd73dc39f7665b67a0313d86d73a3ab2d"
+    },
+    {
+      "filename": "cl3mod8.1.gz",
+      "bytes": 128308327,
+      "sha256": "4c430cd5e171a62d668a0539ff965d9b713f5ef61bfbb0100ba944213e83405a"
+    },
+    {
+      "filename": "cl7mod8.1.gz",
+      "bytes": 147481126,
+      "sha256": "6cc4d8f8ca8cde6b399178f02862e4b592179eb4f9e00cadd38e8bfe3577b9cb"
+    },
+    {
+      "filename": "cl4mod16.1.gz",
+      "bytes": 65109618,
+      "sha256": "24d8c94c14b56b1cab37a540938760b061442316339257c650ffac8f2073c9db"
+    },
+    {
+      "filename": "cl8mod16.1.gz",
+      "bytes": 65396263,
+      "sha256": "9ea3b82fa468444c88d007a3069eb34e055e0e83a7598f25c5fdb5c81fa271d1"
+    },
+    {
+      "filename": "cl3mod8.2.gz",
+      "bytes": 133189594,
+      "sha256": "78457a0ad17699349e99bd64b6dc5fc06704977b66e81abfe5f4dc7a48a87b75"
+    },
+    {
+      "filename": "cl7mod8.2.gz",
+      "bytes": 151256131,
+      "sha256": "0e699b5a159e5b2ac3f52c3d8fd3909e6e73fbadc243b2485f1741307fae6de6"
+    },
+    {
+      "filename": "cl4mod16.2.gz",
+      "bytes": 68171713,
+      "sha256": "6c4786bd5628d98e2114ccd4905ffe4232bd6b39b10253fd348749444e8c3492"
+    },
+    {
+      "filename": "cl8mod16.2.gz",
+      "bytes": 68424123,
+      "sha256": "edea7e887620052f09ea008f3e5dfe77288c26757348f02489d27d10baeebfb4"
+    },
+    {
+      "filename": "cl3mod8.3.gz",
+      "bytes": 136296191,
+      "sha256": "6d12ef79aebad68447a4914f5a1ca456ab4cfd9250ae17b14b74e8cd34d758bd"
+    },
+    {
+      "filename": "cl7mod8.3.gz",
+      "bytes": 153354907,
+      "sha256": "18be1ecbe202bb776745ef9fd0879fb3f03434dcc3193a8e7dd6a9d87e008472"
+    },
+    {
+      "filename": "cl4mod16.3.gz",
+      "bytes": 70085469,
+      "sha256": "ba9e54fbb6426264a9ecbad780e7ac260b829c41eef482e8c4734101354f5bc8"
+    },
+    {
+      "filename": "cl8mod16.3.gz",
+      "bytes": 70320649,
+      "sha256": "961d04e404750a04ae4866ece376abd0bede10e071df2de7918bc59b7fa90570"
     }
   ],
   "observables": {

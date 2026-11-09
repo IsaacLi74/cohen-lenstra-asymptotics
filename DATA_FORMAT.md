@@ -2,7 +2,7 @@
 
 ## Raw records
 
-The four Git LFS files in data/raw/ come from the [LMFDB imaginary quadratic class-group tables](https://www.lmfdb.org/NumberField/QuadraticImaginaryClassGroups).
+The four shard-0 files tracked with Git LFS come from the [LMFDB imaginary quadratic class-group tables](https://www.lmfdb.org/NumberField/QuadraticImaginaryClassGroups).
 
 | File | Discriminant condition |
 |---|---|
@@ -37,7 +37,7 @@ Stored E_xuzhu columns subtract the linear main term, while E_conditional column
 
 ~~~bash
 python -m scripts.list_fields --max-D 100
-python -m scripts.build_stats
+bash scripts/fetch_extended_shards.sh
 python -m scripts.reproduce --rebuild --check
 ~~~
 
