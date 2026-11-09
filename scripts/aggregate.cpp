@@ -23,15 +23,17 @@ int main(int argc, char** argv) {
         while (grid >> v) xs.push_back(v);
         if (xs.empty()) throw std::runtime_error("Empty checkpoint grid");
         std::vector<std::map<std::string,U>> buckets(xs.size());
-        const std::regex name("(?:^|/)cl([0-9]+)mod([0-9]+)\\.0\\.gz$");
+        const std::regex name("(?:^|/)cl([0-9]+)mod([0-9]+)\\.([0-9]+)\\.gz$");
         for (int file=2; file<argc; ++file) {
             std::string path(argv[file]);
             std::smatch match;
             if (!std::regex_search(path, match, name)) throw std::runtime_error("Invalid raw filename");
             U r=std::stoull(match[1]), m=std::stoull(match[2]);
-            if (!((m==8 && (r==3 || r==7)) || (m==16 && (r==4 || r==8))))
+            U k=std::stoull(match[3]);
+            if (k>=4096 || !((m==8 && (r==3 || r==7)) || (m==16 && (r==4 || r==8))))
                 throw std::runtime_error("Invalid raw filename");
-            U D=r, previous=0, count=0;
+            const U width=1ULL<<28, stop=(k+1)*width;
+            U D=k*width+r, previous=0, count=0;
             size_t index=0;
             gzFile in=gzopen(path.c_str(), "rb");
             if (!in) throw std::runtime_error("Cannot open "+path);
@@ -54,7 +56,7 @@ int main(int argc, char** argv) {
                 if (values[0]>(std::numeric_limits<U>::max()-D)/m)
                     throw std::runtime_error("Discriminant overflow");
                 D+=m*values[0];
-                if (D<=previous || D>=(1ULL<<28))
+                if (D<=previous || D>=stop)
                     throw std::runtime_error("Unsorted or out-of-range discriminant in "+path);
                 previous=D;
                 while (index<xs.size() && xs[index]<D) ++index;

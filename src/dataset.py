@@ -13,7 +13,7 @@ from src.statistics import DATA_BOUND, RAW_FILES, RESIDUES
 RAW_DIR = ROOT / "data/raw"
 
 FILE_RE = re.compile(
-    r"cl(?P<r>\d+)mod(?P<m>\d+)\.0\.gz$"
+    r"cl(?P<r>\d+)mod(?P<m>\d+)\.(?P<k>\d+)\.gz$"
 )
 
 
@@ -93,16 +93,17 @@ def group_label(invariants: tuple[int, ...] | list[int]) -> str:
     return " x ".join(f"C{n}" for n in parts)
 
 
-def parse_filename(path: Path) -> tuple[int, int]:
+def parse_filename(path: Path) -> tuple[int, int, int]:
     match = FILE_RE.fullmatch(path.name)
 
     if not match:
         raise ValueError(f"Unrecognized LMFDB filename: {path.name}")
 
     r, m = int(match.group("r")), int(match.group("m"))
-    if (r, m) not in RESIDUES:
+    k = int(match.group("k"))
+    if (r, m) not in RESIDUES or k >= 4096:
         raise ValueError(f"Unrecognized LMFDB filename: {path.name}")
-    return r, m
+    return r, m, k
 
 
 def iter_file(path: Path) -> Iterator[FieldRecord]:
@@ -110,14 +111,15 @@ def iter_file(path: Path) -> Iterator[FieldRecord]:
     Read one compressed LMFDB class-group file.
 
     LMFDB encoding:
-        d_0 = -r
+        d_0 = -k*2**28 - r
         d_i = d_{i-1} - m*a_i
 
     Each line:
         a_i   h(D_i)   c_1 c_2 ... c_t
     """
-    r, m = parse_filename(path)
-    D = -r
+    r, m, k = parse_filename(path)
+    D = -k*DATA_BOUND - r
+    stop = (k+1)*DATA_BOUND
 
     with gzip.open(path, "rt") as f:
         for line_no, line in enumerate(f, start=1):
@@ -136,7 +138,7 @@ def iter_file(path: Path) -> Iterator[FieldRecord]:
                 raise ValueError(f"{path}:{line_no}: invalid delta or invariant")
 
             D -= m * a
-            if not 0 < abs(D) < DATA_BOUND:
+            if not 0 < abs(D) < stop:
                 raise ValueError(f"{path}:{line_no}: discriminant outside the dataset range")
 
             product = 1

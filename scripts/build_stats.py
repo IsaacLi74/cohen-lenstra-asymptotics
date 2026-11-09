@@ -4,6 +4,7 @@ from collections import Counter
 import csv
 import hashlib
 import json
+import math
 from pathlib import Path
 import shutil
 import subprocess
@@ -15,22 +16,30 @@ from src.statistics import (DATA_BOUND, RAW_FILES, DENSITY, group_key,
                             group_parts, cl_probability, summary_row)
 
 
-def checkpoints(n=200, xmin=1000):
-    # Logarithmic grid; always include the exact integer upper bound.
-    import math
+def checkpoints(n=200, xmin=1000, xmax=DATA_BOUND):
     if not 1 <= xmin <= DATA_BOUND or n < 1:
         raise ValueError("Require 1 <= xmin <= 2^28 and checkpoints >= 1")
-    values = {int(10**(math.log10(xmin) + i*(math.log10(DATA_BOUND)-math.log10(xmin))/n))
+    lo, base = math.log10(xmin), math.log10(DATA_BOUND)
+    values = {max(1, min(DATA_BOUND, int(10**(lo + i*(base-lo)/n))))
               for i in range(n+1)}
-    return sorted({max(1, min(x, DATA_BOUND)) for x in values} | {DATA_BOUND})
+    if xmax > DATA_BOUND:
+        # Preserve the original grid and use its log spacing above 2^28.
+        step = (base-lo or base-3)/n
+        extra = math.ceil(math.log10(xmax/DATA_BOUND)/step)
+        values.update(int(10**(base + i*step)) for i in range(1, extra))
+    return sorted(values | set(range(DATA_BOUND, xmax+1, DATA_BOUND)) | {xmax})
 
 
-def input_files(raw_dir):
+def input_files(raw_dir, xmax=DATA_BOUND):
+    if not DATA_BOUND <= xmax <= 4096*DATA_BOUND or xmax % DATA_BOUND:
+        raise ValueError("xmax must be a positive multiple of 2^28 up to 2^40")
     paths = []
-    for name in RAW_FILES:
+    names = (name.replace(".0.gz", f".{k}.gz")
+             for k in range(xmax//DATA_BOUND) for name in RAW_FILES)
+    for name in names:
         path = raw_dir/name
         if not path.is_file():
-            raise ValueError(f"Missing {path}; run git lfs pull to retrieve the four committed inputs")
+            raise ValueError(f"Missing {path}; retrieve the raw shard before rebuilding")
         with path.open("rb") as f:
             if f.read(2) != b"\x1f\x8b":
                 raise ValueError(f"{path} is not gzip data (possibly an LFS pointer); run git lfs pull")
@@ -89,9 +98,9 @@ def write_csv(path, rows):
     temporary.replace(path)
 
 
-def build(raw_dir, output_dir, n=200, xmin=1000, engine="auto"):
-    paths = input_files(raw_dir)
-    xs = checkpoints(n, xmin)
+def build(raw_dir, output_dir, n=200, xmin=1000, engine="auto", xmax=DATA_BOUND):
+    paths = input_files(raw_dir, xmax)
+    xs = checkpoints(n, xmin, xmax)
     chosen = "cpp" if engine == "auto" and shutil.which("c++") else engine
     if chosen == "auto":
         chosen = "python"
@@ -128,7 +137,7 @@ def build(raw_dir, output_dir, n=200, xmin=1000, engine="auto"):
         inputs.append({"filename": path.name, "bytes": path.stat().st_size,
                        "sha256": digest.hexdigest()})
     manifest = {"source": "https://www.lmfdb.org/NumberField/QuadraticImaginaryClassGroups",
-                "xmax": DATA_BOUND, "comparison": "0 < |D| <= X", "checkpoints": xs,
+                "xmax": xmax, "comparison": "0 < |D| <= X", "checkpoints": xs,
                 "fields": rows[-1]["N_fields"], "inputs": inputs,
                 "observables": {"divisible": "h_D % 3 == 0",
                                 "torsion": "|Cl_D[3]| = 3^rank3, identity included",
@@ -143,11 +152,12 @@ def main():
     parser.add_argument("--raw-dir", type=Path, default=ROOT/"data/raw")
     parser.add_argument("--output-dir", type=Path, default=ROOT/"data/processed")
     parser.add_argument("--xmin", type=int, default=1000)
+    parser.add_argument("--xmax", type=int, default=DATA_BOUND)
     parser.add_argument("--checkpoints", type=int, default=200)
     parser.add_argument("--engine", choices=["auto", "python", "cpp"], default="auto")
     args = parser.parse_args()
     try:
-        build(args.raw_dir, args.output_dir, args.checkpoints, args.xmin, args.engine)
+        build(args.raw_dir, args.output_dir, args.checkpoints, args.xmin, args.engine, args.xmax)
     except (ValueError, RuntimeError, subprocess.CalledProcessError) as error:
         parser.exit(1, f"{error}\n")
 

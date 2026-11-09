@@ -13,7 +13,7 @@ from src import ROOT
 from src.dataset import FieldRecord, p_part
 from src.fitting import load_series, fit_power, predict, select_range
 from src.statistics import (aut_size, cl_probability, ETA3, TARGETS, P_DIVISIBLE,
-                            DENSITY, group_parts, summary_row, RESIDUES)
+                            DENSITY, group_parts, summary_row, RESIDUES, DATA_BOUND)
 
 
 def test_torsion_is_not_sylow_order():
@@ -89,10 +89,22 @@ def test_checkpoint_boundary(tmp_path):
         assert cpp_buckets(paths, grid) == expected
 
 
+def test_later_shard_offset(tmp_path):
+    path = tmp_path/"cl4mod16.3.gz"
+    with gzip.open(path, "wt") as f:
+        f.write("0 9 9\n2 9 3 3\n")
+    start = 3*DATA_BOUND
+    grid = [start+3, start+4, start+35, start+36, 4*DATA_BOUND]
+    expected = [Counter(), Counter(C9=1), Counter(), Counter(C3xC3=1), Counter()]
+    assert python_buckets([path], grid) == expected
+    if shutil.which("c++"):
+        assert cpp_buckets([path], grid) == expected
+
+
 def test_unsupported_raw_files_are_rejected(tmp_path):
     import subprocess
 
-    for name in ["cl3mod8.1.gz", "cl1mod8.0.gz"]:
+    for name in ["cl3mod8.4096.gz", "cl1mod8.0.gz"]:
         path = tmp_path/name
         with gzip.open(path, "wt") as f:
             f.write("0 9 9\n")
@@ -106,13 +118,15 @@ def test_unsupported_raw_files_are_rejected(tmp_path):
 def test_current_summary_matches_manifest_and_count_identities():
     data = pd.read_csv(ROOT/"data/processed/p3_statistics.csv")
     manifest = json.loads((ROOT/"data/processed/p3_statistics.manifest.json").read_text())
-    assert list(data.X) == manifest["checkpoints"] == checkpoints()
+    assert list(data.X) == manifest["checkpoints"] == checkpoints(xmax=manifest["xmax"])
     assert (data.N_divisible == data.N_fields-data.N_trivial).all()
     assert np.array_equal(data.N_other,
                           data.N_fields-sum(data[f"N_{g}"] for g in TARGETS))
-    assert int(data.iloc[-1].N_fields) == manifest["fields"] == 81_594_634
-    assert int(data.iloc[-1].N_divisible) == 34_689_718
-    assert int(data.iloc[-1].S_torsion3) == 158_806_032
+    assert int(data.iloc[-1].N_fields) == manifest["fields"]
+    original = data.set_index("X").loc[DATA_BOUND]
+    assert int(original.N_fields) == 81_594_634
+    assert int(original.N_divisible) == 34_689_718
+    assert int(original.S_torsion3) == 158_806_032
 
 
 def test_every_type_and_rank_contributes():
@@ -123,7 +137,7 @@ def test_every_type_and_rank_contributes():
     weighted = types.N_group * types.group.map(lambda g: 3**len(group_parts(g)))
     assert np.array_equal(weighted.groupby(types.X).sum(), summary.S_torsion3)
     assert np.array_equal(ranks.groupby("X").N_rank.sum(), summary.N_fields)
-    assert len(types.group.unique()) == 37
+    assert len(types[(types.X == DATA_BOUND) & (types.N_group > 0)]) == 37
 
 
 def test_fixed_main_terms():
@@ -134,7 +148,7 @@ def test_fixed_main_terms():
         df, metadata = load_series(observable, group)
         assert np.allclose(df.baseline, leading*DENSITY*df.X)
         assert np.allclose(df.error+df.baseline, df["count"])
-        assert len(df) == 202 and df.iloc[-1].X == 2**28
+        assert list(df.loc[df.X <= DATA_BOUND, "X"]) == checkpoints()
         assert metadata["input_files"][0]["path"] == "processed/p3_statistics.csv"
 
 
@@ -154,7 +168,7 @@ def test_fits_recover_known_secondary_terms():
 
 def test_c9_fit_reference_value():
     df, _ = load_series("sylow", "C9")
-    df = select_range(df, 1e6)
+    df = select_range(df, 1e6, DATA_BOUND)
     fit = fit_power(df.X, df.error)
     assert fit["parameters"]["theta"] == pytest.approx(.83299010, abs=2e-6)
 
