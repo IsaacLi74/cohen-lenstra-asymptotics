@@ -56,7 +56,7 @@ Each row uses its own fitted $c,\theta$. The proportions and means are calculate
 
 ## Reproduce in Codespaces
 
-Setup installs pinned dependencies and retrieves the four committed Git LFS input files. Reproduction uses only this dataset.
+Setup installs pinned dependencies and retrieves the four committed Git LFS input files. The default raw rebuild uses these four inputs.
 
 ~~~bash
 source .venv/bin/activate
@@ -68,6 +68,16 @@ This generates **5 power fits, 6 plots, and the calculation report** from commit
 ~~~bash
 python -m scripts.reproduce --rebuild --check
 ~~~
+
+To rebuild through $2^{30}$ in Codespaces, download shards 1–3 for all four residue classes:
+
+~~~bash
+bash scripts/fetch_extended_shards.sh
+python -m scripts.reproduce --rebuild --raw-xmax 1073741824
+python -m pytest -q
+~~~
+
+Commit the generated summaries, results, and plots. The additional raw shards are ignored by Git.
 
 Every horizontal axis is $\log_{10}X$, with ticks showing its numerical value. Left vertical axes show the proportions or mean in the table above. Right vertical axes explicitly show $\log_{10}\lvert\text{count}-\text{main term}\rvert$ for the relevant statistic. The fitted line is $\log_{10}\lvert c\rvert+\theta\log_{10}X$; its legend gives the signed $c$ and $\theta$. Fitting still minimizes squared differences in the original count units, before taking logarithms for display. Dashed horizontal lines show the CL predictions or proved torsion limit, with numerical values in the legends. The comparison figure uses the same coordinates for the three Sylow types.
 
