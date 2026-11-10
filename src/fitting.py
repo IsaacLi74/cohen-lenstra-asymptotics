@@ -8,9 +8,10 @@ import pandas as pd
 from scipy.optimize import minimize_scalar
 
 from src import ROOT
-from src.statistics import DENSITY, P_DIVISIBLE, SYLOW_TYPES, TARGETS, cl_probability
+from src.statistics import DENSITY, P_DIVISIBLE, SYLOW_TYPES, TARGETS, cl_probability, group_parts
 
-NOTE = "Finite-range least-squares fits; cumulative checkpoints are correlated."
+NOTE = "Finite-range least-squares fits. Cumulative checkpoints are correlated."
+SPARSE_COUNT = 1000
 FIT_CASES = {
     ("divisible", None): ("N_divisible", P_DIVISIBLE, "Class-number divisibility"),
     ("torsion", None): ("S_torsion3", 2.0, "3-torsion sum"),
@@ -20,16 +21,35 @@ FIT_CASES = {
 GROUP_LABELS = {"C3": r"$C_3$", "C9": r"$C_9$", "C3xC3": r"$C_3\times C_3$"}
 
 
+def available_groups(data_dir):
+    path = Path(data_dir)/"processed/sylow3_types.csv"
+    return tuple(pd.read_csv(path, usecols=["group"])["group"].unique())
+
+
+def group_label(group):
+    parts = group_parts(group)
+    return "$" + (r"\times ".join(f"C_{{{q}}}" for q in parts) or "1") + "$"
+
+
 def load_series(observable="divisible", group=None, data_dir=None):
-    try:
-        column, leading, _ = FIT_CASES[observable, group]
-    except KeyError:
-        raise ValueError("Choose divisible, torsion, or a Sylow type: C3, C9, C3xC3") from None
     data_dir = Path(data_dir) if data_dir else ROOT/"data"
-    path = data_dir/"processed/p3_statistics.csv"
-    summary = pd.read_csv(path)
+    case = FIT_CASES.get((observable, group))
+    if case is not None:
+        column, leading, _ = case
+        path = data_dir/"processed/p3_statistics.csv"
+        summary = pd.read_csv(path)
+    elif observable == "sylow" and group:
+        leading = cl_probability(group_parts(group))
+        path = data_dir/"processed/sylow3_types.csv"
+        types = pd.read_csv(path)
+        summary = types.loc[types["group"] == group]
+        if summary.empty:
+            raise ValueError(f"Sylow type {group} is absent from the dataset")
+        column = "N_group"
+    else:
+        raise ValueError("Choose divisible, torsion, or sylow with a group")
     df = pd.DataFrame({"X": summary["X"], "N_fields": summary["N_fields"],
-                       "count": summary[column]})
+                       "count": summary[column]}).sort_values("X").reset_index(drop=True)
     df["baseline"] = leading * (DENSITY*df["X"])
     df["error"] = df["count"]-df["baseline"]
     df["ratio"] = df["count"]/df["N_fields"]
@@ -40,7 +60,7 @@ def load_series(observable="divisible", group=None, data_dir=None):
     return df, metadata
 
 
-def fit_power(x, y):
+def fit_power(x, y, *, theta=None):
     x, y = np.asarray(x, float), np.asarray(y, float)
     if (x.ndim != 1 or y.shape != x.shape or len(x) <= 2
             or not np.all(np.isfinite(x)) or not np.all(np.isfinite(y)) or not np.all(x > 0)):
@@ -53,16 +73,17 @@ def fit_power(x, y):
         amplitude = float(basis@y/(basis@basis))
         return float(np.sum((y-amplitude*basis)**2)), amplitude
 
-    grid = np.linspace(-1, 2, 601)
-    index = min(range(len(grid)), key=lambda j: profile(grid[j])[0])
-    if index in (0, len(grid)-1):
-        raise ValueError("Power fit optimum hits the [-1,2] search boundary")
-    optimum = minimize_scalar(lambda a: profile(a)[0], method="bounded",
-                              bounds=(grid[index-1], grid[index+1]),
-                              options={"xatol": 1e-12})
-    if not optimum.success:
-        raise ValueError("Power fit failed")
-    theta = float(optimum.x)
+    if theta is None:
+        grid = np.linspace(-1, 2, 601)
+        index = min(range(len(grid)), key=lambda j: profile(grid[j])[0])
+        if index in (0, len(grid)-1):
+            raise ValueError("Power fit optimum hits the [-1,2] search boundary")
+        optimum = minimize_scalar(lambda a: profile(a)[0], method="bounded",
+                                  bounds=(grid[index-1], grid[index+1]),
+                                  options={"xatol": 1e-12})
+        if not optimum.success:
+            raise ValueError("Power fit failed")
+        theta = float(optimum.x)
     _, amplitude = profile(theta)
     params = {"c": amplitude/scale**theta, "theta": theta}
     prediction = params["c"]*x**theta
@@ -99,7 +120,7 @@ def plot_labels(observable, group=None):
     elif observable == "torsion":
         count, main = r"S_3(X)", r"\frac{6}{\pi^2}X"
     else:
-        symbol = GROUP_LABELS[group].strip("$") if group else "G_3"
+        symbol = group_label(group).strip("$") if group else "G_3"
         count = rf"N_{{{symbol}}}(X)"
         main = rf"P_{{\mathrm{{CL}}}}({symbol})\frac{{3}}{{\pi^2}}X"
     return rf"${count}/N(X)$", rf"$\log_{{10}}\left|{count}-{main}\right|$"
@@ -108,17 +129,21 @@ def plot_labels(observable, group=None):
 def plot_error_fit(ax, df, fit, ylabel, label=None, color="C2"):
     x = df["X"].to_numpy(float)
     u = np.log10(x)
-    ax.plot(u, np.log10(np.abs(df["error"])), ".", color="C0" if label is None else color,
-            label="Observed" if label is None else None)
-    c, theta = fit["parameters"]["c"], fit["parameters"]["theta"]
-    parameters = rf"$c={c:.6g},\ \theta={theta:.6f}$"
-    legend = (f"{label}: {parameters}" if label else
-              r"Fit: $\log_{10}|c|+\theta\log_{10}X$"+"\n"+parameters)
-    ax.plot(u, np.log10(abs(c))+theta*u, color=color, label=legend)
+    error = df["error"].to_numpy(float)
+    nonzero = error != 0
+    ax.plot(u[nonzero], np.log10(np.abs(error[nonzero])), ".",
+            color="C0" if label is None else color, label="Observed" if label is None else None)
+    if fit is not None:
+        c, theta = fit["parameters"]["c"], fit["parameters"]["theta"]
+        parameters = rf"$c={c:.6g},\ \theta={theta:.6f}$"
+        legend = (f"{label}: {parameters}" if label else
+                  r"Fit: $\log_{10}|c|+\theta\log_{10}X$"+"\n"+parameters)
+        if c:
+            ax.plot(u, np.log10(abs(c))+theta*u, color=color, label=legend)
     ax.set(xlabel=r"$\log_{10}X$", ylabel=ylabel)
 
 
-def plot_fit(df, metadata, fit, output):
+def plot_fit(df, metadata, fit, output, *, fit_reason=None):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -128,21 +153,31 @@ def plot_fit(df, metadata, fit, output):
     u = np.log10(x)
     ax.plot(u, df["ratio"], ".", label="Observed")
     fitted_label = "Fitted mean" if metadata["observable"] == "torsion" else "Fitted proportion"
-    ax.plot(u, fitted_ratio(df, fit), color="C2", label=fitted_label)
+    if fit is not None:
+        ratio = fitted_ratio(df, fit)
+        if metadata["observable"] == "sylow" and ((ratio < 0) | (ratio > 1)).any():
+            fitted_label = "Fit leaves [0, 1]"
+        ax.plot(u, ratio, color="C2", label=fitted_label)
     leading = metadata["ratio_leading_term"]
     reference = "Proved limit" if metadata["observable"] == "torsion" else "CL prediction"
     ax.axhline(leading, color="black", linestyle="--", label=f"{reference}: {leading:.9g}")
     ylabel, error_ylabel = plot_labels(metadata["observable"], metadata["group"])
     ax.set(xlabel=r"$\log_{10}X$", ylabel=ylabel)
     ax.legend()
-    label = FIT_CASES[metadata["observable"], metadata["group"]][2]
-    if metadata["observable"] == "torsion":
+    observable = metadata["observable"]
+    if observable == "torsion":
         label = "Mean 3-torsion size"
-    elif metadata["observable"] == "sylow":
-        label = "Sylow "+GROUP_LABELS[metadata["group"]]
-    ax.set_title(f"{label}\n{fit['xmin']:,} <= X <= {fit['xmax']:,}")
+    elif observable == "sylow":
+        label = "Sylow "+group_label(metadata["group"])
+        count = int(df["count"].iloc[-1])
+        if 0 < count < SPARSE_COUNT:
+            label += f" (sparse, N={count:,})"
+    else:
+        label = FIT_CASES[observable, None][2]
+    ax.set_title(f"{label}\n{int(x[0]):,} <= X <= {int(x[-1]):,}")
     plot_error_fit(error_ax, df, fit, error_ylabel)
-    error_ax.set_title("Logarithm of counting correction")
+    error_ax.set_title("Logarithm of counting correction" if fit is not None
+                       else f"Free fit unavailable\n{fit_reason}")
     error_ax.legend(fontsize=9)
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)

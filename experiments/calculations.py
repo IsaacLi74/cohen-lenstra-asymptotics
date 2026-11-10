@@ -1,4 +1,4 @@
-"""Generate the calculation report for the five free-power fits."""
+"""Generate the calculation report for the complete free-power fits."""
 import json
 import os
 from pathlib import Path
@@ -6,12 +6,12 @@ from pathlib import Path
 import pandas as pd
 
 from src import ROOT
-from src.fitting import FIT_CASES
-from src.statistics import DENSITY, ETA3, P_DIVISIBLE, SYLOW_TYPES, TARGETS, aut_size, cl_probability
+from src.fitting import FIT_CASES, SPARSE_COUNT
+from src.statistics import DENSITY, ETA3, P_DIVISIBLE, aut_size, group_parts
 
 
-def write_calculations(data_dir, output_dir, results):
-    data_dir, output_dir = Path(data_dir), Path(output_dir)
+def write_calculations(data_dir, output_dir, figures_dir, results):
+    data_dir, output_dir, figures_dir = map(Path, (data_dir, output_dir, figures_dir))
     manifest = json.loads((data_dir/"processed/p3_statistics.manifest.json").read_text())
     summaries = pd.read_csv(data_dir/"processed/p3_statistics.csv").set_index("X")
     first = results[0]["fit"]
@@ -36,7 +36,7 @@ def write_calculations(data_dir, output_dir, results):
         r"| Torsion sum | $E_{\mathrm{tor}}(X)=S_3(X)-2\rho X$ |",
         r"| Sylow type $G_3$ | $E_{G_3}(X)=N_{G_3}(X)-P_{\mathrm{CL}}(G_3)\rho X$ |", "",
         r"For each error, we fit only $cX^\theta$, estimating both parameters jointly for each statistic. "
-        r"The Sylow cases are $C_3$, $C_9$, and $C_3\times C_3$. Leading terms stay fixed.", "",
+        "All observed Sylow types enter the distribution and fit tables. Leading terms stay fixed.", "",
         r"$$\min_{c,\theta}\sum_{i=1}^{m}\bigl(E(X_i)-cX_i^\theta\bigr)^2.$$","",
         r"$X_i$ are the selected cumulative bounds and $m$ is their number. "
         "The loss uses equal weights in count units. RMSE is sqrt(loss / m).", "",
@@ -60,37 +60,48 @@ def write_calculations(data_dir, output_dir, results):
     for r in ranks.itertuples():
         lines.append(f"| {int(r.rank3)} | {int(r.N_rank):,} | {3**int(r.rank3)*int(r.N_rank):,} |")
     lines.extend([
-        "", "## Three Sylow types: observed and CL proportions", "",
+        "", "## Sylow types and endpoint proportions", "",
         r"$$P_{\mathrm{CL}}(G_3)=\frac{1-p_3}{\lvert\mathrm{Aut}(G_3)\rvert}.$$","",
         f"rho = {DENSITY:.15f}; 1 - p_3 = {ETA3:.15f}. "
         "The infinite product is evaluated through j = 99 in double precision.", "",
-        "| Sylow type | Observed count | Observed / N(X) | Aut size | CL proportion | Observed minus CL |",
+        "| Sylow type | Rank | Observed count | Observed / N(X) | Aut size | CL proportion |",
         "|---|---:|---:|---:|---:|---:|",
     ])
-    for group in SYLOW_TYPES:
-        count, probability = int(row[f"N_{group}"]), cl_probability(TARGETS[group])
-        lines.append(f"| {group} | {count:,} | {count/n:.12f} | {aut_size(TARGETS[group])} | "
-                     f"{probability:.12f} | {count/n-probability:+.12f} |")
+    for entry in results:
+        group = entry["group"]
+        if group is None:
+            continue
+        parts = group_parts(group)
+        count = entry["count_at_xmax"]
+        probability = entry["ratio_leading_term"]
+        plot = os.path.relpath(figures_dir/f"sylow_{group}.png", output_dir)
+        lines.append(f"| [{group}]({plot}) | {len(parts)} | {count:,} | {count/n:.9g} | "
+                     f"{aut_size(parts):,} | {probability:.9g} |")
     lines.extend([
-        "", r"The automorphism sizes are $3(1-1/3)=2$ for $C_3$, $9(1-1/3)=6$ for $C_9$, "
-        r"and $3^4(1-1/3)(1-1/9)=48$ for $C_3\times C_3$.", "",
-        "## Fitted secondary terms", "",
-        "These are free-power fits to counting errors under the linear main terms above.", "",
-        "| Statistic | c | theta | RMSE |",
-        "|---|---:|---:|---:|",
+        "", "## Fitted secondary terms", "",
+        "The free fit estimates both parameters. The fixed $5/6$ RMSE measures how much "
+        r"the fit worsens when that exponent is imposed. The late window begins at $X_{\max}/4$ "
+        "or the original lower bound, whichever is larger.",
+        f"Fits to types with fewer than {SPARSE_COUNT:,} endpoint observations are marked sparse.", "",
+        "| Statistic | Free c | Free theta | Free RMSE | Fixed 5/6 RMSE | Late free theta | Status |",
+        "|---|---:|---:|---:|---:|---:|---|",
     ])
     for entry in results:
-        fit = entry["fit"]
-        label = FIT_CASES[entry["observable"], entry["group"]][2]
-        lines.append(f"| {label} | {fit['parameters']['c']:.9g} | "
-                     f"{fit['parameters']['theta']:.9f} | {fit['RMSE']:.3f} |")
+        fit, fixed, late = (entry[key] or {} for key in ("fit", "fixed_5_6", "late_fit"))
+        params = fit.get("parameters", {})
+        label = entry["group"] or FIT_CASES[entry["observable"], None][2]
+        status = entry["fit_reason"] or ("Sparse" if entry["sparse"] else "")
+        values = [params.get("c"), params.get("theta"), fit.get("RMSE"),
+                  fixed.get("RMSE"), late.get("parameters", {}).get("theta")]
+        cells = " | ".join(f"{v:.9g}" if v is not None else "—" for v in values)
+        lines.append(f"| {label} | {cells} | {status} |")
     lines.extend([
         "", f"Ratio curves use the [README formulas]({readme}#what-the-ratio-plots-show). "
         "The three Sylow fits are also shown together in the comparison plot.", "",
         "## Checks and reproducibility", "",
-        f"The report contains {len(results)} power fits. Use --xmin and --xmax with experiments.fit "
+        "Use --xmin and --xmax with experiments.fit "
         "to change the fitted range.", "",
-        "The CL leading values for divisibility and Sylow types are conjectural; the torsion mean 2 is proved. "
+        "The CL leading values for divisibility and Sylow types are conjectural. The torsion mean 2 is proved. "
         "Finite-range fits do not establish an asymptotic. Cumulative checkpoints are correlated.", "",
         "~~~bash", "source .venv/bin/activate", "python -m scripts.reproduce --check", "~~~", "",
     ])

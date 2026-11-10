@@ -5,13 +5,12 @@ from pathlib import Path
 
 from src import ROOT
 from src.fitting import NOTE, fit_power, fitted_ratio, load_series, plot_fit, predict, select_range
-from src.statistics import SYLOW_TYPES
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--observable", choices=["divisible", "torsion", "sylow"])
-    parser.add_argument("--group", choices=SYLOW_TYPES)
+    parser.add_argument("--group", help="Sylow type, such as C243 or C9xC3")
     parser.add_argument("--xmin", type=float, default=1e6)
     parser.add_argument("--xmax", type=float)
     parser.add_argument("--data-dir", type=Path, default=ROOT/"data")
@@ -23,6 +22,8 @@ def main():
     try:
         frame, metadata = load_series(observable, args.group, args.data_dir)
         selected = select_range(frame, args.xmin, args.xmax)
+        if observable == "sylow" and not selected["count"].any():
+            raise ValueError("No fields of this Sylow type in the selected range")
         result = fit_power(selected["X"], selected["error"])
     except (ValueError, FileNotFoundError) as error:
         parser.error(str(error))

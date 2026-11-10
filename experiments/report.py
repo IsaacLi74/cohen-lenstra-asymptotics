@@ -1,4 +1,4 @@
-"""Fit c*X**theta for divisibility, torsion, and three Sylow 3 types."""
+"""Fit c*X**theta for divisibility, torsion, and all observed Sylow 3 types."""
 import argparse
 import json
 from pathlib import Path
@@ -7,7 +7,8 @@ import numpy as np
 import pandas as pd
 
 from src import ROOT
-from src.fitting import (FIT_CASES, GROUP_LABELS, NOTE, fit_power, fitted_ratio,
+from src.fitting import (FIT_CASES, GROUP_LABELS, NOTE, SPARSE_COUNT, available_groups,
+                         fit_power, fitted_ratio,
                          load_series, plot_error_fit, plot_fit, plot_labels, select_range)
 from src.statistics import SYLOW_TYPES
 from experiments.calculations import write_calculations
@@ -20,7 +21,7 @@ def comparison(data_dir, results, output):
     fig, (ax, error_ax) = plt.subplots(1, 2, figsize=(12, 5), constrained_layout=True)
     ylabel, error_ylabel = plot_labels("sylow")
     for entry in results:
-        if entry["observable"] != "sylow":
+        if entry["observable"] != "sylow" or entry["group"] not in SYLOW_TYPES or not entry["fit"]:
             continue
         fit = entry["fit"]
         df, _ = load_series("sylow", entry["group"], data_dir)
@@ -42,33 +43,73 @@ def comparison(data_dir, results, output):
     plt.close(fig)
 
 
+def fit_window(frame, *, require_observed=False):
+    if len(frame) <= 2:
+        return None, None, "Fewer than three checkpoints"
+    if require_observed and not frame["count"].any():
+        return None, None, "No fields of this type at the selected bound"
+    fixed = fit_power(frame["X"], frame["error"], theta=5/6)
+    try:
+        fit = fit_power(frame["X"], frame["error"])
+    except ValueError as error:
+        return None, fixed, str(error)
+    return fit, fixed, None
+
+
 def generate(data_dir=ROOT/"data", output_dir=ROOT/"results", figures_dir=ROOT/"figures/statistics",
              xmin=1e6, xmax=None):
     data_dir, output_dir, figures_dir = map(Path, (data_dir, output_dir, figures_dir))
     output_dir.mkdir(parents=True, exist_ok=True)
     figures_dir.mkdir(parents=True, exist_ok=True)
     results = []
-    for observable, group in FIT_CASES:
-        label = f"sylow_{group}" if observable == "sylow" else observable
+    cases = dict.fromkeys([*FIT_CASES, *(("sylow", group) for group in available_groups(data_dir))])
+    for observable, group in cases:
+        sylow = observable == "sylow"
+        label = f"sylow_{group}" if sylow else observable
         df, metadata = load_series(observable, group, data_dir)
         selected = select_range(df, xmin, xmax)
-        fit = fit_power(selected["X"], selected["error"])
-        results.append({**metadata, "fit": fit})
-        plot_fit(selected, metadata, fit, figures_dir/f"{label}.png")
+        if selected.empty:
+            raise ValueError("No checkpoints in the selected range")
+        endpoint = selected.iloc[-1]
+        late = selected.loc[selected["X"] >= endpoint["X"]/4]
+        fit, fixed, reason = fit_window(selected, require_observed=sylow)
+        if not sylow and fit is None:
+            raise ValueError(reason)
+        late_fit, late_fixed, late_reason = fit_window(late, require_observed=sylow)
+        results.append({**metadata, "fit": fit, "fit_reason": reason,
+                        "fixed_5_6": fixed, "late_fit": late_fit, "late_fit_reason": late_reason,
+                        "late_fixed_5_6": late_fixed,
+                        "count_at_xmax": int(endpoint["count"]),
+                        "observed_ratio_at_xmax": float(endpoint["ratio"]),
+                        "sparse": sylow and 0 < int(endpoint["count"]) < SPARSE_COUNT})
+        plot_fit(selected, metadata, fit, figures_dir/f"{label}.png", fit_reason=reason)
         print(f"Generated {label}", flush=True)
     (output_dir/"fits.json").write_text(json.dumps({"model": "c*X**theta", "note": NOTE, "fits": results},
                                                    indent=2, allow_nan=False)+"\n")
     flat = []
     for row in results:
-        fit = row["fit"]
+        fit, fixed = row["fit"] or {}, row["fixed_5_6"] or {}
+        late, late_fixed = row["late_fit"] or {}, row["late_fixed_5_6"] or {}
+        params = fit.get("parameters", {})
         flat.append({"observable": row["observable"], "group": row["group"],
-                     **fit["parameters"], "xmin": fit["xmin"], "xmax": fit["xmax"],
-                     "points": fit["points"], "RMSE": fit["RMSE"],
-                     "relative_RMSE": fit["relative_RMSE"]})
+                     "c": params.get("c"), "theta": params.get("theta"),
+                     **{key: fit.get(key) for key in ("xmin", "xmax", "points", "RMSE", "relative_RMSE")},
+                     "count_at_xmax": row["count_at_xmax"],
+                     "observed_ratio_at_xmax": row["observed_ratio_at_xmax"],
+                     "ratio_leading_term": row["ratio_leading_term"], "sparse": row["sparse"],
+                     "fixed_5_6_c": fixed.get("parameters", {}).get("c"),
+                     "fixed_5_6_RMSE": fixed.get("RMSE"),
+                     "late_xmin": (late or late_fixed).get("xmin"),
+                     "late_points": (late or late_fixed).get("points"),
+                     "late_theta": late.get("parameters", {}).get("theta"),
+                     "late_RMSE": late.get("RMSE"),
+                     "late_fixed_5_6_RMSE": late_fixed.get("RMSE"),
+                     "fit_reason": row["fit_reason"], "late_fit_reason": row["late_fit_reason"]})
     pd.DataFrame(flat).to_csv(output_dir/"fit_summary.csv", index=False)
     comparison(data_dir, results, figures_dir/"sylow_comparison.png")
-    write_calculations(data_dir, output_dir, results)
-    print(f"Saved {len(results)} power fits and {len(results)+1} plots.")
+    write_calculations(data_dir, output_dir, figures_dir, results)
+    fitted = sum(row["fit"] is not None for row in results)
+    print(f"Saved {fitted} power fits and {len(results)+1} plots.")
     return results
 
 

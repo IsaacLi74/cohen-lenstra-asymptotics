@@ -152,6 +152,20 @@ def test_fixed_main_terms():
         assert metadata["input_files"][0]["path"] == "processed/p3_statistics.csv"
 
 
+def test_extended_sylow_series_uses_complete_histogram():
+    df, metadata = load_series("sylow", "C243")
+    assert metadata["input_files"][0]["path"] == "processed/sylow3_types.csv"
+    assert metadata["ratio_leading_term"] == ETA3/162
+    types = pd.read_csv(ROOT/"data/processed/sylow3_types.csv")
+    counts = types.loc[types.group == "C243", "N_group"]
+    assert np.array_equal(df["count"], counts)
+    late = select_range(df, 2**28)
+    free = fit_power(late.X, late.error)
+    fixed = fit_power(late.X, late.error, theta=5/6)
+    assert free["parameters"]["theta"] == pytest.approx(.68127, abs=.0001)
+    assert fixed["RMSE"] > 3*free["RMSE"]
+
+
 def test_fits_recover_known_secondary_terms():
     x = np.geomspace(1e6, 2**28, 80)
     y = -.13*x**.827

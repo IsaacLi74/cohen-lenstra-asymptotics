@@ -40,7 +40,7 @@ $$E(X)\approx cX^\theta.$$
 
 Both $c$ and $\theta$ are estimated separately for each statistic by unweighted least squares on the counting error. The leading terms in the table stay fixed.
 
-Sylow fits cover exactly $C_3$, $C_9$, and $C_3\times C_3$. The report lists their fitted $c,\theta$ side by side and compares observed proportions with $P_{\mathrm{CL}}(G_3)$.
+The fit table and individual figures cover all 46 observed Sylow types, including the trivial group. The [calculation report](results/calculations.md) links each type to its plot and lists its endpoint proportion and CL prediction. It also reports a late-window free fit and a fixed $5/6$ RMSE for comparison. Fits with fewer than 1,000 observations at the endpoint are marked sparse. The late fit for $C_{243}$ gives $\widehat\theta=0.6813$ despite 1,104,084 observations. The experimental report compares it with other types at similar counts.
 
 ## What the ratio plots show
 
@@ -72,9 +72,9 @@ python -m scripts.reproduce --rebuild --check
 
 The manifest records the rebuild bound and all input hashes. Git ignores the additional raw shards.
 
-Every horizontal axis is $\log_{10}X$, with ticks showing its numerical value. Left vertical axes show the proportions or mean in the table above. Right vertical axes explicitly show $\log_{10}\lvert\text{count}-\text{main term}\rvert$ for the relevant statistic. The fitted line is $\log_{10}\lvert c\rvert+\theta\log_{10}X$; its legend gives the signed $c$ and $\theta$. Fitting still minimizes squared differences in the original count units, before taking logarithms for display. Dashed horizontal lines show the CL predictions or proved torsion limit, with numerical values in the legends. The comparison figure uses the same coordinates for the three Sylow types.
+Every horizontal axis is $\log_{10}X$, with ticks showing its numerical value. Left vertical axes show the proportions or mean in the table above. Right vertical axes explicitly show $\log_{10}\lvert\text{count}-\text{main term}\rvert$ for the relevant statistic. The fitted line is $\log_{10}\lvert c\rvert+\theta\log_{10}X$; its legend gives the signed $c$ and $\theta$. Fitting still minimizes squared differences in the original count units, before taking logarithms for display. Dashed horizontal lines show the CL predictions or proved torsion limit, with numerical values in the legends. The comparison figure uses the same coordinates for $C_3$, $C_9$, and $C_3\times C_3$.
 
-[Calculations and fitted coefficients](results/calculations.md) · [Fit table](results/fit_summary.csv) · [Plots](figures/statistics) · [Data format](DATA_FORMAT.md)
+[Calculations and fitted coefficients](results/calculations.md) · [Fit table](results/fit_summary.csv) · [Plots](figures/statistics) · [Experimental report (TeX)](results/sylow3_experiment.tex) · [Data format](DATA_FORMAT.md)
 
 ## Inspect individual fields
 
@@ -100,6 +100,7 @@ python -m experiments.fit --observable torsion
 python -m experiments.fit --group C3
 python -m experiments.fit --group C9
 python -m experiments.fit --group C3xC3
+python -m experiments.fit --group C243 --xmin 268435456
 ~~~
 
-Use --xmin and --xmax to select the fitted range. Results go to results/custom/ as JSON, CSV, and PNG files named by the statistic and actual fit bounds. The CSV includes observed errors, fitted errors, residuals, and ratios.
+Use any group key from the distribution table with --group. Use --xmin and --xmax to select the fitted range. Results go to results/custom/ as JSON, CSV, and PNG files named by the statistic and actual fit bounds. The CSV includes observed errors, fitted errors, residuals, and ratios.

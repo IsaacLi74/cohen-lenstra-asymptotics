@@ -29,7 +29,7 @@ FieldRecord exposes d, D_K, h_K, Cl_K_invariants, sylow3_invariants, rank3, and 
 | rank3_counts.csv | Counts by 3-rank |
 | p3_statistics.manifest.json | Input hashes, sizes, coverage, and checkpoint grid |
 
-The identities N_divisible = N_fields - N_trivial and S_torsion3 = sum_r 3^r N_rank are checked. All type proportions use N_fields. In these preserved summaries, other excludes trivial, C3, C9, and C3xC3; only the last three types are fitted.
+The identities N_divisible = N_fields - N_trivial and S_torsion3 = sum_r 3^r N_rank are checked. All type proportions use N_fields. In the aggregate summary, other excludes trivial, C3, C9, and C3xC3. Individual fits cover every type in sylow3_types.csv.
 
 Stored E_xuzhu columns subtract the linear main term, while E_conditional columns subtract a multiple of N_fields. The current fitter reads the counts and computes only the linear-main-term error defined in the README.
 
