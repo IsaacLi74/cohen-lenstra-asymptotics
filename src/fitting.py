@@ -11,7 +11,7 @@ from src import ROOT
 from src.statistics import DENSITY, P_DIVISIBLE, SYLOW_TYPES, TARGETS, cl_probability, group_parts
 
 NOTE = "Finite-range least-squares fits. Cumulative checkpoints are correlated."
-SPARSE_COUNT = 1000
+SPARSE_COUNT = 10_000
 FIT_CASES = {
     ("divisible", None): ("N_divisible", P_DIVISIBLE, "Class-number divisibility"),
     ("torsion", None): ("S_torsion3", 2.0, "3-torsion sum"),

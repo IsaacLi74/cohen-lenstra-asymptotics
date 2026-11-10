@@ -40,7 +40,7 @@ $$E(X)\approx cX^\theta.$$
 
 Both $c$ and $\theta$ are estimated separately for each statistic by unweighted least squares on the counting error. The leading terms in the table stay fixed.
 
-The fit table and individual figures cover all 46 observed Sylow types, including the trivial group. The [calculation report](results/calculations.md) links each type to its plot and lists its endpoint proportion and CL prediction. It also reports a late-window free fit and a fixed $5/6$ RMSE for comparison. Fits with fewer than 1,000 observations at the endpoint are marked sparse. The late fit for $C_{243}$ gives $\widehat\theta=0.6813$ despite 1,104,084 observations. The experimental report compares it with other types at similar counts.
+The fit table and individual figures cover all 46 observed Sylow types, including the trivial group. The [calculation report](results/calculations.md) links each type to its plot and lists its endpoint proportion and CL prediction. It also reports a late-window free fit and a fixed $5/6$ RMSE for comparison. Fits with fewer than 10,000 observations at the endpoint are marked Sparse. The late fit for $C_{243}$ gives $\widehat\theta=0.6813$ despite 1,104,084 observations. The experimental report compares it with other types at similar counts.
 
 ## What the ratio plots show
 

@@ -1220,7 +1220,7 @@
       },
       "count_at_xmax": 7345,
       "observed_ratio_at_xmax": 2.250455272157039e-05,
-      "sparse": false
+      "sparse": true
     },
     {
       "observable": "sylow",
@@ -1281,7 +1281,7 @@
       },
       "count_at_xmax": 1320,
       "observed_ratio_at_xmax": 4.0443852406362035e-06,
-      "sparse": false
+      "sparse": true
     },
     {
       "observable": "sylow",
@@ -1342,7 +1342,7 @@
       },
       "count_at_xmax": 3492,
       "observed_ratio_at_xmax": 1.069923731841032e-05,
-      "sparse": false
+      "sparse": true
     },
     {
       "observable": "sylow",
@@ -1403,7 +1403,7 @@
       },
       "count_at_xmax": 2202,
       "observed_ratio_at_xmax": 6.746769924152212e-06,
-      "sparse": false
+      "sparse": true
     },
     {
       "observable": "sylow",
@@ -1464,7 +1464,7 @@
       },
       "count_at_xmax": 5651,
       "observed_ratio_at_xmax": 1.7314258329420596e-05,
-      "sparse": false
+      "sparse": true
     },
     {
       "observable": "sylow",
@@ -1586,7 +1586,7 @@
       },
       "count_at_xmax": 1155,
       "observed_ratio_at_xmax": 3.5388370855566777e-06,
-      "sparse": false
+      "sparse": true
     },
     {
       "observable": "sylow",
@@ -1647,7 +1647,7 @@
       },
       "count_at_xmax": 1438,
       "observed_ratio_at_xmax": 4.405928769723379e-06,
-      "sparse": false
+      "sparse": true
     },
     {
       "observable": "sylow",
