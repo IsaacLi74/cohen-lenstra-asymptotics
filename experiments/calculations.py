@@ -54,19 +54,14 @@ def write_calculations(data_dir, output_dir, figures_dir, results):
         f"- S_3(X) = {torsion:,}; mean torsion size = {torsion/n:.12f}; leading mean = 2.", "",
         r"For $r$ nontrivial cyclic Sylow factors, $\lvert\mathrm{Cl}_D[3]\rvert=3^r$. "
         "C9 contributes 3; C3 x C3 contributes 9. Every observed type enters the torsion sum.", "",
-        "| 3-rank r | Number of fields | Contribution to S_3(X) |",
-        "|---:|---:|---:|",
-    ]
-    for r in ranks.itertuples():
-        lines.append(f"| {int(r.rank3)} | {int(r.N_rank):,} | {3**int(r.rank3)*int(r.N_rank):,} |")
-    lines.extend([
-        "", "## Sylow types and endpoint proportions", "",
+        "## Sylow types and endpoint proportions", "",
         r"$$P_{\mathrm{CL}}(G_3)=\frac{1-p_3}{\lvert\mathrm{Aut}(G_3)\rvert}.$$","",
         f"rho = {DENSITY:.15f}; 1 - p_3 = {ETA3:.15f}. "
         "The infinite product is evaluated through j = 99 in double precision.", "",
-        "| Sylow type | Rank | Observed count | Observed / N(X) | Aut size | CL proportion |",
-        "|---|---:|---:|---:|---:|---:|",
-    ])
+        r"Sylow types are listed in increasing order of $\lvert\mathrm{Aut}(G_3)\rvert$ in both tables.", "",
+        "| Sylow type | Aut size | Observed count | Observed / N(X) | CL proportion |",
+        "|---|---:|---:|---:|---:|",
+    ]
     for entry in results:
         group = entry["group"]
         if group is None:
@@ -75,8 +70,8 @@ def write_calculations(data_dir, output_dir, figures_dir, results):
         count = entry["count_at_xmax"]
         probability = entry["ratio_leading_term"]
         plot = os.path.relpath(figures_dir/f"sylow_{group}.png", output_dir)
-        lines.append(f"| [{group}]({plot}) | {len(parts)} | {count:,} | {count/n:.9g} | "
-                     f"{aut_size(parts):,} | {probability:.9g} |")
+        lines.append(f"| [{group}]({plot}) | {aut_size(parts):,} | {count:,} | {count/n:.9g} | "
+                     f"{probability:.9g} |")
     lines.extend([
         "", "## Fitted secondary terms", "",
         "The free fit estimates both parameters. The fixed $5/6$ RMSE measures how much "

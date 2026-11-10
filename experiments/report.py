@@ -10,7 +10,7 @@ from src import ROOT
 from src.fitting import (FIT_CASES, GROUP_LABELS, NOTE, SPARSE_COUNT, available_groups,
                          fit_power, fitted_ratio,
                          load_series, plot_error_fit, plot_fit, plot_labels, select_range)
-from src.statistics import SYLOW_TYPES
+from src.statistics import SYLOW_TYPES, aut_size, group_parts
 from experiments.calculations import write_calculations
 
 
@@ -62,7 +62,11 @@ def generate(data_dir=ROOT/"data", output_dir=ROOT/"results", figures_dir=ROOT/"
     output_dir.mkdir(parents=True, exist_ok=True)
     figures_dir.mkdir(parents=True, exist_ok=True)
     results = []
-    cases = dict.fromkeys([*FIT_CASES, *(("sylow", group) for group in available_groups(data_dir))])
+    groups = {group for observable, group in FIT_CASES if observable == "sylow"}
+    groups.update(available_groups(data_dir))
+    ordered_groups = sorted(groups, key=lambda group: (aut_size(group_parts(group)), group))
+    cases = [(observable, group) for observable, group in FIT_CASES if group is None]
+    cases.extend(("sylow", group) for group in ordered_groups)
     for observable, group in cases:
         sylow = observable == "sylow"
         label = f"sylow_{group}" if sylow else observable

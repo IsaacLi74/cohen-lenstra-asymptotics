@@ -126,6 +126,67 @@
     },
     {
       "observable": "sylow",
+      "group": "trivial",
+      "ratio_leading_term": 0.5601260779279484,
+      "linear_count_coefficient": 0.1702579116138002,
+      "input_files": [
+        {
+          "path": "processed/sylow3_types.csv",
+          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
+        }
+      ],
+      "fit": {
+        "parameters": {
+          "c": 0.12411482034420626,
+          "theta": 0.8287777930871217
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 916.7512409898578,
+        "relative_RMSE": 0.0007520561917521405
+      },
+      "fit_reason": null,
+      "fixed_5_6": {
+        "parameters": {
+          "c": 0.11316861727684527,
+          "theta": 0.8333333333333334
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 3342.205336392339,
+        "relative_RMSE": 0.002741775636569563
+      },
+      "late_fit": {
+        "parameters": {
+          "c": 0.12153471381616163,
+          "theta": 0.8298056975628375
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 969.4572133740205,
+        "relative_RMSE": 0.00039363108859756486
+      },
+      "late_fit_reason": null,
+      "late_fixed_5_6": {
+        "parameters": {
+          "c": 0.1130964616309815,
+          "theta": 0.8333333333333334
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 3250.3966554646995,
+        "relative_RMSE": 0.0013197665211149795
+      },
+      "count_at_xmax": 186602486,
+      "observed_ratio_at_xmax": 0.5717366213972908,
+      "sparse": false
+    },
+    {
+      "observable": "sylow",
       "group": "C3",
       "ratio_leading_term": 0.2800630389639742,
       "linear_count_coefficient": 0.0851289558069001,
@@ -248,128 +309,6 @@
     },
     {
       "observable": "sylow",
-      "group": "C3xC3",
-      "ratio_leading_term": 0.011669293290165592,
-      "linear_count_coefficient": 0.003547039825287504,
-      "input_files": [
-        {
-          "path": "processed/p3_statistics.csv",
-          "sha256": "66323c9ed3e2e8ecd9e0bae3a5ed22a6d2e15b303154b1abd578f1c1bf296f2a"
-        }
-      ],
-      "fit": {
-        "parameters": {
-          "c": -0.015084639245531975,
-          "theta": 0.8396050179948505
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 423.86289301217545,
-        "relative_RMSE": 0.002297232517994198
-      },
-      "fit_reason": null,
-      "fixed_5_6": {
-        "parameters": {
-          "c": -0.017129428942224918,
-          "theta": 0.8333333333333334
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 790.3818900731171,
-        "relative_RMSE": 0.004283675238958756
-      },
-      "late_fit": {
-        "parameters": {
-          "c": -0.016208422875258473,
-          "theta": 0.8360906615579046
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 533.011631819554,
-        "relative_RMSE": 0.0014275054200191108
-      },
-      "late_fit_reason": null,
-      "late_fixed_5_6": {
-        "parameters": {
-          "c": -0.01714622066685161,
-          "theta": 0.8333333333333334
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 647.4331162662262,
-        "relative_RMSE": 0.0017339476803065056
-      },
-      "count_at_xmax": 3232964,
-      "observed_ratio_at_xmax": 0.00990556960993044,
-      "sparse": false
-    },
-    {
-      "observable": "sylow",
-      "group": "trivial",
-      "ratio_leading_term": 0.5601260779279484,
-      "linear_count_coefficient": 0.1702579116138002,
-      "input_files": [
-        {
-          "path": "processed/sylow3_types.csv",
-          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
-        }
-      ],
-      "fit": {
-        "parameters": {
-          "c": 0.12411482034420626,
-          "theta": 0.8287777930871217
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 916.7512409898578,
-        "relative_RMSE": 0.0007520561917521405
-      },
-      "fit_reason": null,
-      "fixed_5_6": {
-        "parameters": {
-          "c": 0.11316861727684527,
-          "theta": 0.8333333333333334
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 3342.205336392339,
-        "relative_RMSE": 0.002741775636569563
-      },
-      "late_fit": {
-        "parameters": {
-          "c": 0.12153471381616163,
-          "theta": 0.8298056975628375
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 969.4572133740205,
-        "relative_RMSE": 0.00039363108859756486
-      },
-      "late_fit_reason": null,
-      "late_fixed_5_6": {
-        "parameters": {
-          "c": 0.1130964616309815,
-          "theta": 0.8333333333333334
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 3250.3966554646995,
-        "relative_RMSE": 0.0013197665211149795
-      },
-      "count_at_xmax": 186602486,
-      "observed_ratio_at_xmax": 0.5717366213972908,
-      "sparse": false
-    },
-    {
-      "observable": "sylow",
       "group": "C27",
       "ratio_leading_term": 0.03111811544044158,
       "linear_count_coefficient": 0.009458772867433345,
@@ -427,6 +366,67 @@
       },
       "count_at_xmax": 9952379,
       "observed_ratio_at_xmax": 0.030493374800619467,
+      "sparse": false
+    },
+    {
+      "observable": "sylow",
+      "group": "C3xC3",
+      "ratio_leading_term": 0.011669293290165592,
+      "linear_count_coefficient": 0.003547039825287504,
+      "input_files": [
+        {
+          "path": "processed/p3_statistics.csv",
+          "sha256": "66323c9ed3e2e8ecd9e0bae3a5ed22a6d2e15b303154b1abd578f1c1bf296f2a"
+        }
+      ],
+      "fit": {
+        "parameters": {
+          "c": -0.015084639245531975,
+          "theta": 0.8396050179948505
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 423.86289301217545,
+        "relative_RMSE": 0.002297232517994198
+      },
+      "fit_reason": null,
+      "fixed_5_6": {
+        "parameters": {
+          "c": -0.017129428942224918,
+          "theta": 0.8333333333333334
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 790.3818900731171,
+        "relative_RMSE": 0.004283675238958756
+      },
+      "late_fit": {
+        "parameters": {
+          "c": -0.016208422875258473,
+          "theta": 0.8360906615579046
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 533.011631819554,
+        "relative_RMSE": 0.0014275054200191108
+      },
+      "late_fit_reason": null,
+      "late_fixed_5_6": {
+        "parameters": {
+          "c": -0.01714622066685161,
+          "theta": 0.8333333333333334
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 647.4331162662262,
+        "relative_RMSE": 0.0017339476803065056
+      },
+      "count_at_xmax": 3232964,
+      "observed_ratio_at_xmax": 0.00990556960993044,
       "sparse": false
     },
     {
@@ -492,372 +492,6 @@
     },
     {
       "observable": "sylow",
-      "group": "C243",
-      "ratio_leading_term": 0.0034575683822712865,
-      "linear_count_coefficient": 0.0010509747630481493,
-      "input_files": [
-        {
-          "path": "processed/sylow3_types.csv",
-          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
-        }
-      ],
-      "fit": {
-        "parameters": {
-          "c": -0.4136745698982433,
-          "theta": 0.5239636769480297
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 742.9912185745137,
-        "relative_RMSE": 0.08415563346271639
-      },
-      "fit_reason": null,
-      "fixed_5_6": {
-        "parameters": {
-          "c": -0.0007998699488062796,
-          "theta": 0.8333333333333334
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 1927.7395560940727,
-        "relative_RMSE": 0.21834732287345668
-      },
-      "late_fit": {
-        "parameters": {
-          "c": -0.016972780622358154,
-          "theta": 0.6812654222765162
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 254.25414680549932,
-        "relative_RMSE": 0.015252418708677228
-      },
-      "late_fit_reason": null,
-      "late_fixed_5_6": {
-        "parameters": {
-          "c": -0.0007642363564258949,
-          "theta": 0.8333333333333334
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 953.601563040091,
-        "relative_RMSE": 0.057205479255616774
-      },
-      "count_at_xmax": 1104084,
-      "observed_ratio_at_xmax": 0.003382834116683774,
-      "sparse": false
-    },
-    {
-      "observable": "sylow",
-      "group": "C729",
-      "ratio_leading_term": 0.0011525227940904288,
-      "linear_count_coefficient": 0.0003503249210160498,
-      "input_files": [
-        {
-          "path": "processed/sylow3_types.csv",
-          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
-        }
-      ],
-      "fit": {
-        "parameters": {
-          "c": -3.2665121631212393,
-          "theta": 0.42763331769166385
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 1012.2370057615682,
-        "relative_RMSE": 0.09817103624719416
-      },
-      "fit_reason": null,
-      "fixed_5_6": {
-        "parameters": {
-          "c": -0.0008982168109824483,
-          "theta": 0.8333333333333334
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 3564.8999332455555,
-        "relative_RMSE": 0.3457391090942833
-      },
-      "late_fit": {
-        "parameters": {
-          "c": -79.03020520314621,
-          "theta": 0.26975081504936943
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 335.7598990178481,
-        "relative_RMSE": 0.01834113017636812
-      },
-      "late_fit_reason": null,
-      "late_fixed_5_6": {
-        "parameters": {
-          "c": -0.0008205308823088949,
-          "theta": 0.8333333333333334
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 3980.642839017037,
-        "relative_RMSE": 0.21744552791921723
-      },
-      "count_at_xmax": 354950,
-      "observed_ratio_at_xmax": 0.0010875413190635003,
-      "sparse": false
-    },
-    {
-      "observable": "sylow",
-      "group": "C2187",
-      "ratio_leading_term": 0.00038417426469680965,
-      "linear_count_coefficient": 0.00011677497367201659,
-      "input_files": [
-        {
-          "path": "processed/sylow3_types.csv",
-          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
-        }
-      ],
-      "fit": {
-        "parameters": {
-          "c": -0.049400627809260286,
-          "theta": 0.6493492617348553
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 623.8369565790861,
-        "relative_RMSE": 0.04811488493894811
-      },
-      "fit_reason": null,
-      "fixed_5_6": {
-        "parameters": {
-          "c": -0.0011929038481199446,
-          "theta": 0.8333333333333334
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 1732.589818131361,
-        "relative_RMSE": 0.13363004366224204
-      },
-      "late_fit": {
-        "parameters": {
-          "c": -0.28051350317461726,
-          "theta": 0.5639952381102982
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 198.55921214986446,
-        "relative_RMSE": 0.007830435697654573
-      },
-      "late_fit_reason": null,
-      "late_fixed_5_6": {
-        "parameters": {
-          "c": -0.0011585328173198297,
-          "theta": 0.8333333333333334
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 2549.2897292519756,
-        "relative_RMSE": 0.10053449086276733
-      },
-      "count_at_xmax": 90877,
-      "observed_ratio_at_xmax": 0.0002784406041767396,
-      "sparse": false
-    },
-    {
-      "observable": "sylow",
-      "group": "C6561",
-      "ratio_leading_term": 0.00012805808823226986,
-      "linear_count_coefficient": 3.8924991224005526e-05,
-      "input_files": [
-        {
-          "path": "processed/sylow3_types.csv",
-          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
-        }
-      ],
-      "fit": {
-        "parameters": {
-          "c": -0.0006097876739826489,
-          "theta": 0.847621884804315
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 153.38013414948423,
-        "relative_RMSE": 0.01747629990602988
-      },
-      "fit_reason": null,
-      "fixed_5_6": {
-        "parameters": {
-          "c": -0.0008146380171655856,
-          "theta": 0.8333333333333334
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 169.88439081821127,
-        "relative_RMSE": 0.01935681292597326
-      },
-      "late_fit": {
-        "parameters": {
-          "c": -0.0011543219472667844,
-          "theta": 0.816396650561981
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 87.8448867385574,
-        "relative_RMSE": 0.004936534537734013
-      },
-      "late_fit_reason": null,
-      "late_fixed_5_6": {
-        "parameters": {
-          "c": -0.0008171299647032782,
-          "theta": 0.8333333333333334
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 139.32322846468912,
-        "relative_RMSE": 0.007829413353010364
-      },
-      "count_at_xmax": 14719,
-      "observed_ratio_at_xmax": 4.509795936130627e-05,
-      "sparse": false
-    },
-    {
-      "observable": "sylow",
-      "group": "C19683",
-      "ratio_leading_term": 4.2686029410756624e-05,
-      "linear_count_coefficient": 1.297499707466851e-05,
-      "input_files": [
-        {
-          "path": "processed/sylow3_types.csv",
-          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
-        }
-      ],
-      "fit": {
-        "parameters": {
-          "c": -3.1723827770649356e-05,
-          "theta": 0.9524987052868052
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 24.682344086039596,
-        "relative_RMSE": 0.006425545340758678
-      },
-      "fit_reason": null,
-      "fixed_5_6": {
-        "parameters": {
-          "c": -0.00035586362379842924,
-          "theta": 0.8333333333333334
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 249.66298509998146,
-        "relative_RMSE": 0.06499467089012996
-      },
-      "late_fit": {
-        "parameters": {
-          "c": -4.031597620769289e-05,
-          "theta": 0.9407921571894636
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 15.213713240611195,
-        "relative_RMSE": 0.0019326567849737018
-      },
-      "late_fit_reason": null,
-      "late_fixed_5_6": {
-        "parameters": {
-          "c": -0.00036122733055284745,
-          "theta": 0.8333333333333334
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 297.33754707708454,
-        "relative_RMSE": 0.03777193763926096
-      },
-      "count_at_xmax": 1320,
-      "observed_ratio_at_xmax": 4.0443852406362035e-06,
-      "sparse": false
-    },
-    {
-      "observable": "sylow",
-      "group": "C59049",
-      "ratio_leading_term": 1.4228676470252209e-05,
-      "linear_count_coefficient": 4.324999024889503e-06,
-      "input_files": [
-        {
-          "path": "processed/sylow3_types.csv",
-          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
-        }
-      ],
-      "fit": {
-        "parameters": {
-          "c": -4.374815908711569e-06,
-          "theta": 0.999419248315842
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 0.4674435128401295,
-        "relative_RMSE": 0.00033964395120347307
-      },
-      "fit_reason": null,
-      "fixed_5_6": {
-        "parameters": {
-          "c": -0.00012728268752739777,
-          "theta": 0.8333333333333334
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 120.18705644019913,
-        "relative_RMSE": 0.08732778530787995
-      },
-      "late_fit": {
-        "parameters": {
-          "c": -4.410748116060978e-06,
-          "theta": 0.9990202613701366
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 0.8344471676475275,
-        "relative_RMSE": 0.000294845282427715
-      },
-      "late_fit_reason": null,
-      "late_fixed_5_6": {
-        "parameters": {
-          "c": -0.000129746284058097,
-          "theta": 0.8333333333333334
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 162.81553438500995,
-        "relative_RMSE": 0.057529576563492155
-      },
-      "count_at_xmax": 6,
-      "observed_ratio_at_xmax": 1.8383569275619107e-08,
-      "sparse": true
-    },
-    {
-      "observable": "sylow",
       "group": "C9xC3",
       "ratio_leading_term": 0.00518635257340693,
       "linear_count_coefficient": 0.001576462144572224,
@@ -919,9 +553,9 @@
     },
     {
       "observable": "sylow",
-      "group": "C9xC9",
-      "ratio_leading_term": 0.0001440653492613036,
-      "linear_count_coefficient": 4.379061512700622e-05,
+      "group": "C243",
+      "ratio_leading_term": 0.0034575683822712865,
+      "linear_count_coefficient": 0.0010509747630481493,
       "input_files": [
         {
           "path": "processed/sylow3_types.csv",
@@ -930,52 +564,52 @@
       ],
       "fit": {
         "parameters": {
-          "c": -0.0001800302419501104,
-          "theta": 0.8439618628017661
+          "c": -0.4136745698982433,
+          "theta": 0.5239636769480297
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 56.101616367926724,
-        "relative_RMSE": 0.023316680705507603
+        "RMSE": 742.9912185745137,
+        "relative_RMSE": 0.08415563346271639
       },
       "fit_reason": null,
       "fixed_5_6": {
         "parameters": {
-          "c": -0.00022331052067658022,
+          "c": -0.0007998699488062796,
           "theta": 0.8333333333333334
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 57.92496950922975,
-        "relative_RMSE": 0.024074493862446384
+        "RMSE": 1927.7395560940727,
+        "relative_RMSE": 0.21834732287345668
       },
       "late_fit": {
         "parameters": {
-          "c": -6.986940239357413e-05,
-          "theta": 0.8902183399730133
+          "c": -0.016972780622358154,
+          "theta": 0.6812654222765162
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 52.99179980291828,
-        "relative_RMSE": 0.01090885627915187
+        "RMSE": 254.25414680549932,
+        "relative_RMSE": 0.015252418708677228
       },
       "late_fit_reason": null,
       "late_fixed_5_6": {
         "parameters": {
-          "c": -0.00022301102768325964,
+          "c": -0.0007642363564258949,
           "theta": 0.8333333333333334
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 110.92207839994478,
-        "relative_RMSE": 0.02283434448254344
+        "RMSE": 953.601563040091,
+        "relative_RMSE": 0.057205479255616774
       },
-      "count_at_xmax": 39385,
-      "observed_ratio_at_xmax": 0.00012067281265337642,
+      "count_at_xmax": 1104084,
+      "observed_ratio_at_xmax": 0.003382834116683774,
       "sparse": false
     },
     {
@@ -1041,9 +675,9 @@
     },
     {
       "observable": "sylow",
-      "group": "C27xC9",
-      "ratio_leading_term": 6.402904411613493e-05,
-      "linear_count_coefficient": 1.9462495612002763e-05,
+      "group": "C729",
+      "ratio_leading_term": 0.0011525227940904288,
+      "linear_count_coefficient": 0.0003503249210160498,
       "input_files": [
         {
           "path": "processed/sylow3_types.csv",
@@ -1052,114 +686,53 @@
       ],
       "fit": {
         "parameters": {
-          "c": -0.00022923829637432546,
-          "theta": 0.7913388325844588
+          "c": -3.2665121631212393,
+          "theta": 0.42763331769166385
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 35.216534733815536,
-        "relative_RMSE": 0.03336775544027027
+        "RMSE": 1012.2370057615682,
+        "relative_RMSE": 0.09817103624719416
       },
       "fit_reason": null,
       "fixed_5_6": {
         "parameters": {
-          "c": -9.789836535208687e-05,
+          "c": -0.0008982168109824483,
           "theta": 0.8333333333333334
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 43.582993282773074,
-        "relative_RMSE": 0.041294996007034776
+        "RMSE": 3564.8999332455555,
+        "relative_RMSE": 0.3457391090942833
       },
       "late_fit": {
         "parameters": {
-          "c": -6.127807638359199e-05,
-          "theta": 0.85581048914614
+          "c": -79.03020520314621,
+          "theta": 0.26975081504936943
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 43.467581672478666,
-        "relative_RMSE": 0.02058843298013132
+        "RMSE": 335.7598990178481,
+        "relative_RMSE": 0.01834113017636812
       },
       "late_fit_reason": null,
       "late_fixed_5_6": {
         "parameters": {
-          "c": -9.692742448304625e-05,
+          "c": -0.0008205308823088949,
           "theta": 0.8333333333333334
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 46.56442793397406,
-        "relative_RMSE": 0.022055255132442064
+        "RMSE": 3980.642839017037,
+        "relative_RMSE": 0.21744552791921723
       },
-      "count_at_xmax": 17554,
-      "observed_ratio_at_xmax": 5.37841958440363e-05,
+      "count_at_xmax": 354950,
+      "observed_ratio_at_xmax": 0.0010875413190635003,
       "sparse": false
-    },
-    {
-      "observable": "sylow",
-      "group": "C27xC27",
-      "ratio_leading_term": 1.778584558781526e-06,
-      "linear_count_coefficient": 5.406248781111879e-07,
-      "input_files": [
-        {
-          "path": "processed/sylow3_types.csv",
-          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
-        }
-      ],
-      "fit": {
-        "parameters": {
-          "c": -0.00017236134603276573,
-          "theta": 0.645450809480465
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 4.409037441673487,
-        "relative_RMSE": 0.10495148866443114
-      },
-      "fit_reason": null,
-      "fixed_5_6": {
-        "parameters": {
-          "c": -3.848598478748812e-06,
-          "theta": 0.8333333333333334
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 6.808030987734956,
-        "relative_RMSE": 0.16205645710397093
-      },
-      "late_fit": {
-        "parameters": {
-          "c": -1.5587806169544246e-05,
-          "theta": 0.7624856827359922
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 4.842393638154379,
-        "relative_RMSE": 0.060374928845160956
-      },
-      "late_fit_reason": null,
-      "late_fixed_5_6": {
-        "parameters": {
-          "c": -3.675194263657592e-06,
-          "theta": 0.8333333333333334
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 5.25255075839336,
-        "relative_RMSE": 0.06548876485276046
-      },
-      "count_at_xmax": 466,
-      "observed_ratio_at_xmax": 1.427790547073084e-06,
-      "sparse": true
     },
     {
       "observable": "sylow",
@@ -1224,9 +797,9 @@
     },
     {
       "observable": "sylow",
-      "group": "C81xC9",
-      "ratio_leading_term": 2.1343014705378312e-05,
-      "linear_count_coefficient": 6.487498537334255e-06,
+      "group": "C2187",
+      "ratio_leading_term": 0.00038417426469680965,
+      "linear_count_coefficient": 0.00011677497367201659,
       "input_files": [
         {
           "path": "processed/sylow3_types.csv",
@@ -1235,175 +808,53 @@
       ],
       "fit": {
         "parameters": {
-          "c": -0.001415125993437353,
-          "theta": 0.6615658560445311
+          "c": -0.049400627809260286,
+          "theta": 0.6493492617348553
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 14.416601218923992,
-        "relative_RMSE": 0.030379176442145484
+        "RMSE": 623.8369565790861,
+        "relative_RMSE": 0.04811488493894811
       },
       "fit_reason": null,
       "fixed_5_6": {
         "parameters": {
-          "c": -4.3767771863510644e-05,
+          "c": -0.0011929038481199446,
           "theta": 0.8333333333333334
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 54.27247891677073,
-        "relative_RMSE": 0.11436490389988441
+        "RMSE": 1732.589818131361,
+        "relative_RMSE": 0.13363004366224204
       },
       "late_fit": {
         "parameters": {
-          "c": -0.0009381327093534036,
-          "theta": 0.6817326975113697
+          "c": -0.28051350317461726,
+          "theta": 0.5639952381102982
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 18.261819247770926,
-        "relative_RMSE": 0.019630838351783468
+        "RMSE": 198.55921214986446,
+        "relative_RMSE": 0.007830435697654573
       },
       "late_fit_reason": null,
       "late_fixed_5_6": {
         "parameters": {
-          "c": -4.264403697381831e-05,
+          "c": -0.0011585328173198297,
           "theta": 0.8333333333333334
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 54.878727034000555,
-        "relative_RMSE": 0.05899277638987767
+        "RMSE": 2549.2897292519756,
+        "relative_RMSE": 0.10053449086276733
       },
-      "count_at_xmax": 5651,
-      "observed_ratio_at_xmax": 1.7314258329420596e-05,
+      "count_at_xmax": 90877,
+      "observed_ratio_at_xmax": 0.0002784406041767396,
       "sparse": false
-    },
-    {
-      "observable": "sylow",
-      "group": "C81xC27",
-      "ratio_leading_term": 7.904820261251227e-07,
-      "linear_count_coefficient": 2.402777236049724e-07,
-      "input_files": [
-        {
-          "path": "processed/sylow3_types.csv",
-          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
-        }
-      ],
-      "fit": {
-        "parameters": {
-          "c": -9.020896666374448e-07,
-          "theta": 0.896981004594862
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 1.9836255075246327,
-        "relative_RMSE": 0.05603380093704895
-      },
-      "fit_reason": null,
-      "fixed_5_6": {
-        "parameters": {
-          "c": -3.2794036338004472e-06,
-          "theta": 0.8333333333333334
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 2.3280509337944406,
-        "relative_RMSE": 0.06576319073368676
-      },
-      "late_fit": {
-        "parameters": {
-          "c": -3.426290489479554e-07,
-          "theta": 0.9442355519888967
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 2.399416081793872,
-        "relative_RMSE": 0.033411102928271166
-      },
-      "late_fit_reason": null,
-      "late_fixed_5_6": {
-        "parameters": {
-          "c": -3.2935429572313698e-06,
-          "theta": 0.8333333333333334
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 3.6496863886473254,
-        "relative_RMSE": 0.05082071780390845
-      },
-      "count_at_xmax": 141,
-      "observed_ratio_at_xmax": 4.32013877977049e-07,
-      "sparse": true
-    },
-    {
-      "observable": "sylow",
-      "group": "C81xC81",
-      "ratio_leading_term": 2.1957834059031186e-08,
-      "linear_count_coefficient": 6.6743812112492335e-09,
-      "input_files": [
-        {
-          "path": "processed/sylow3_types.csv",
-          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
-        }
-      ],
-      "fit": {
-        "parameters": {
-          "c": -9.153756960395071e-11,
-          "theta": 1.1950596772825208
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 0.22833853485404174,
-        "relative_RMSE": 0.14496031235664197
-      },
-      "fit_reason": null,
-      "fixed_5_6": {
-        "parameters": {
-          "c": -1.4260495067209648e-07,
-          "theta": 0.8333333333333334
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 0.34887055659879446,
-        "relative_RMSE": 0.2214798517863995
-      },
-      "late_fit": {
-        "parameters": {
-          "c": -1.7860146500958958e-10,
-          "theta": 1.1627322217653857
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 0.2807099935932233,
-        "relative_RMSE": 0.08570706226195504
-      },
-      "late_fit_reason": null,
-      "late_fixed_5_6": {
-        "parameters": {
-          "c": -1.488447853612075e-07,
-          "theta": 0.8333333333333334
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 0.4699717465130304,
-        "relative_RMSE": 0.1434929238683309
-      },
-      "count_at_xmax": 2,
-      "observed_ratio_at_xmax": 6.127856425206369e-09,
-      "sparse": true
     },
     {
       "observable": "sylow",
@@ -1468,9 +919,9 @@
     },
     {
       "observable": "sylow",
-      "group": "C243xC9",
-      "ratio_leading_term": 7.114338235126104e-06,
-      "linear_count_coefficient": 2.1624995124447516e-06,
+      "group": "C9xC9",
+      "ratio_leading_term": 0.0001440653492613036,
+      "linear_count_coefficient": 4.379061512700622e-05,
       "input_files": [
         {
           "path": "processed/sylow3_types.csv",
@@ -1479,59 +930,59 @@
       ],
       "fit": {
         "parameters": {
-          "c": -0.00032312408298732246,
-          "theta": 0.7135405651387884
+          "c": -0.0001800302419501104,
+          "theta": 0.8439618628017661
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 10.969572168841184,
-        "relative_RMSE": 0.03551582155247135
+        "RMSE": 56.101616367926724,
+        "relative_RMSE": 0.023316680705507603
       },
       "fit_reason": null,
       "fixed_5_6": {
         "parameters": {
-          "c": -2.85715728715675e-05,
+          "c": -0.00022331052067658022,
           "theta": 0.8333333333333334
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 26.132898992373832,
-        "relative_RMSE": 0.08460962405609974
+        "RMSE": 57.92496950922975,
+        "relative_RMSE": 0.024074493862446384
       },
       "late_fit": {
         "parameters": {
-          "c": -0.000990735354806144,
-          "theta": 0.6585321143143292
+          "c": -6.986940239357413e-05,
+          "theta": 0.8902183399730133
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 6.798566491295084,
-        "relative_RMSE": 0.011098682157310897
+        "RMSE": 52.99179980291828,
+        "relative_RMSE": 0.01090885627915187
       },
       "late_fit_reason": null,
       "late_fixed_5_6": {
         "parameters": {
-          "c": -2.806969097301821e-05,
+          "c": -0.00022301102768325964,
           "theta": 0.8333333333333334
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 39.79570130521676,
-        "relative_RMSE": 0.06496661326757812
+        "RMSE": 110.92207839994478,
+        "relative_RMSE": 0.02283434448254344
       },
-      "count_at_xmax": 1438,
-      "observed_ratio_at_xmax": 4.405928769723379e-06,
+      "count_at_xmax": 39385,
+      "observed_ratio_at_xmax": 0.00012067281265337642,
       "sparse": false
     },
     {
       "observable": "sylow",
-      "group": "C243xC27",
-      "ratio_leading_term": 2.6349400870837426e-07,
-      "linear_count_coefficient": 8.00925745349908e-08,
+      "group": "C6561",
+      "ratio_leading_term": 0.00012805808823226986,
+      "linear_count_coefficient": 3.8924991224005526e-05,
       "input_files": [
         {
           "path": "processed/sylow3_types.csv",
@@ -1540,53 +991,114 @@
       ],
       "fit": {
         "parameters": {
-          "c": -5.163875879241167e-07,
-          "theta": 0.8959339017225272
+          "c": -0.0006097876739826489,
+          "theta": 0.847621884804315
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 0.5870869512790444,
-        "relative_RMSE": 0.02962740552557807
+        "RMSE": 153.38013414948423,
+        "relative_RMSE": 0.01747629990602988
       },
       "fit_reason": null,
       "fixed_5_6": {
         "parameters": {
-          "c": -1.837714436549086e-06,
+          "c": -0.0008146380171655856,
           "theta": 0.8333333333333334
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 0.9087800280238463,
-        "relative_RMSE": 0.04586168090629432
+        "RMSE": 169.88439081821127,
+        "relative_RMSE": 0.01935681292597326
       },
       "late_fit": {
         "parameters": {
-          "c": -5.562693452535349e-07,
-          "theta": 0.8923218988070251
+          "c": -0.0011543219472667844,
+          "theta": 0.816396650561981
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 1.060105813282617,
-        "relative_RMSE": 0.026251186931420412
+        "RMSE": 87.8448867385574,
+        "relative_RMSE": 0.004936534537734013
       },
       "late_fit_reason": null,
       "late_fixed_5_6": {
         "parameters": {
-          "c": -1.8533812212068574e-06,
+          "c": -0.0008171299647032782,
           "theta": 0.8333333333333334
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 1.3578822908641333,
-        "relative_RMSE": 0.033624965924827686
+        "RMSE": 139.32322846468912,
+        "relative_RMSE": 0.007829413353010364
       },
-      "count_at_xmax": 22,
-      "observed_ratio_at_xmax": 6.740642067727005e-08,
-      "sparse": true
+      "count_at_xmax": 14719,
+      "observed_ratio_at_xmax": 4.509795936130627e-05,
+      "sparse": false
+    },
+    {
+      "observable": "sylow",
+      "group": "C27xC9",
+      "ratio_leading_term": 6.402904411613493e-05,
+      "linear_count_coefficient": 1.9462495612002763e-05,
+      "input_files": [
+        {
+          "path": "processed/sylow3_types.csv",
+          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
+        }
+      ],
+      "fit": {
+        "parameters": {
+          "c": -0.00022923829637432546,
+          "theta": 0.7913388325844588
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 35.216534733815536,
+        "relative_RMSE": 0.03336775544027027
+      },
+      "fit_reason": null,
+      "fixed_5_6": {
+        "parameters": {
+          "c": -9.789836535208687e-05,
+          "theta": 0.8333333333333334
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 43.582993282773074,
+        "relative_RMSE": 0.041294996007034776
+      },
+      "late_fit": {
+        "parameters": {
+          "c": -6.127807638359199e-05,
+          "theta": 0.85581048914614
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 43.467581672478666,
+        "relative_RMSE": 0.02058843298013132
+      },
+      "late_fit_reason": null,
+      "late_fixed_5_6": {
+        "parameters": {
+          "c": -9.692742448304625e-05,
+          "theta": 0.8333333333333334
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 46.56442793397406,
+        "relative_RMSE": 0.022055255132442064
+      },
+      "count_at_xmax": 17554,
+      "observed_ratio_at_xmax": 5.37841958440363e-05,
+      "sparse": false
     },
     {
       "observable": "sylow",
@@ -1651,311 +1163,6 @@
     },
     {
       "observable": "sylow",
-      "group": "C729xC9",
-      "ratio_leading_term": 2.371446078375368e-06,
-      "linear_count_coefficient": 7.208331708149173e-07,
-      "input_files": [
-        {
-          "path": "processed/sylow3_types.csv",
-          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
-        }
-      ],
-      "fit": {
-        "parameters": {
-          "c": -8.036285674106672e-06,
-          "theta": 0.8668943009667949
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 3.801634234795949,
-        "relative_RMSE": 0.022231156359490172
-      },
-      "fit_reason": null,
-      "fixed_5_6": {
-        "parameters": {
-          "c": -1.5868870323337322e-05,
-          "theta": 0.8333333333333334
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 5.039804399590176,
-        "relative_RMSE": 0.029471714717591562
-      },
-      "late_fit": {
-        "parameters": {
-          "c": -1.7016910828711998e-05,
-          "theta": 0.8301972327433629
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 3.357057339274303,
-        "relative_RMSE": 0.009657181662092945
-      },
-      "late_fit_reason": null,
-      "late_fixed_5_6": {
-        "parameters": {
-          "c": -1.5962392053112818e-05,
-          "theta": 0.8333333333333334
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 3.3796227041515294,
-        "relative_RMSE": 0.009722095009071372
-      },
-      "count_at_xmax": 240,
-      "observed_ratio_at_xmax": 7.353427710247643e-07,
-      "sparse": true
-    },
-    {
-      "observable": "sylow",
-      "group": "C729xC27",
-      "ratio_leading_term": 8.783133623612474e-08,
-      "linear_count_coefficient": 2.6697524844996934e-08,
-      "input_files": [
-        {
-          "path": "processed/sylow3_types.csv",
-          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
-        }
-      ],
-      "fit": {
-        "parameters": {
-          "c": -5.912841484871816e-08,
-          "theta": 0.9590957170322059
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 0.14476660567748642,
-        "relative_RMSE": 0.017678661056622774
-      },
-      "fit_reason": null,
-      "fixed_5_6": {
-        "parameters": {
-          "c": -7.583402409603345e-07,
-          "theta": 0.8333333333333334
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 0.5771436121953508,
-        "relative_RMSE": 0.0704798337520412
-      },
-      "late_fit": {
-        "parameters": {
-          "c": -9.319222541091759e-08,
-          "theta": 0.9368886173246715
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 0.2481175147873333,
-        "relative_RMSE": 0.014765691355308645
-      },
-      "late_fit_reason": null,
-      "late_fixed_5_6": {
-        "parameters": {
-          "c": -7.710426636626665e-07,
-          "theta": 0.8333333333333334
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 0.6601148100893001,
-        "relative_RMSE": 0.03928401246966054
-      },
-      "count_at_xmax": 2,
-      "observed_ratio_at_xmax": 6.127856425206369e-09,
-      "sparse": true
-    },
-    {
-      "observable": "sylow",
-      "group": "C2187xC3",
-      "ratio_leading_term": 2.1343014705378312e-05,
-      "linear_count_coefficient": 6.487498537334255e-06,
-      "input_files": [
-        {
-          "path": "processed/sylow3_types.csv",
-          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
-        }
-      ],
-      "fit": {
-        "parameters": {
-          "c": -7.663535678363774e-05,
-          "theta": 0.8633081263690621
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 18.413989111176104,
-        "relative_RMSE": 0.012146171654124087
-      },
-      "fit_reason": null,
-      "fixed_5_6": {
-        "parameters": {
-          "c": -0.00014071442471028214,
-          "theta": 0.8333333333333334
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 31.918269174929033,
-        "relative_RMSE": 0.02105381804890533
-      },
-      "late_fit": {
-        "parameters": {
-          "c": -0.00011156824845947951,
-          "theta": 0.8449233432528318
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 10.172475223243012,
-        "relative_RMSE": 0.0033052883362342605
-      },
-      "late_fit_reason": null,
-      "late_fixed_5_6": {
-        "parameters": {
-          "c": -0.00014132577046614152,
-          "theta": 0.8333333333333334
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 16.269794334937885,
-        "relative_RMSE": 0.005286457845119862
-      },
-      "count_at_xmax": 2202,
-      "observed_ratio_at_xmax": 6.746769924152212e-06,
-      "sparse": false
-    },
-    {
-      "observable": "sylow",
-      "group": "C2187xC9",
-      "ratio_leading_term": 7.904820261251227e-07,
-      "linear_count_coefficient": 2.402777236049724e-07,
-      "input_files": [
-        {
-          "path": "processed/sylow3_types.csv",
-          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
-        }
-      ],
-      "fit": {
-        "parameters": {
-          "c": -3.218550226768958e-07,
-          "theta": 0.9837333160226222
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 0.5682957610624447,
-        "relative_RMSE": 0.007723833068859854
-      },
-      "fit_reason": null,
-      "fixed_5_6": {
-        "parameters": {
-          "c": -6.8087370781836035e-06,
-          "theta": 0.8333333333333334
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 5.90126533202997,
-        "relative_RMSE": 0.08020539909436507
-      },
-      "late_fit": {
-        "parameters": {
-          "c": -3.3063356762205376e-07,
-          "theta": 0.9824246733496258
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 1.1327081310188598,
-        "relative_RMSE": 0.007494852186271651
-      },
-      "late_fit_reason": null,
-      "late_fixed_5_6": {
-        "parameters": {
-          "c": -6.930496015183669e-06,
-          "theta": 0.8333333333333334
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 7.943850614482611,
-        "relative_RMSE": 0.052562513250272655
-      },
-      "count_at_xmax": 14,
-      "observed_ratio_at_xmax": 4.289499497644458e-08,
-      "sparse": true
-    },
-    {
-      "observable": "sylow",
-      "group": "C6561xC3",
-      "ratio_leading_term": 7.114338235126104e-06,
-      "linear_count_coefficient": 2.1624995124447516e-06,
-      "input_files": [
-        {
-          "path": "processed/sylow3_types.csv",
-          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
-        }
-      ],
-      "fit": {
-        "parameters": {
-          "c": -5.020963469199214e-06,
-          "theta": 0.9554538422044766
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 4.173152176884199,
-        "relative_RMSE": 0.006463741122875716
-      },
-      "fit_reason": null,
-      "fixed_5_6": {
-        "parameters": {
-          "c": -5.9806246299834264e-05,
-          "theta": 0.8333333333333334
-        },
-        "points": 116,
-        "xmin": 1030400,
-        "xmax": 1073741824,
-        "RMSE": 42.88372991108179,
-        "relative_RMSE": 0.06642205143247679
-      },
-      "late_fit": {
-        "parameters": {
-          "c": -6.0640411658512774e-06,
-          "theta": 0.9462274562009301
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 3.483367262221109,
-        "relative_RMSE": 0.0026327966657290394
-      },
-      "late_fit_reason": null,
-      "late_fixed_5_6": {
-        "parameters": {
-          "c": -6.070871793337806e-05,
-          "theta": 0.8333333333333334
-        },
-        "points": 26,
-        "xmin": 268435456,
-        "xmax": 1073741824,
-        "RMSE": 52.41167237424499,
-        "relative_RMSE": 0.03961376044632415
-      },
-      "count_at_xmax": 191,
-      "observed_ratio_at_xmax": 5.852102886072082e-07,
-      "sparse": true
-    },
-    {
-      "observable": "sylow",
       "group": "C3xC3xC3",
       "ratio_leading_term": 4.986877474429741e-05,
       "linear_count_coefficient": 1.5158289851656e-05,
@@ -2013,6 +1220,67 @@
       },
       "count_at_xmax": 7345,
       "observed_ratio_at_xmax": 2.250455272157039e-05,
+      "sparse": false
+    },
+    {
+      "observable": "sylow",
+      "group": "C19683",
+      "ratio_leading_term": 4.2686029410756624e-05,
+      "linear_count_coefficient": 1.297499707466851e-05,
+      "input_files": [
+        {
+          "path": "processed/sylow3_types.csv",
+          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
+        }
+      ],
+      "fit": {
+        "parameters": {
+          "c": -3.1723827770649356e-05,
+          "theta": 0.9524987052868052
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 24.682344086039596,
+        "relative_RMSE": 0.006425545340758678
+      },
+      "fit_reason": null,
+      "fixed_5_6": {
+        "parameters": {
+          "c": -0.00035586362379842924,
+          "theta": 0.8333333333333334
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 249.66298509998146,
+        "relative_RMSE": 0.06499467089012996
+      },
+      "late_fit": {
+        "parameters": {
+          "c": -4.031597620769289e-05,
+          "theta": 0.9407921571894636
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 15.213713240611195,
+        "relative_RMSE": 0.0019326567849737018
+      },
+      "late_fit_reason": null,
+      "late_fixed_5_6": {
+        "parameters": {
+          "c": -0.00036122733055284745,
+          "theta": 0.8333333333333334
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 297.33754707708454,
+        "relative_RMSE": 0.03777193763926096
+      },
+      "count_at_xmax": 1320,
+      "observed_ratio_at_xmax": 4.0443852406362035e-06,
       "sparse": false
     },
     {
@@ -2078,9 +1346,9 @@
     },
     {
       "observable": "sylow",
-      "group": "C9xC9xC3",
-      "ratio_leading_term": 8.89292279390763e-07,
-      "linear_count_coefficient": 2.7031243905559395e-07,
+      "group": "C2187xC3",
+      "ratio_leading_term": 2.1343014705378312e-05,
+      "linear_count_coefficient": 6.487498537334255e-06,
       "input_files": [
         {
           "path": "processed/sylow3_types.csv",
@@ -2089,59 +1357,59 @@
       ],
       "fit": {
         "parameters": {
-          "c": -8.724112442601892e-06,
-          "theta": 0.8030775439618213
+          "c": -7.663535678363774e-05,
+          "theta": 0.8633081263690621
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 2.021269085924265,
-        "relative_RMSE": 0.03967083482544932
+        "RMSE": 18.413989111176104,
+        "relative_RMSE": 0.012146171654124087
       },
       "fit_reason": null,
       "fixed_5_6": {
         "parameters": {
-          "c": -4.7257348234115235e-06,
+          "c": -0.00014071442471028214,
           "theta": 0.8333333333333334
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 2.2125599528726476,
-        "relative_RMSE": 0.04342524260775419
+        "RMSE": 31.918269174929033,
+        "relative_RMSE": 0.02105381804890533
       },
       "late_fit": {
         "parameters": {
-          "c": -3.920382518423345e-06,
-          "theta": 0.8421312104008648
+          "c": -0.00011156824845947951,
+          "theta": 0.8449233432528318
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 3.2093163623778587,
-        "relative_RMSE": 0.03140035022952863
+        "RMSE": 10.172475223243012,
+        "relative_RMSE": 0.0033052883362342605
       },
       "late_fit_reason": null,
       "late_fixed_5_6": {
         "parameters": {
-          "c": -4.691069643450926e-06,
+          "c": -0.00014132577046614152,
           "theta": 0.8333333333333334
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 3.2249239083051044,
-        "relative_RMSE": 0.031553056399005755
+        "RMSE": 16.269794334937885,
+        "relative_RMSE": 0.005286457845119862
       },
-      "count_at_xmax": 127,
-      "observed_ratio_at_xmax": 3.891188830006044e-07,
-      "sparse": true
+      "count_at_xmax": 2202,
+      "observed_ratio_at_xmax": 6.746769924152212e-06,
+      "sparse": false
     },
     {
       "observable": "sylow",
-      "group": "C9xC9xC9",
-      "ratio_leading_term": 2.5335962375805213e-09,
-      "linear_count_coefficient": 7.701209089902961e-10,
+      "group": "C81xC9",
+      "ratio_leading_term": 2.1343014705378312e-05,
+      "linear_count_coefficient": 6.487498537334255e-06,
       "input_files": [
         {
           "path": "processed/sylow3_types.csv",
@@ -2150,52 +1418,113 @@
       ],
       "fit": {
         "parameters": {
-          "c": 2.6265795271512655e-11,
-          "theta": 1.138703096596629
+          "c": -0.001415125993437353,
+          "theta": 0.6615658560445311
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 0.17864550623172382,
-        "relative_RMSE": 0.784038649844449
+        "RMSE": 14.416601218923992,
+        "relative_RMSE": 0.030379176442145484
       },
       "fit_reason": null,
       "fixed_5_6": {
         "parameters": {
-          "c": 1.2790171400119315e-08,
+          "c": -4.3767771863510644e-05,
           "theta": 0.8333333333333334
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 0.18148498272568686,
-        "relative_RMSE": 0.7965005323935915
+        "RMSE": 54.27247891677073,
+        "relative_RMSE": 0.11436490389988441
       },
       "late_fit": {
         "parameters": {
-          "c": 0.0001284467330872187,
-          "theta": 0.39116876796711486
+          "c": -0.0009381327093534036,
+          "theta": 0.6817326975113697
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 0.3109237943518979,
-        "relative_RMSE": 0.6664739031198958
+        "RMSE": 18.261819247770926,
+        "relative_RMSE": 0.019630838351783468
       },
       "late_fit_reason": null,
       "late_fixed_5_6": {
         "parameters": {
-          "c": 1.5598105014760637e-08,
+          "c": -4.264403697381831e-05,
           "theta": 0.8333333333333334
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 0.319786414626498,
-        "relative_RMSE": 0.6854711790877722
+        "RMSE": 54.878727034000555,
+        "relative_RMSE": 0.05899277638987767
       },
-      "count_at_xmax": 1,
-      "observed_ratio_at_xmax": 3.0639282126031844e-09,
+      "count_at_xmax": 5651,
+      "observed_ratio_at_xmax": 1.7314258329420596e-05,
+      "sparse": false
+    },
+    {
+      "observable": "sylow",
+      "group": "C59049",
+      "ratio_leading_term": 1.4228676470252209e-05,
+      "linear_count_coefficient": 4.324999024889503e-06,
+      "input_files": [
+        {
+          "path": "processed/sylow3_types.csv",
+          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
+        }
+      ],
+      "fit": {
+        "parameters": {
+          "c": -4.374815908711569e-06,
+          "theta": 0.999419248315842
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 0.4674435128401295,
+        "relative_RMSE": 0.00033964395120347307
+      },
+      "fit_reason": null,
+      "fixed_5_6": {
+        "parameters": {
+          "c": -0.00012728268752739777,
+          "theta": 0.8333333333333334
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 120.18705644019913,
+        "relative_RMSE": 0.08732778530787995
+      },
+      "late_fit": {
+        "parameters": {
+          "c": -4.410748116060978e-06,
+          "theta": 0.9990202613701366
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 0.8344471676475275,
+        "relative_RMSE": 0.000294845282427715
+      },
+      "late_fit_reason": null,
+      "late_fixed_5_6": {
+        "parameters": {
+          "c": -0.000129746284058097,
+          "theta": 0.8333333333333334
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 162.81553438500995,
+        "relative_RMSE": 0.057529576563492155
+      },
+      "count_at_xmax": 6,
+      "observed_ratio_at_xmax": 1.8383569275619107e-08,
       "sparse": true
     },
     {
@@ -2261,9 +1590,9 @@
     },
     {
       "observable": "sylow",
-      "group": "C27xC9xC3",
-      "ratio_leading_term": 3.9524101306256133e-07,
-      "linear_count_coefficient": 1.201388618024862e-07,
+      "group": "C243xC9",
+      "ratio_leading_term": 7.114338235126104e-06,
+      "linear_count_coefficient": 2.1624995124447516e-06,
       "input_files": [
         {
           "path": "processed/sylow3_types.csv",
@@ -2272,59 +1601,59 @@
       ],
       "fit": {
         "parameters": {
-          "c": -2.2379455680444518e-06,
-          "theta": 0.8245492061103117
+          "c": -0.00032312408298732246,
+          "theta": 0.7135405651387884
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 0.8587786609801086,
-        "relative_RMSE": 0.04252792074228608
+        "RMSE": 10.969572168841184,
+        "relative_RMSE": 0.03551582155247135
       },
       "fit_reason": null,
       "fixed_5_6": {
         "parameters": {
-          "c": -1.8729869428898483e-06,
+          "c": -2.85715728715675e-05,
           "theta": 0.8333333333333334
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 0.8649532149244357,
-        "relative_RMSE": 0.0428336932919482
+        "RMSE": 26.132898992373832,
+        "relative_RMSE": 0.08460962405609974
       },
       "late_fit": {
         "parameters": {
-          "c": -3.952311485854442e-06,
-          "theta": 0.7968580970765939
+          "c": -0.000990735354806144,
+          "theta": 0.6585321143143292
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 1.174613336399857,
-        "relative_RMSE": 0.02870373535308047
+        "RMSE": 6.798566491295084,
+        "relative_RMSE": 0.011098682157310897
       },
       "late_fit_reason": null,
       "late_fixed_5_6": {
         "parameters": {
-          "c": -1.8782343052810774e-06,
+          "c": -2.806969097301821e-05,
           "theta": 0.8333333333333334
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 1.2929542295094207,
-        "relative_RMSE": 0.031595602465431874
+        "RMSE": 39.79570130521676,
+        "relative_RMSE": 0.06496661326757812
       },
-      "count_at_xmax": 68,
-      "observed_ratio_at_xmax": 2.0834711845701653e-07,
-      "sparse": true
+      "count_at_xmax": 1438,
+      "observed_ratio_at_xmax": 4.405928769723379e-06,
+      "sparse": false
     },
     {
       "observable": "sylow",
-      "group": "C27xC27xC3",
-      "ratio_leading_term": 1.0978917029515593e-08,
-      "linear_count_coefficient": 3.3371906056246167e-09,
+      "group": "C6561xC3",
+      "ratio_leading_term": 7.114338235126104e-06,
+      "linear_count_coefficient": 2.1624995124447516e-06,
       "input_files": [
         {
           "path": "processed/sylow3_types.csv",
@@ -2333,52 +1662,52 @@
       ],
       "fit": {
         "parameters": {
-          "c": -5.593450521712716e-06,
-          "theta": 0.6100600559869716
+          "c": -5.020963469199214e-06,
+          "theta": 0.9554538422044766
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 0.17940978285869993,
-        "relative_RMSE": 0.2601180711529474
+        "RMSE": 4.173152176884199,
+        "relative_RMSE": 0.006463741122875716
       },
       "fit_reason": null,
       "fixed_5_6": {
         "parameters": {
-          "c": -6.092129710904251e-08,
+          "c": -5.9806246299834264e-05,
           "theta": 0.8333333333333334
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 0.2123875059324015,
-        "relative_RMSE": 0.3079309695371078
+        "RMSE": 42.88372991108179,
+        "relative_RMSE": 0.06642205143247679
       },
       "late_fit": {
         "parameters": {
-          "c": -0.027983347984211007,
-          "theta": 0.19169219466036785
+          "c": -6.0640411658512774e-06,
+          "theta": 0.9462274562009301
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 0.267192328761164,
-        "relative_RMSE": 0.1959266445774181
+        "RMSE": 3.483367262221109,
+        "relative_RMSE": 0.0026327966657290394
       },
       "late_fit_reason": null,
       "late_fixed_5_6": {
         "parameters": {
-          "c": -5.940747043153458e-08,
+          "c": -6.070871793337806e-05,
           "theta": 0.8333333333333334
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 0.4314373777515863,
-        "relative_RMSE": 0.31636416419614904
+        "RMSE": 52.41167237424499,
+        "relative_RMSE": 0.03961376044632415
       },
-      "count_at_xmax": 2,
-      "observed_ratio_at_xmax": 6.127856425206369e-09,
+      "count_at_xmax": 191,
+      "observed_ratio_at_xmax": 5.852102886072082e-07,
       "sparse": true
     },
     {
@@ -2444,9 +1773,9 @@
     },
     {
       "observable": "sylow",
-      "group": "C81xC9xC3",
-      "ratio_leading_term": 1.3174700435418713e-07,
-      "linear_count_coefficient": 4.00462872674954e-08,
+      "group": "C729xC9",
+      "ratio_leading_term": 2.371446078375368e-06,
+      "linear_count_coefficient": 7.208331708149173e-07,
       "input_files": [
         {
           "path": "processed/sylow3_types.csv",
@@ -2455,59 +1784,59 @@
       ],
       "fit": {
         "parameters": {
-          "c": -2.0447357235176748e-07,
-          "theta": 0.8951211677254114
+          "c": -8.036285674106672e-06,
+          "theta": 0.8668943009667949
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 0.6775717824733436,
-        "relative_RMSE": 0.08749327701746587
+        "RMSE": 3.801634234795949,
+        "relative_RMSE": 0.022231156359490172
       },
       "fit_reason": null,
       "fixed_5_6": {
         "parameters": {
-          "c": -7.158022988206546e-07,
+          "c": -1.5868870323337322e-05,
           "theta": 0.8333333333333334
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 0.7254614190564093,
-        "relative_RMSE": 0.09367715501860262
+        "RMSE": 5.039804399590176,
+        "relative_RMSE": 0.029471714717591562
       },
       "late_fit": {
         "parameters": {
-          "c": -1.9127542301112004e-08,
-          "theta": 1.0106377571395853
+          "c": -1.7016910828711998e-05,
+          "theta": 0.8301972327433629
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 1.0464339896686357,
-        "relative_RMSE": 0.067089052319155
+        "RMSE": 3.357057339274303,
+        "relative_RMSE": 0.009657181662092945
       },
       "late_fit_reason": null,
       "late_fixed_5_6": {
         "parameters": {
-          "c": -7.133025557702753e-07,
+          "c": -1.5962392053112818e-05,
           "theta": 0.8333333333333334
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 1.4158066797105877,
-        "relative_RMSE": 0.09077030118162616
+        "RMSE": 3.3796227041515294,
+        "relative_RMSE": 0.009722095009071372
       },
-      "count_at_xmax": 19,
-      "observed_ratio_at_xmax": 5.8214636039460504e-08,
+      "count_at_xmax": 240,
+      "observed_ratio_at_xmax": 7.353427710247643e-07,
       "sparse": true
     },
     {
       "observable": "sylow",
-      "group": "C81xC27xC3",
-      "ratio_leading_term": 4.879518679784708e-09,
-      "linear_count_coefficient": 1.4831958247220517e-09,
+      "group": "C27xC27",
+      "ratio_leading_term": 1.778584558781526e-06,
+      "linear_count_coefficient": 5.406248781111879e-07,
       "input_files": [
         {
           "path": "processed/sylow3_types.csv",
@@ -2516,52 +1845,52 @@
       ],
       "fit": {
         "parameters": {
-          "c": -6.190172790897496e-05,
-          "theta": 0.4227195808569039
+          "c": -0.00017236134603276573,
+          "theta": 0.645450809480465
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 0.15121592336815656,
-        "relative_RMSE": 0.6506796488321379
+        "RMSE": 4.409037441673487,
+        "relative_RMSE": 0.10495148866443114
       },
       "fit_reason": null,
       "fixed_5_6": {
         "parameters": {
-          "c": -1.5193742627335263e-08,
+          "c": -3.848598478748812e-06,
           "theta": 0.8333333333333334
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 0.16499768329886844,
-        "relative_RMSE": 0.7099823367519263
+        "RMSE": 6.808030987734956,
+        "relative_RMSE": 0.16205645710397093
       },
       "late_fit": {
         "parameters": {
-          "c": -162345.00116739408,
-          "theta": -0.6541743468397787
+          "c": -1.5587806169544246e-05,
+          "theta": 0.7624856827359922
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 0.280734099180196,
-        "relative_RMSE": 0.6456203297791095
+        "RMSE": 4.842393638154379,
+        "relative_RMSE": 0.060374928845160956
       },
       "late_fit_reason": null,
       "late_fixed_5_6": {
         "parameters": {
-          "c": -1.3432846090403093e-08,
+          "c": -3.675194263657592e-06,
           "theta": 0.8333333333333334
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 0.32172492460660024,
-        "relative_RMSE": 0.739889285018231
+        "RMSE": 5.25255075839336,
+        "relative_RMSE": 0.06548876485276046
       },
-      "count_at_xmax": 1,
-      "observed_ratio_at_xmax": 3.0639282126031844e-09,
+      "count_at_xmax": 466,
+      "observed_ratio_at_xmax": 1.427790547073084e-06,
       "sparse": true
     },
     {
@@ -2627,9 +1956,9 @@
     },
     {
       "observable": "sylow",
-      "group": "C243xC9xC3",
-      "ratio_leading_term": 4.391566811806237e-08,
-      "linear_count_coefficient": 1.3348762422498467e-08,
+      "group": "C9xC9xC3",
+      "ratio_leading_term": 8.89292279390763e-07,
+      "linear_count_coefficient": 2.7031243905559395e-07,
       "input_files": [
         {
           "path": "processed/sylow3_types.csv",
@@ -2638,52 +1967,235 @@
       ],
       "fit": {
         "parameters": {
-          "c": -4.104002722464793e-08,
-          "theta": 0.9357013625832544
+          "c": -8.724112442601892e-06,
+          "theta": 0.8030775439618213
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 0.3155586726556322,
-        "relative_RMSE": 0.08900099004303935
+        "RMSE": 2.021269085924265,
+        "relative_RMSE": 0.03967083482544932
       },
       "fit_reason": null,
       "fixed_5_6": {
         "parameters": {
-          "c": -3.2737545910013216e-07,
+          "c": -4.7257348234115235e-06,
           "theta": 0.8333333333333334
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 0.369059214490744,
-        "relative_RMSE": 0.10409042222720978
+        "RMSE": 2.2125599528726476,
+        "relative_RMSE": 0.04342524260775419
       },
       "late_fit": {
         "parameters": {
-          "c": -8.018363442939706e-09,
-          "theta": 1.0153073539499984
+          "c": -3.920382518423345e-06,
+          "theta": 0.8421312104008648
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 0.6077344042573677,
-        "relative_RMSE": 0.08437219530259805
+        "RMSE": 3.2093163623778587,
+        "relative_RMSE": 0.03140035022952863
       },
       "late_fit_reason": null,
       "late_fixed_5_6": {
         "parameters": {
-          "c": -3.289837710587934e-07,
+          "c": -4.691069643450926e-06,
           "theta": 0.8333333333333334
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 0.7473260936914494,
-        "relative_RMSE": 0.10375180784558692
+        "RMSE": 3.2249239083051044,
+        "relative_RMSE": 0.031553056399005755
       },
-      "count_at_xmax": 2,
-      "observed_ratio_at_xmax": 6.127856425206369e-09,
+      "count_at_xmax": 127,
+      "observed_ratio_at_xmax": 3.891188830006044e-07,
+      "sparse": true
+    },
+    {
+      "observable": "sylow",
+      "group": "C2187xC9",
+      "ratio_leading_term": 7.904820261251227e-07,
+      "linear_count_coefficient": 2.402777236049724e-07,
+      "input_files": [
+        {
+          "path": "processed/sylow3_types.csv",
+          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
+        }
+      ],
+      "fit": {
+        "parameters": {
+          "c": -3.218550226768958e-07,
+          "theta": 0.9837333160226222
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 0.5682957610624447,
+        "relative_RMSE": 0.007723833068859854
+      },
+      "fit_reason": null,
+      "fixed_5_6": {
+        "parameters": {
+          "c": -6.8087370781836035e-06,
+          "theta": 0.8333333333333334
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 5.90126533202997,
+        "relative_RMSE": 0.08020539909436507
+      },
+      "late_fit": {
+        "parameters": {
+          "c": -3.3063356762205376e-07,
+          "theta": 0.9824246733496258
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 1.1327081310188598,
+        "relative_RMSE": 0.007494852186271651
+      },
+      "late_fit_reason": null,
+      "late_fixed_5_6": {
+        "parameters": {
+          "c": -6.930496015183669e-06,
+          "theta": 0.8333333333333334
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 7.943850614482611,
+        "relative_RMSE": 0.052562513250272655
+      },
+      "count_at_xmax": 14,
+      "observed_ratio_at_xmax": 4.289499497644458e-08,
+      "sparse": true
+    },
+    {
+      "observable": "sylow",
+      "group": "C81xC27",
+      "ratio_leading_term": 7.904820261251227e-07,
+      "linear_count_coefficient": 2.402777236049724e-07,
+      "input_files": [
+        {
+          "path": "processed/sylow3_types.csv",
+          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
+        }
+      ],
+      "fit": {
+        "parameters": {
+          "c": -9.020896666374448e-07,
+          "theta": 0.896981004594862
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 1.9836255075246327,
+        "relative_RMSE": 0.05603380093704895
+      },
+      "fit_reason": null,
+      "fixed_5_6": {
+        "parameters": {
+          "c": -3.2794036338004472e-06,
+          "theta": 0.8333333333333334
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 2.3280509337944406,
+        "relative_RMSE": 0.06576319073368676
+      },
+      "late_fit": {
+        "parameters": {
+          "c": -3.426290489479554e-07,
+          "theta": 0.9442355519888967
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 2.399416081793872,
+        "relative_RMSE": 0.033411102928271166
+      },
+      "late_fit_reason": null,
+      "late_fixed_5_6": {
+        "parameters": {
+          "c": -3.2935429572313698e-06,
+          "theta": 0.8333333333333334
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 3.6496863886473254,
+        "relative_RMSE": 0.05082071780390845
+      },
+      "count_at_xmax": 141,
+      "observed_ratio_at_xmax": 4.32013877977049e-07,
+      "sparse": true
+    },
+    {
+      "observable": "sylow",
+      "group": "C27xC9xC3",
+      "ratio_leading_term": 3.9524101306256133e-07,
+      "linear_count_coefficient": 1.201388618024862e-07,
+      "input_files": [
+        {
+          "path": "processed/sylow3_types.csv",
+          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
+        }
+      ],
+      "fit": {
+        "parameters": {
+          "c": -2.2379455680444518e-06,
+          "theta": 0.8245492061103117
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 0.8587786609801086,
+        "relative_RMSE": 0.04252792074228608
+      },
+      "fit_reason": null,
+      "fixed_5_6": {
+        "parameters": {
+          "c": -1.8729869428898483e-06,
+          "theta": 0.8333333333333334
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 0.8649532149244357,
+        "relative_RMSE": 0.0428336932919482
+      },
+      "late_fit": {
+        "parameters": {
+          "c": -3.952311485854442e-06,
+          "theta": 0.7968580970765939
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 1.174613336399857,
+        "relative_RMSE": 0.02870373535308047
+      },
+      "late_fit_reason": null,
+      "late_fixed_5_6": {
+        "parameters": {
+          "c": -1.8782343052810774e-06,
+          "theta": 0.8333333333333334
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 1.2929542295094207,
+        "relative_RMSE": 0.031595602465431874
+      },
+      "count_at_xmax": 68,
+      "observed_ratio_at_xmax": 2.0834711845701653e-07,
       "sparse": true
     },
     {
@@ -2749,9 +2261,9 @@
     },
     {
       "observable": "sylow",
-      "group": "C729xC9xC3",
-      "ratio_leading_term": 1.4638556039354124e-08,
-      "linear_count_coefficient": 4.449587474166155e-09,
+      "group": "C243xC27",
+      "ratio_leading_term": 2.6349400870837426e-07,
+      "linear_count_coefficient": 8.00925745349908e-08,
       "input_files": [
         {
           "path": "processed/sylow3_types.csv",
@@ -2760,52 +2272,113 @@
       ],
       "fit": {
         "parameters": {
-          "c": -1.541134034292378e-08,
-          "theta": 0.9237964181779215
+          "c": -5.163875879241167e-07,
+          "theta": 0.8959339017225272
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 0.17230010432875456,
-        "relative_RMSE": 0.1632736219369298
+        "RMSE": 0.5870869512790444,
+        "relative_RMSE": 0.02962740552557807
       },
       "fit_reason": null,
       "fixed_5_6": {
         "parameters": {
-          "c": -9.655149286570773e-08,
+          "c": -1.837714436549086e-06,
           "theta": 0.8333333333333334
         },
         "points": 116,
         "xmin": 1030400,
         "xmax": 1073741824,
-        "RMSE": 0.17896645028465097,
-        "relative_RMSE": 0.16959073041196027
+        "RMSE": 0.9087800280238463,
+        "relative_RMSE": 0.04586168090629432
       },
       "late_fit": {
         "parameters": {
-          "c": -1.9663777118873107e-10,
-          "theta": 1.136477288657243
+          "c": -5.562693452535349e-07,
+          "theta": 0.8923218988070251
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 0.3098122458294136,
-        "relative_RMSE": 0.14602219946601933
+        "RMSE": 1.060105813282617,
+        "relative_RMSE": 0.026251186931420412
       },
       "late_fit_reason": null,
       "late_fixed_5_6": {
         "parameters": {
-          "c": -9.593621167859465e-08,
+          "c": -1.8533812212068574e-06,
           "theta": 0.8333333333333334
         },
         "points": 26,
         "xmin": 268435456,
         "xmax": 1073741824,
-        "RMSE": 0.3700244523299906,
-        "relative_RMSE": 0.174401706558704
+        "RMSE": 1.3578822908641333,
+        "relative_RMSE": 0.033624965924827686
       },
-      "count_at_xmax": 1,
-      "observed_ratio_at_xmax": 3.0639282126031844e-09,
+      "count_at_xmax": 22,
+      "observed_ratio_at_xmax": 6.740642067727005e-08,
+      "sparse": true
+    },
+    {
+      "observable": "sylow",
+      "group": "C81xC9xC3",
+      "ratio_leading_term": 1.3174700435418713e-07,
+      "linear_count_coefficient": 4.00462872674954e-08,
+      "input_files": [
+        {
+          "path": "processed/sylow3_types.csv",
+          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
+        }
+      ],
+      "fit": {
+        "parameters": {
+          "c": -2.0447357235176748e-07,
+          "theta": 0.8951211677254114
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 0.6775717824733436,
+        "relative_RMSE": 0.08749327701746587
+      },
+      "fit_reason": null,
+      "fixed_5_6": {
+        "parameters": {
+          "c": -7.158022988206546e-07,
+          "theta": 0.8333333333333334
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 0.7254614190564093,
+        "relative_RMSE": 0.09367715501860262
+      },
+      "late_fit": {
+        "parameters": {
+          "c": -1.9127542301112004e-08,
+          "theta": 1.0106377571395853
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 1.0464339896686357,
+        "relative_RMSE": 0.067089052319155
+      },
+      "late_fit_reason": null,
+      "late_fixed_5_6": {
+        "parameters": {
+          "c": -7.133025557702753e-07,
+          "theta": 0.8333333333333334
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 1.4158066797105877,
+        "relative_RMSE": 0.09077030118162616
+      },
+      "count_at_xmax": 19,
+      "observed_ratio_at_xmax": 5.8214636039460504e-08,
       "sparse": true
     },
     {
@@ -2871,6 +2444,128 @@
     },
     {
       "observable": "sylow",
+      "group": "C729xC27",
+      "ratio_leading_term": 8.783133623612474e-08,
+      "linear_count_coefficient": 2.6697524844996934e-08,
+      "input_files": [
+        {
+          "path": "processed/sylow3_types.csv",
+          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
+        }
+      ],
+      "fit": {
+        "parameters": {
+          "c": -5.912841484871816e-08,
+          "theta": 0.9590957170322059
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 0.14476660567748642,
+        "relative_RMSE": 0.017678661056622774
+      },
+      "fit_reason": null,
+      "fixed_5_6": {
+        "parameters": {
+          "c": -7.583402409603345e-07,
+          "theta": 0.8333333333333334
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 0.5771436121953508,
+        "relative_RMSE": 0.0704798337520412
+      },
+      "late_fit": {
+        "parameters": {
+          "c": -9.319222541091759e-08,
+          "theta": 0.9368886173246715
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 0.2481175147873333,
+        "relative_RMSE": 0.014765691355308645
+      },
+      "late_fit_reason": null,
+      "late_fixed_5_6": {
+        "parameters": {
+          "c": -7.710426636626665e-07,
+          "theta": 0.8333333333333334
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 0.6601148100893001,
+        "relative_RMSE": 0.03928401246966054
+      },
+      "count_at_xmax": 2,
+      "observed_ratio_at_xmax": 6.127856425206369e-09,
+      "sparse": true
+    },
+    {
+      "observable": "sylow",
+      "group": "C243xC9xC3",
+      "ratio_leading_term": 4.391566811806237e-08,
+      "linear_count_coefficient": 1.3348762422498467e-08,
+      "input_files": [
+        {
+          "path": "processed/sylow3_types.csv",
+          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
+        }
+      ],
+      "fit": {
+        "parameters": {
+          "c": -4.104002722464793e-08,
+          "theta": 0.9357013625832544
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 0.3155586726556322,
+        "relative_RMSE": 0.08900099004303935
+      },
+      "fit_reason": null,
+      "fixed_5_6": {
+        "parameters": {
+          "c": -3.2737545910013216e-07,
+          "theta": 0.8333333333333334
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 0.369059214490744,
+        "relative_RMSE": 0.10409042222720978
+      },
+      "late_fit": {
+        "parameters": {
+          "c": -8.018363442939706e-09,
+          "theta": 1.0153073539499984
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 0.6077344042573677,
+        "relative_RMSE": 0.08437219530259805
+      },
+      "late_fit_reason": null,
+      "late_fixed_5_6": {
+        "parameters": {
+          "c": -3.289837710587934e-07,
+          "theta": 0.8333333333333334
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 0.7473260936914494,
+        "relative_RMSE": 0.10375180784558692
+      },
+      "count_at_xmax": 2,
+      "observed_ratio_at_xmax": 6.127856425206369e-09,
+      "sparse": true
+    },
+    {
+      "observable": "sylow",
       "group": "C3xC3xC3xC3",
       "ratio_leading_term": 2.3087395714952503e-08,
       "linear_count_coefficient": 7.0177267831740745e-09,
@@ -2925,6 +2620,311 @@
         "xmax": 1073741824,
         "RMSE": 0.23618508959255916,
         "relative_RMSE": 0.05770506160446556
+      },
+      "count_at_xmax": 1,
+      "observed_ratio_at_xmax": 3.0639282126031844e-09,
+      "sparse": true
+    },
+    {
+      "observable": "sylow",
+      "group": "C81xC81",
+      "ratio_leading_term": 2.1957834059031186e-08,
+      "linear_count_coefficient": 6.6743812112492335e-09,
+      "input_files": [
+        {
+          "path": "processed/sylow3_types.csv",
+          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
+        }
+      ],
+      "fit": {
+        "parameters": {
+          "c": -9.153756960395071e-11,
+          "theta": 1.1950596772825208
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 0.22833853485404174,
+        "relative_RMSE": 0.14496031235664197
+      },
+      "fit_reason": null,
+      "fixed_5_6": {
+        "parameters": {
+          "c": -1.4260495067209648e-07,
+          "theta": 0.8333333333333334
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 0.34887055659879446,
+        "relative_RMSE": 0.2214798517863995
+      },
+      "late_fit": {
+        "parameters": {
+          "c": -1.7860146500958958e-10,
+          "theta": 1.1627322217653857
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 0.2807099935932233,
+        "relative_RMSE": 0.08570706226195504
+      },
+      "late_fit_reason": null,
+      "late_fixed_5_6": {
+        "parameters": {
+          "c": -1.488447853612075e-07,
+          "theta": 0.8333333333333334
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 0.4699717465130304,
+        "relative_RMSE": 0.1434929238683309
+      },
+      "count_at_xmax": 2,
+      "observed_ratio_at_xmax": 6.127856425206369e-09,
+      "sparse": true
+    },
+    {
+      "observable": "sylow",
+      "group": "C729xC9xC3",
+      "ratio_leading_term": 1.4638556039354124e-08,
+      "linear_count_coefficient": 4.449587474166155e-09,
+      "input_files": [
+        {
+          "path": "processed/sylow3_types.csv",
+          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
+        }
+      ],
+      "fit": {
+        "parameters": {
+          "c": -1.541134034292378e-08,
+          "theta": 0.9237964181779215
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 0.17230010432875456,
+        "relative_RMSE": 0.1632736219369298
+      },
+      "fit_reason": null,
+      "fixed_5_6": {
+        "parameters": {
+          "c": -9.655149286570773e-08,
+          "theta": 0.8333333333333334
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 0.17896645028465097,
+        "relative_RMSE": 0.16959073041196027
+      },
+      "late_fit": {
+        "parameters": {
+          "c": -1.9663777118873107e-10,
+          "theta": 1.136477288657243
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 0.3098122458294136,
+        "relative_RMSE": 0.14602219946601933
+      },
+      "late_fit_reason": null,
+      "late_fixed_5_6": {
+        "parameters": {
+          "c": -9.593621167859465e-08,
+          "theta": 0.8333333333333334
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 0.3700244523299906,
+        "relative_RMSE": 0.174401706558704
+      },
+      "count_at_xmax": 1,
+      "observed_ratio_at_xmax": 3.0639282126031844e-09,
+      "sparse": true
+    },
+    {
+      "observable": "sylow",
+      "group": "C27xC27xC3",
+      "ratio_leading_term": 1.0978917029515593e-08,
+      "linear_count_coefficient": 3.3371906056246167e-09,
+      "input_files": [
+        {
+          "path": "processed/sylow3_types.csv",
+          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
+        }
+      ],
+      "fit": {
+        "parameters": {
+          "c": -5.593450521712716e-06,
+          "theta": 0.6100600559869716
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 0.17940978285869993,
+        "relative_RMSE": 0.2601180711529474
+      },
+      "fit_reason": null,
+      "fixed_5_6": {
+        "parameters": {
+          "c": -6.092129710904251e-08,
+          "theta": 0.8333333333333334
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 0.2123875059324015,
+        "relative_RMSE": 0.3079309695371078
+      },
+      "late_fit": {
+        "parameters": {
+          "c": -0.027983347984211007,
+          "theta": 0.19169219466036785
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 0.267192328761164,
+        "relative_RMSE": 0.1959266445774181
+      },
+      "late_fit_reason": null,
+      "late_fixed_5_6": {
+        "parameters": {
+          "c": -5.940747043153458e-08,
+          "theta": 0.8333333333333334
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 0.4314373777515863,
+        "relative_RMSE": 0.31636416419614904
+      },
+      "count_at_xmax": 2,
+      "observed_ratio_at_xmax": 6.127856425206369e-09,
+      "sparse": true
+    },
+    {
+      "observable": "sylow",
+      "group": "C81xC27xC3",
+      "ratio_leading_term": 4.879518679784708e-09,
+      "linear_count_coefficient": 1.4831958247220517e-09,
+      "input_files": [
+        {
+          "path": "processed/sylow3_types.csv",
+          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
+        }
+      ],
+      "fit": {
+        "parameters": {
+          "c": -6.190172790897496e-05,
+          "theta": 0.4227195808569039
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 0.15121592336815656,
+        "relative_RMSE": 0.6506796488321379
+      },
+      "fit_reason": null,
+      "fixed_5_6": {
+        "parameters": {
+          "c": -1.5193742627335263e-08,
+          "theta": 0.8333333333333334
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 0.16499768329886844,
+        "relative_RMSE": 0.7099823367519263
+      },
+      "late_fit": {
+        "parameters": {
+          "c": -162345.00116739408,
+          "theta": -0.6541743468397787
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 0.280734099180196,
+        "relative_RMSE": 0.6456203297791095
+      },
+      "late_fit_reason": null,
+      "late_fixed_5_6": {
+        "parameters": {
+          "c": -1.3432846090403093e-08,
+          "theta": 0.8333333333333334
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 0.32172492460660024,
+        "relative_RMSE": 0.739889285018231
+      },
+      "count_at_xmax": 1,
+      "observed_ratio_at_xmax": 3.0639282126031844e-09,
+      "sparse": true
+    },
+    {
+      "observable": "sylow",
+      "group": "C9xC9xC9",
+      "ratio_leading_term": 2.5335962375805213e-09,
+      "linear_count_coefficient": 7.701209089902961e-10,
+      "input_files": [
+        {
+          "path": "processed/sylow3_types.csv",
+          "sha256": "ba628292a3231939c096f1d5e82e375c45f0a0d8add4bc9cc03bdc863fe01e71"
+        }
+      ],
+      "fit": {
+        "parameters": {
+          "c": 2.6265795271512655e-11,
+          "theta": 1.138703096596629
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 0.17864550623172382,
+        "relative_RMSE": 0.784038649844449
+      },
+      "fit_reason": null,
+      "fixed_5_6": {
+        "parameters": {
+          "c": 1.2790171400119315e-08,
+          "theta": 0.8333333333333334
+        },
+        "points": 116,
+        "xmin": 1030400,
+        "xmax": 1073741824,
+        "RMSE": 0.18148498272568686,
+        "relative_RMSE": 0.7965005323935915
+      },
+      "late_fit": {
+        "parameters": {
+          "c": 0.0001284467330872187,
+          "theta": 0.39116876796711486
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 0.3109237943518979,
+        "relative_RMSE": 0.6664739031198958
+      },
+      "late_fit_reason": null,
+      "late_fixed_5_6": {
+        "parameters": {
+          "c": 1.5598105014760637e-08,
+          "theta": 0.8333333333333334
+        },
+        "points": 26,
+        "xmin": 268435456,
+        "xmax": 1073741824,
+        "RMSE": 0.319786414626498,
+        "relative_RMSE": 0.6854711790877722
       },
       "count_at_xmax": 1,
       "observed_ratio_at_xmax": 3.0639282126031844e-09,
