@@ -2,45 +2,25 @@
 
 ## Raw records
 
-The four shard-0 files tracked with Git LFS come from the [LMFDB imaginary quadratic class-group tables](https://www.lmfdb.org/NumberField/QuadraticImaginaryClassGroups).
+Each [LMFDB imaginary quadratic class-group shard](https://www.lmfdb.org/NumberField/QuadraticImaginaryClassGroups) `cl{r}mod{m}.{k}.gz` covers $k2^{28}\le\lvert D\rvert<(k+1)2^{28}$ with $\lvert D\rvert\equiv r\pmod m$. The four residue classes are $(r,m)=(3,8),(7,8),(4,16),(8,16)$.
 
-| File | Discriminant condition |
-|---|---|
-| cl3mod8.0.gz | $\lvert D\rvert\equiv3\pmod8$ |
-| cl7mod8.0.gz | $\lvert D\rvert\equiv7\pmod8$ |
-| cl4mod16.0.gz | $\lvert D\rvert\equiv4\pmod{16}$ |
-| cl8mod16.0.gz | $\lvert D\rvert\equiv8\pmod{16}$ |
+A line `a h c1 ... ct` decodes as
+$$
+D_0=-k2^{28}-r,\qquad D_i=D_{i-1}-ma_i,\qquad
+\mathrm{Cl}_{D_i}\cong\prod_j C_{c_j},\qquad h_{D_i}=\prod_j c_j.
+$$
 
-A file `cl{r}mod{m}.{k}.gz` covers $k2^{28}\le\lvert D\rvert<(k+1)2^{28}$. Each line is a h c1 ... ct, decoded as
-
-$$D_0=-k2^{28}-r,\qquad D_i=D_{i-1}-ma_i,\qquad
-\mathrm{Cl}_{D_i}\cong\prod_j C_{c_j},\qquad h_{D_i}=\prod_j c_j.$$
-
-Keep $q_j=3^{v_3(c_j)}>1$ to obtain the Sylow 3 type. If there are $r_3$ such factors, the 3-torsion size is $3^{r_3}$. Factors are sorted in decreasing order, giving keys such as C9xC3; the trivial group is trivial.
-
-FieldRecord exposes d, D_K, h_K, Cl_K_invariants, sylow3_invariants, rank3, and torsion3_size. Here $K=\mathbb Q(\sqrt d)$, with $d=D_K$ when $D_K\equiv1\pmod4$ and $d=D_K/4$ otherwise.
+For each $p=3,5,7$, keep $q_j=p^{v_p(c_j)}>1$ to obtain the Sylow type. The $p$-torsion size is $p^r$, where $r$ is the number of retained factors. Keys list these factors in decreasing order, for example `C25xC5`. The trivial group has key `trivial`.
 
 ## Summary files
 
-| File in data/processed/ | Contents |
+| File in `data/processed/` | Contents |
 |---|---|
-| p3_statistics.csv | Preserved counts, means, proportions, and derived error columns |
-| sylow3_types.csv | Every observed Sylow type at each checkpoint |
-| rank3_counts.csv | Counts by 3-rank |
-| p3_statistics.manifest.json | Input hashes, sizes, coverage, and checkpoint grid |
+| `p{p}_statistics.csv` | Divisibility counts, torsion sums, field counts, and derived proportions and errors |
+| `sylow{p}_types.csv` | Every observed Sylow type at each cumulative checkpoint |
+| `rank{p}_counts.csv` | Field counts by the number of nontrivial Sylow factors |
+| `p3_statistics.manifest.json` | Raw input sizes and SHA-256 hashes, coverage, and the shared checkpoint grid |
 
-The identities N_divisible = N_fields - N_trivial and S_torsion3 = sum_r 3^r N_rank are checked. All type proportions use N_fields. In the aggregate summary, other excludes trivial, C3, C9, and C3xC3. Individual fits cover every type in sylow3_types.csv.
+The grid includes the original approximately log-spaced checkpoints and the exact powers of two. Divisibility and torsion are reconstructed from the Sylow histogram. The sum of counts across all types is $N(X)$ at every checkpoint. The `E_xuzhu` columns subtract a fixed linear term, and the `E_conditional` columns subtract a multiple of the observed field count. The [dyadic analysis](README.md#residual-ratio-method) uses the fixed linear term.
 
-Stored E_xuzhu columns subtract the linear main term, while E_conditional columns subtract a multiple of N_fields. The current fitter reads the counts and computes only the linear-main-term error defined in the README.
-
-## Rebuild and inspect
-
-~~~bash
-python -m scripts.list_fields --max-D 100
-bash scripts/fetch_extended_shards.sh
-python -m scripts.reproduce --rebuild --check
-~~~
-
-The default C++ gzip scanner and the --engine python reference implementation are compared in tests. Scans use bounded-memory checkpoint histograms. Missing inputs, LFS pointer stubs, inconsistent class numbers, and out-of-range records are rejected.
-
-See the [calculation report](results/calculations.md) for counts, fit definitions, and coefficients.
+The C++ scanner and Python reference implementation read the original gzip records and are compared in the tests. Both use cumulative counts reconstructed from bounded-memory checkpoint histograms.

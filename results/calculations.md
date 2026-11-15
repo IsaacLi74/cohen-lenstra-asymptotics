@@ -1,169 +1,119 @@
-# Power-law fits
+# Residual-ratio estimates
 
-Generated from the current summaries. Notation follows the [README](../README.md#notation).
+The final dyadic checkpoint is $X=2^{30}$ (1,073,741,824), with 326,378,404 fields.
+The [README](../README.md#residual-ratio-method) gives the fixed main terms and definitions.
+The [input manifest](../data/processed/p3_statistics.manifest.json) records the raw shards and SHA-256 hashes.
 
-## Counting errors and fitting
+Each exponent column uses the endpoint and one earlier dyadic checkpoint. A dash marks a missing checkpoint, a zero residual, or opposite signs. $b_{5/6}=E(X)/X^{5/6}$ is signed.
+Types with fewer than 10,000 observations at the endpoint are marked **Sparse**. Within each prime, the Sylow types are ordered by $\lvert\mathrm{Aut}(G)\rvert$.
 
-All sums use negative fundamental discriminants $-X\le D<0$. $N(X)=\sum_D1$ is the actual field count. Set $\rho=3/\pi^2$ and $p_3=1-\prod_{j=1}^{\infty}(1-3^{-j})$.
+| Statistic | Count or sum | Observed / $N(X)$ | Leading mean or proportion | $\widehat\theta_{29,30}$ | $\widehat\theta_{28,30}$ | $\widehat\theta_{26,30}$ | $b_{5/6}$ |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| [$3\mid h_D$](../figures/statistics/divisible.png) | 139,775,918 | 0.428263379 | 0.439873922 | 0.82939 | 0.82850022 | 0.82756928 | -0.11293349 |
+| [3-torsion](../figures/statistics/torsion.png) | 638,841,092 | 1.957363245 | 2.000000000 | 0.8323687 | 0.83333374 | 0.83330132 | -0.41471908 |
+| [$5\mid h_D$](../figures/statistics/p5/divisible.png) | 77,719,065 | 0.238125636 | 0.239667204 | 0.73242938 | 0.75463528 | 0.73253653 | -0.01499439 |
+| [5-torsion](../figures/statistics/p5/torsion.png) | 650,168,024 | 1.992068152 | 2.000000000 | 0.72945526 | 0.74484817 | 0.72838474 | -0.077150202 |
+| [$7\mid h_D$](../figures/statistics/p7/divisible.png) | 53,062,311 | 0.162579112 | 0.163204593 | 0.76133332 | 0.69941972 | 0.70283706 | -0.0060838238 |
+| [7-torsion](../figures/statistics/p7/torsion.png) | 651,267,184 | 1.995435899 | 2.000000000 | 0.74479821 | 0.69637599 | 0.68886249 | -0.044392681 |
 
-| Statistic | Counting error |
-|---|---|
-| Divisibility | $E(X)=N_3(X)-p_3\rho X$ |
-| Torsion sum | $E_{\mathrm{tor}}(X)=S_3(X)-2\rho X$ |
-| Sylow type $G_3$ | $E_{G_3}(X)=N_{G_3}(X)-P_{\mathrm{CL}}(G_3)\rho X$ |
+## Sylow 3
 
-For each error, we fit only $cX^\theta$, estimating both parameters jointly for each statistic. All observed Sylow types enter the distribution and fit tables. Leading terms stay fixed.
+46 types in the data. [Compare the common groups](../figures/statistics/sylow_comparison.png).
 
-$$\min_{c,\theta}\sum_{i=1}^{m}\bigl(E(X_i)-cX_i^\theta\bigr)^2.$$
+| Group | Aut size | Count | Observed / $N(X)$ | CL probability | Gap 1 exponent | Gap 2 exponent | Gap 4 exponent | $b_{5/6}$ | Status |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| [trivial](../figures/statistics/sylow_trivial.png) | 1 | 186,602,486 | 0.57173662 | 0.56012608 | 0.82938165 | 0.82848148 | 0.82760258 | 0.11293427 |  |
+| [C3](../figures/statistics/sylow_C3.png) | 2 | 89,635,292 | 0.2746361 | 0.28006304 | 0.83658955 | 0.8422592 | 0.83799694 | -0.052786716 |  |
+| [C9](../figures/statistics/sylow_C9.png) | 6 | 29,858,194 | 0.091483363 | 0.093354346 | 0.8354881 | 0.82761965 | 0.83359692 | -0.018198672 |  |
+| [C27](../figures/statistics/sylow_C27.png) | 18 | 9,952,379 | 0.030493375 | 0.031118115 | 0.8620148 | 0.81005686 | 0.8353365 | -0.0060767243 |  |
+| [C3xC3](../figures/statistics/sylow_C3xC3.png) | 48 | 3,232,964 | 0.0099055696 | 0.011669293 | 0.83059444 | 0.8399611 | 0.84141855 | -0.017155439 |  |
+| [C81](../figures/statistics/sylow_C81.png) | 54 | 3,317,214 | 0.010163706 | 0.010372705 | 0.8502674 | 0.8585453 | 0.83266178 | -0.0020328962 |  |
+| [C9xC3](../figures/statistics/sylow_C9xC3.png) | 108 | 1,430,639 | 0.0043833752 | 0.0051863526 | 0.84142436 | 0.84619601 | 0.8489891 | -0.0078104239 |  |
+| [C243](../figures/statistics/sylow_C243.png) | 162 | 1,104,084 | 0.0033828341 | 0.0034575684 | 0.71526056 | 0.63895545 | 0.54849475 | -0.00072692511 |  |
+| [C27xC3](../figures/statistics/sylow_C27xC3.png) | 324 | 478,861 | 0.0014671957 | 0.0017287842 | 0.85720144 | 0.83324095 | 0.83828899 | -0.0025444263 |  |
+| [C729](../figures/statistics/sylow_C729.png) | 486 | 354,950 | 0.0010875413 | 0.0011525228 | 0.20413394 | 0.28807569 | 0.36651169 | -0.00063206314 |  |
+| [C81xC3](../figures/statistics/sylow_C81xC3.png) | 972 | 159,457 | 0.0004885648 | 0.0005762614 | 0.82340488 | 0.81054411 | 0.79479056 | -0.00085300982 |  |
+| [C2187](../figures/statistics/sylow_C2187.png) | 1,458 | 90,877 | 0.0002784406 | 0.00038417426 | 0.54196584 | 0.57774952 | 0.65383849 | -0.0010284535 |  |
+| [C243xC3](../figures/statistics/sylow_C243xC3.png) | 2,916 | 51,675 | 0.00015832849 | 0.00019208713 | 0.64898667 | 0.65168849 | 0.64292286 | -0.00032836457 |  |
+| [C9xC9](../figures/statistics/sylow_C9xC9.png) | 3,888 | 39,385 | 0.00012067281 | 0.00014406535 | 0.90476415 | 0.86926765 | 0.82057736 | -0.00022753522 |  |
+| [C6561](../figures/statistics/sylow_C6561.png) | 4,374 | 14,719 | 4.5097959e-05 | 0.00012805809 | 0.80312113 | 0.82281091 | 0.86636708 | -0.00080693934 |  |
+| [C27xC9](../figures/statistics/sylow_C27xC9.png) | 8,748 | 17,554 | 5.3784196e-05 | 6.4029044e-05 | 0.91050044 | 0.79516649 | 0.8017399 | -9.9649892e-05 |  |
+| [C729xC3](../figures/statistics/sylow_C729xC3.png) | 8,748 | 13,229 | 4.0532706e-05 | 6.4029044e-05 | 0.65184944 | 0.6742677 | 0.73111863 | -0.00022854494 |  |
+| [C3xC3xC3](../figures/statistics/sylow_C3xC3xC3.png) | 11,232 | 7,345 | 2.2504553e-05 | 4.9868775e-05 | 0.88143317 | 0.88545496 | 0.89527361 | -0.00026616722 | Sparse |
+| [C19683](../figures/statistics/sylow_C19683.png) | 13,122 | 1,320 | 4.0443852e-06 | 4.2686029e-05 | 0.93403953 | 0.94538224 | 0.96409812 | -0.00037586084 | Sparse |
+| [C9xC3xC3](../figures/statistics/sylow_C9xC3xC3.png) | 23,328 | 3,492 | 1.0699237e-05 | 2.4010892e-05 | 0.88883675 | 0.88597815 | 0.87147218 | -0.00012948024 | Sparse |
+| [C2187xC3](../figures/statistics/sylow_C2187xC3.png) | 26,244 | 2,202 | 6.7467699e-06 | 2.1343015e-05 | 0.85327287 | 0.8440166 | 0.87905233 | -0.00014197524 | Sparse |
+| [C81xC9](../figures/statistics/sylow_C81xC9.png) | 26,244 | 5,651 | 1.7314258e-05 | 2.1343015e-05 | 0.69371424 | 0.66991313 | 0.61592125 | -3.9187029e-05 | Sparse |
+| [C59049](../figures/statistics/sylow_C59049.png) | 39,366 | 6 | 1.8383569e-08 | 1.4228676e-05 | 0.99813482 | 0.99906741 | 0.99953371 | -0.00013822115 | Sparse |
+| [C27xC3xC3](../figures/statistics/sylow_C27xC3xC3.png) | 69,984 | 1,155 | 3.5388371e-06 | 8.0036305e-06 | 0.89409017 | 0.88367472 | 0.90578426 | -4.34283e-05 | Sparse |
+| [C243xC9](../figures/statistics/sylow_C243xC9.png) | 78,732 | 1,438 | 4.4059288e-06 | 7.1143382e-06 | 0.64578348 | 0.66525059 | 0.7479588 | -2.6344245e-05 | Sparse |
+| [C6561xC3](../figures/statistics/sylow_C6561xC3.png) | 78,732 | 191 | 5.8521029e-07 | 7.1143382e-06 | 0.95402635 | 0.94432053 | 0.96904018 | -6.3507741e-05 | Sparse |
+| [C81xC3xC3](../figures/statistics/sylow_C81xC3xC3.png) | 209,952 | 408 | 1.2500827e-06 | 2.6678768e-06 | 0.82963765 | 0.87441454 | 0.83718986 | -1.3790647e-05 | Sparse |
+| [C729xC9](../figures/statistics/sylow_C729xC9.png) | 236,196 | 240 | 7.3534277e-07 | 2.3714461e-06 | 0.82228766 | 0.84065576 | 0.88921553 | -1.5914104e-05 | Sparse |
+| [C27xC27](../figures/statistics/sylow_C27xC27.png) | 314,928 | 466 | 1.4277905e-06 | 1.7785846e-06 | 0.70475775 | 0.54046518 | 0.64250252 | -3.4121139e-06 | Sparse |
+| [C243xC3xC3](../figures/statistics/sylow_C243xC3xC3.png) | 629,856 | 101 | 3.0945675e-07 | 8.8929228e-07 | 0.91848929 | 0.89715368 | 0.86619792 | -5.6399635e-06 | Sparse |
+| [C9xC9xC3](../figures/statistics/sylow_C9xC9xC3.png) | 629,856 | 127 | 3.8911888e-07 | 8.8929228e-07 | 0.84116028 | 0.80388945 | 0.79244264 | -4.8651031e-06 | Sparse |
+| [C2187xC9](../figures/statistics/sylow_C2187xC9.png) | 708,588 | 14 | 4.2894995e-08 | 7.9048203e-07 | 0.97654067 | 0.98247626 | 0.97987722 | -7.2716546e-06 | Sparse |
+| [C81xC27](../figures/statistics/sylow_C81xC27.png) | 708,588 | 141 | 4.3201388e-07 | 7.9048203e-07 | 1.089008 | 0.86030472 | 0.92013274 | -3.4867597e-06 | Sparse |
+| [C27xC9xC3](../figures/statistics/sylow_C27xC9xC3.png) | 1,417,176 | 68 | 2.0834712e-07 | 3.9524101e-07 | 0.74090547 | 0.83197078 | 0.77763448 | -1.8178857e-06 | Sparse |
+| [C729xC3xC3](../figures/statistics/sylow_C729xC3xC3.png) | 1,889,568 | 25 | 7.6598205e-08 | 2.9643076e-07 | 0.90281023 | 0.81481257 | 0.89217746 | -2.1382746e-06 | Sparse |
+| [C243xC27](../figures/statistics/sylow_C243xC27.png) | 2,125,764 | 22 | 6.7406421e-08 | 2.6349401e-07 | 0.87071456 | 0.97780251 | 0.89343201 | -1.9073113e-06 | Sparse |
+| [C81xC9xC3](../figures/statistics/sylow_C81xC9xC3.png) | 4,251,528 | 19 | 5.8214636e-08 | 1.31747e-07 | 0.9411048 | 0.72783382 | 0.9575177 | -7.1523707e-07 | Sparse |
+| [C2187xC3xC3](../figures/statistics/sylow_C2187xC3xC3.png) | 5,668,704 | 2 | 6.1278564e-09 | 9.8810253e-08 | 1 | 0.9538173 | 0.97690865 | -9.0150625e-07 | Sparse |
+| [C729xC27](../figures/statistics/sylow_C729xC27.png) | 6,377,292 | 2 | 6.1278564e-09 | 8.7831336e-08 | 0.89566176 | 0.94783088 | 0.97391544 | -7.9471615e-07 | Sparse |
+| [C243xC9xC3](../figures/statistics/sylow_C243xC9xC3.png) | 12,754,584 | 2 | 6.1278564e-09 | 4.3915668e-08 | 1.2552618 | 0.8915926 | 0.9457963 | -3.6755575e-07 | Sparse |
+| [C3xC3xC3xC3](../figures/statistics/sylow_C3xC3xC3xC3.png) | 24,261,120 | 1 | 3.0639282e-09 | 2.3087396e-08 | 0.79458637 | 0.89729318 | 0.94864659 | -1.9476493e-07 | Sparse |
+| [C81xC81](../figures/statistics/sylow_C81xC81.png) | 25,509,168 | 2 | 6.1278564e-09 | 2.1957834e-08 | 1 | 1.3531436 | 0.88198085 | -1.5397555e-07 | Sparse |
+| [C729xC9xC3](../figures/statistics/sylow_C729xC9xC3.png) | 38,263,752 | 1 | 3.0639282e-09 | 1.4638556e-08 | 1.4436162 | 0.83059626 | 0.91529813 | -1.1258448e-07 | Sparse |
+| [C27xC27xC3](../figures/statistics/sylow_C27xC27xC3.png) | 51,018,336 | 2 | 6.1278564e-09 | 1.0978917e-08 | -0.17836379 | 0.4108181 | 0.70540905 | -4.7185455e-08 | Sparse |
+| [C81xC27xC3](../figures/statistics/sylow_C81xC27xC3.png) | 114,791,256 | 1 | 3.0639282e-09 | 4.8795187e-09 | — | 0.28684989 | 0.64342494 | -1.7659944e-08 | Sparse, Opposite signs for gap 1 |
+| [C9xC9xC9](../figures/statistics/sylow_C9xC9xC9.png) | 221,079,456 | 1 | 3.0639282e-09 | 2.5335962e-09 | -1.7607267 | — | — | 5.1584533e-09 | Sparse, Opposite signs for gap 2, Opposite signs for gap 4 |
 
-$X_i$ are the selected cumulative bounds and $m$ is their number. The loss uses equal weights in count units. RMSE is sqrt(loss / m).
+## Sylow 5
 
-For numerical stability, use $t_i=X_i/X_{\max}$ and $E_i=E(X_i)$. At each trial $\theta$, the optimal scaled amplitude and original coefficient are
+19 types in the data. [Compare the common groups](../figures/statistics/p5/sylow_comparison.png).
 
-$$a(\theta)=\frac{\sum_i E_it_i^\theta}{\sum_i t_i^{2\theta}},\qquad c=a(\theta)X_{\max}^{-\theta}.$$
+| Group | Aut size | Count | Observed / $N(X)$ | CL probability | Gap 1 exponent | Gap 2 exponent | Gap 4 exponent | $b_{5/6}$ | Status |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| [trivial](../figures/statistics/p5/sylow_trivial.png) | 1 | 248,659,339 | 0.76187436 | 0.7603328 | 0.7323755 | 0.75451153 | 0.73273362 | 0.014995177 |  |
+| [C5](../figures/statistics/p5/sylow_C5.png) | 4 | 61,737,128 | 0.18915813 | 0.1900832 | 0.73819106 | 0.78471648 | 0.76784075 | -0.0089978602 |  |
+| [C25](../figures/statistics/p5/sylow_C25.png) | 20 | 12,352,741 | 0.037847912 | 0.03801664 | 0.96003003 | 0.93112704 | 0.9655159 | -0.0016411608 |  |
+| [C125](../figures/statistics/p5/sylow_C125.png) | 100 | 2,468,429 | 0.0075630893 | 0.007603328 | 0.75257288 | 0.69811174 | 0.35664179 | -0.00039138924 |  |
+| [C5xC5](../figures/statistics/p5/sylow_C5xC5.png) | 480 | 498,293 | 0.001526734 | 0.0015840267 | 0.71823719 | 0.71737201 | 0.75612808 | -0.00055727514 |  |
+| [C625](../figures/statistics/p5/sylow_C625.png) | 500 | 461,442 | 0.0014138252 | 0.0015206656 | 0.33544318 | 0.36043013 | 0.42665354 | -0.001039218 |  |
+| [C25xC5](../figures/statistics/p5/sylow_C25xC5.png) | 2,000 | 120,159 | 0.00036815855 | 0.0003801664 | 0.82448601 | 0.72497418 | 0.61927914 | -0.00011679805 |  |
+| [C3125](../figures/statistics/p5/sylow_C3125.png) | 2,500 | 52,630 | 0.00016125454 | 0.00030413312 | 0.69685816 | 0.73187342 | 0.78849947 | -0.001389756 |  |
+| [C125xC5](../figures/statistics/p5/sylow_C125xC5.png) | 10,000 | 22,487 | 6.8898554e-05 | 7.603328e-05 | 0.48238528 | 0.47948062 | 0.51336573 | -6.9398237e-05 |  |
+| [C15625](../figures/statistics/p5/sylow_C15625.png) | 12,500 | 2,047 | 6.2718611e-06 | 6.0826624e-05 | 0.92832061 | 0.94573981 | 0.96075055 | -0.00053064509 | Sparse |
+| [C625xC5](../figures/statistics/p5/sylow_C625xC5.png) | 50,000 | 2,562 | 7.8497841e-06 | 1.5206656e-05 | 0.68495275 | 0.76039393 | 0.80569348 | -7.1559062e-05 | Sparse |
+| [C3125xC5](../figures/statistics/p5/sylow_C3125xC5.png) | 250,000 | 94 | 2.8800925e-07 | 3.0413312e-06 | 0.91884283 | 0.94589046 | 0.96411759 | -2.6781104e-05 | Sparse |
+| [C25xC25](../figures/statistics/p5/sylow_C25xC25.png) | 300,000 | 744 | 2.2795626e-06 | 2.5344427e-06 | 0.45719658 | 0.47942968 | 0.37148466 | -2.4791742e-06 | Sparse |
+| [C125xC25](../figures/statistics/p5/sylow_C125xC25.png) | 1,250,000 | 100 | 3.0639282e-07 | 6.0826624e-07 | 0.73337023 | 0.73367326 | 0.81070566 | -2.9362722e-06 | Sparse |
+| [C5xC5xC5](../figures/statistics/p5/sylow_C5xC5xC5.png) | 1,488,000 | 162 | 4.9635637e-07 | 5.1097634e-07 | 3.6285022 | — | 0.11978127 | -1.4220563e-07 | Sparse, Opposite signs for gap 2 |
+| [C25xC5xC5](../figures/statistics/p5/sylow_C25xC5xC5.png) | 6,000,000 | 38 | 1.1642927e-07 | 1.2672213e-07 | — | 0.66306316 | 0.27093537 | -1.0011685e-07 | Sparse, Opposite signs for gap 1 |
+| [C625xC25](../figures/statistics/p5/sylow_C625xC25.png) | 6,250,000 | 4 | 1.2255713e-08 | 1.2165325e-07 | 1 | 0.92340269 | 0.96170134 | -1.0640916e-06 | Sparse |
+| [C125xC5xC5](../figures/statistics/p5/sylow_C125xC5xC5.png) | 30,000,000 | 4 | 1.2255713e-08 | 2.5344427e-08 | 1 | 1 | 0.76166367 | -1.2731173e-07 | Sparse |
+| [C125xC125](../figures/statistics/p5/sylow_C125xC125.png) | 187,500,000 | 1 | 3.0639282e-09 | 4.0551082e-09 | -1.0325218 | -0.016260879 | 0.49186956 | -9.6410409e-09 | Sparse |
 
-The code searches $\theta\in[-1,2]$ and rejects an optimum at the boundary.
+## Sylow 7
 
-## Data and counts
+14 types in the data. [Compare the common groups](../figures/statistics/p7/sylow_comparison.png).
 
-Raw coverage: 1,073,741,824; available cumulative checkpoints: 227. Actual fit: **1,030,400 <= X <= 1,073,741,824, 116 points**.
+| Group | Aut size | Count | Observed / $N(X)$ | CL probability | Gap 1 exponent | Gap 2 exponent | Gap 4 exponent | $b_{5/6}$ | Status |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| [trivial](../figures/statistics/p7/sylow_trivial.png) | 1 | 273,316,093 | 0.83742089 | 0.83679541 | 0.76119408 | 0.69914411 | 0.70328823 | 0.0060846105 |  |
+| [C7](../figures/statistics/p7/sylow_C7.png) | 6 | 45,439,736 | 0.13922409 | 0.1394659 | 1.0480283 | 0.91605235 | 0.90342122 | -0.0023519563 |  |
+| [C49](../figures/statistics/p7/sylow_C49.png) | 42 | 6,489,358 | 0.019882927 | 0.0199237 | 0.85489716 | 0.66921557 | 0.82593966 | -0.00039657762 |  |
+| [C343](../figures/statistics/p7/sylow_C343.png) | 294 | 899,449 | 0.0027558472 | 0.0028462429 | 0.19243134 | 0.22565241 | 0.31857043 | -0.00087926191 |  |
+| [C7xC7](../figures/statistics/p7/sylow_C7xC7.png) | 2,016 | 132,371 | 0.00040557524 | 0.00041507709 | 0.87571743 | 0.79645728 | 0.6419763 | -9.242255e-05 |  |
+| [C2401](../figures/statistics/p7/sylow_C2401.png) | 2,058 | 77,139 | 0.00023634836 | 0.00040660613 | 0.68479859 | 0.71648127 | 0.76760147 | -0.0016560688 |  |
+| [C49xC7](../figures/statistics/p7/sylow_C49xC7.png) | 12,348 | 20,941 | 6.4161721e-05 | 6.7767688e-05 | 0.15918962 | 0.34899986 | 0.41408162 | -3.507459e-05 |  |
+| [C16807](../figures/statistics/p7/sylow_C16807.png) | 14,406 | 1,533 | 4.6970019e-06 | 5.8086589e-05 | 0.95220083 | 0.95923871 | 0.96958832 | -0.00051931163 | Sparse |
+| [C343xC7](../figures/statistics/p7/sylow_C343xC7.png) | 86,436 | 1,728 | 5.294468e-06 | 9.6810982e-06 | 0.66677005 | 0.71557481 | 0.79156775 | -4.2668019e-05 | Sparse |
+| [C2401xC7](../figures/statistics/p7/sylow_C2401xC7.png) | 605,052 | 25 | 7.6598205e-08 | 1.383014e-06 | 0.95667115 | 0.97179842 | 0.97944959 | -1.2707289e-05 | Sparse |
+| [C49xC49](../figures/statistics/p7/sylow_C49xC49.png) | 4,840,416 | 27 | 8.2726062e-08 | 1.7287675e-07 | 0.40564141 | 0.6406282 | 0.88544277 | -8.7688072e-07 | Sparse |
+| [C343xC49](../figures/statistics/p7/sylow_C343xC49.png) | 29,647,548 | 1 | 3.0639282e-09 | 2.8224776e-08 | 1.1873353 | 0.91710919 | 0.9585546 | -2.4473538e-07 | Sparse |
+| [C7xC7xC7](../figures/statistics/p7/sylow_C7xC7xC7.png) | 33,784,128 | 2 | 6.1278564e-09 | 2.4768892e-08 | 1 | 0.79497632 | 0.89748816 | -1.8131824e-07 | Sparse |
+| [C49xC7xC7](../figures/statistics/p7/sylow_C49xC7xC7.png) | 203,297,472 | 1 | 3.0639282e-09 | 4.1161132e-09 | -0.96789463 | 0.016052684 | 0.50802634 | -1.0234426e-08 | Sparse |
 
-At X = 1,073,741,824:
-
-- N(X) = 326,378,404; N_3(X) = 326,378,404 - 186,602,486 = 139,775,918.
-- Divisibility proportion = 0.428263378603; CL value = 0.439873922072.
-- S_3(X) = 638,841,092; mean torsion size = 1.957363245149; leading mean = 2.
-
-For $r$ nontrivial cyclic Sylow factors, $\lvert\mathrm{Cl}_D[3]\rvert=3^r$. C9 contributes 3; C3 x C3 contributes 9. Every observed type enters the torsion sum.
-
-## Sylow types and endpoint proportions
-
-$$P_{\mathrm{CL}}(G_3)=\frac{1-p_3}{\lvert\mathrm{Aut}(G_3)\rvert}.$$
-
-rho = 0.303963550927013; 1 - p_3 = 0.560126077927948. The infinite product is evaluated through j = 99 in double precision.
-
-Sylow types are listed in increasing order of $\lvert\mathrm{Aut}(G_3)\rvert$ in both tables.
-
-| Sylow type | Aut size | Observed count | Observed / N(X) | CL proportion |
-|---|---:|---:|---:|---:|
-| [trivial](../figures/statistics/sylow_trivial.png) | 1 | 186,602,486 | 0.571736621 | 0.560126078 |
-| [C3](../figures/statistics/sylow_C3.png) | 2 | 89,635,292 | 0.2746361 | 0.280063039 |
-| [C9](../figures/statistics/sylow_C9.png) | 6 | 29,858,194 | 0.091483363 | 0.0933543463 |
-| [C27](../figures/statistics/sylow_C27.png) | 18 | 9,952,379 | 0.0304933748 | 0.0311181154 |
-| [C3xC3](../figures/statistics/sylow_C3xC3.png) | 48 | 3,232,964 | 0.00990556961 | 0.0116692933 |
-| [C81](../figures/statistics/sylow_C81.png) | 54 | 3,317,214 | 0.0101637056 | 0.0103727051 |
-| [C9xC3](../figures/statistics/sylow_C9xC3.png) | 108 | 1,430,639 | 0.00438337519 | 0.00518635257 |
-| [C243](../figures/statistics/sylow_C243.png) | 162 | 1,104,084 | 0.00338283412 | 0.00345756838 |
-| [C27xC3](../figures/statistics/sylow_C27xC3.png) | 324 | 478,861 | 0.00146719573 | 0.00172878419 |
-| [C729](../figures/statistics/sylow_C729.png) | 486 | 354,950 | 0.00108754132 | 0.00115252279 |
-| [C81xC3](../figures/statistics/sylow_C81xC3.png) | 972 | 159,457 | 0.000488564801 | 0.000576261397 |
-| [C2187](../figures/statistics/sylow_C2187.png) | 1,458 | 90,877 | 0.000278440604 | 0.000384174265 |
-| [C243xC3](../figures/statistics/sylow_C243xC3.png) | 2,916 | 51,675 | 0.00015832849 | 0.000192087132 |
-| [C9xC9](../figures/statistics/sylow_C9xC9.png) | 3,888 | 39,385 | 0.000120672813 | 0.000144065349 |
-| [C6561](../figures/statistics/sylow_C6561.png) | 4,374 | 14,719 | 4.50979594e-05 | 0.000128058088 |
-| [C27xC9](../figures/statistics/sylow_C27xC9.png) | 8,748 | 17,554 | 5.37841958e-05 | 6.40290441e-05 |
-| [C729xC3](../figures/statistics/sylow_C729xC3.png) | 8,748 | 13,229 | 4.05327063e-05 | 6.40290441e-05 |
-| [C3xC3xC3](../figures/statistics/sylow_C3xC3xC3.png) | 11,232 | 7,345 | 2.25045527e-05 | 4.98687747e-05 |
-| [C19683](../figures/statistics/sylow_C19683.png) | 13,122 | 1,320 | 4.04438524e-06 | 4.26860294e-05 |
-| [C9xC3xC3](../figures/statistics/sylow_C9xC3xC3.png) | 23,328 | 3,492 | 1.06992373e-05 | 2.40108915e-05 |
-| [C2187xC3](../figures/statistics/sylow_C2187xC3.png) | 26,244 | 2,202 | 6.74676992e-06 | 2.13430147e-05 |
-| [C81xC9](../figures/statistics/sylow_C81xC9.png) | 26,244 | 5,651 | 1.73142583e-05 | 2.13430147e-05 |
-| [C59049](../figures/statistics/sylow_C59049.png) | 39,366 | 6 | 1.83835693e-08 | 1.42286765e-05 |
-| [C27xC3xC3](../figures/statistics/sylow_C27xC3xC3.png) | 69,984 | 1,155 | 3.53883709e-06 | 8.00363051e-06 |
-| [C243xC9](../figures/statistics/sylow_C243xC9.png) | 78,732 | 1,438 | 4.40592877e-06 | 7.11433824e-06 |
-| [C6561xC3](../figures/statistics/sylow_C6561xC3.png) | 78,732 | 191 | 5.85210289e-07 | 7.11433824e-06 |
-| [C81xC3xC3](../figures/statistics/sylow_C81xC3xC3.png) | 209,952 | 408 | 1.25008271e-06 | 2.66787684e-06 |
-| [C729xC9](../figures/statistics/sylow_C729xC9.png) | 236,196 | 240 | 7.35342771e-07 | 2.37144608e-06 |
-| [C27xC27](../figures/statistics/sylow_C27xC27.png) | 314,928 | 466 | 1.42779055e-06 | 1.77858456e-06 |
-| [C243xC3xC3](../figures/statistics/sylow_C243xC3xC3.png) | 629,856 | 101 | 3.09456749e-07 | 8.89292279e-07 |
-| [C9xC9xC3](../figures/statistics/sylow_C9xC9xC3.png) | 629,856 | 127 | 3.89118883e-07 | 8.89292279e-07 |
-| [C2187xC9](../figures/statistics/sylow_C2187xC9.png) | 708,588 | 14 | 4.2894995e-08 | 7.90482026e-07 |
-| [C81xC27](../figures/statistics/sylow_C81xC27.png) | 708,588 | 141 | 4.32013878e-07 | 7.90482026e-07 |
-| [C27xC9xC3](../figures/statistics/sylow_C27xC9xC3.png) | 1,417,176 | 68 | 2.08347118e-07 | 3.95241013e-07 |
-| [C729xC3xC3](../figures/statistics/sylow_C729xC3xC3.png) | 1,889,568 | 25 | 7.65982053e-08 | 2.9643076e-07 |
-| [C243xC27](../figures/statistics/sylow_C243xC27.png) | 2,125,764 | 22 | 6.74064207e-08 | 2.63494009e-07 |
-| [C81xC9xC3](../figures/statistics/sylow_C81xC9xC3.png) | 4,251,528 | 19 | 5.8214636e-08 | 1.31747004e-07 |
-| [C2187xC3xC3](../figures/statistics/sylow_C2187xC3xC3.png) | 5,668,704 | 2 | 6.12785643e-09 | 9.88102533e-08 |
-| [C729xC27](../figures/statistics/sylow_C729xC27.png) | 6,377,292 | 2 | 6.12785643e-09 | 8.78313362e-08 |
-| [C243xC9xC3](../figures/statistics/sylow_C243xC9xC3.png) | 12,754,584 | 2 | 6.12785643e-09 | 4.39156681e-08 |
-| [C3xC3xC3xC3](../figures/statistics/sylow_C3xC3xC3xC3.png) | 24,261,120 | 1 | 3.06392821e-09 | 2.30873957e-08 |
-| [C81xC81](../figures/statistics/sylow_C81xC81.png) | 25,509,168 | 2 | 6.12785643e-09 | 2.19578341e-08 |
-| [C729xC9xC3](../figures/statistics/sylow_C729xC9xC3.png) | 38,263,752 | 1 | 3.06392821e-09 | 1.4638556e-08 |
-| [C27xC27xC3](../figures/statistics/sylow_C27xC27xC3.png) | 51,018,336 | 2 | 6.12785643e-09 | 1.0978917e-08 |
-| [C81xC27xC3](../figures/statistics/sylow_C81xC27xC3.png) | 114,791,256 | 1 | 3.06392821e-09 | 4.87951868e-09 |
-| [C9xC9xC9](../figures/statistics/sylow_C9xC9xC9.png) | 221,079,456 | 1 | 3.06392821e-09 | 2.53359624e-09 |
-
-## Fitted secondary terms
-
-The free fit estimates both parameters. The fixed $5/6$ RMSE measures how much the fit worsens when that exponent is imposed. The late window begins at $X_{\max}/4$ or the original lower bound, whichever is larger.
-Fits to types with fewer than 10,000 endpoint observations are marked sparse.
-
-| Statistic | Free c | Free theta | Free RMSE | Fixed 5/6 RMSE | Late free theta | Status |
-|---|---:|---:|---:|---:|---:|---|
-| Class-number divisibility | -0.124104721 | 0.828781857 | 917.508181 | 3339.64798 | 0.82981052 |  |
-| 3-torsion sum | -0.413829617 | 0.833446696 | 855.996942 | 904.597847 | 0.833344928 |  |
-| trivial | 0.12411482 | 0.828777793 | 916.751241 | 3342.20534 | 0.829805698 |  |
-| C3 | -0.0445839202 | 0.841448258 | 1135.47586 | 2874.14038 | 0.839736358 |  |
-| C9 | -0.0190605471 | 0.831156446 | 1021.94353 | 1051.36865 | 0.838417312 |  |
-| C27 | -0.00597703134 | 0.834083744 | 821.036761 | 821.528817 | 0.830232253 |  |
-| C3xC3 | -0.0150846392 | 0.839605018 | 423.862893 | 790.38189 | 0.836090662 |  |
-| C81 | -0.00205880779 | 0.832487149 | 410.782178 | 410.917051 | 0.845017317 |  |
-| C9xC3 | -0.00592762963 | 0.846670051 | 160.674549 | 660.040332 | 0.843676995 |  |
-| C243 | -0.41367457 | 0.523963677 | 742.991219 | 1927.73956 | 0.681265422 |  |
-| C27xC3 | -0.0024211215 | 0.83562424 | 130.431531 | 135.315207 | 0.84070791 |  |
-| C729 | -3.26651216 | 0.427633318 | 1012.23701 | 3564.89993 | 0.269750815 |  |
-| C81xC3 | -0.00147147653 | 0.807104109 | 121.873342 | 186.969798 | 0.820392638 |  |
-| C2187 | -0.0494006278 | 0.649349262 | 623.836957 | 1732.58982 | 0.563995238 |  |
-| C243xC3 | -0.01435029 | 0.651663696 | 65.3438567 | 472.849316 | 0.65108196 |  |
-| C9xC9 | -0.000180030242 | 0.843961863 | 56.1016164 | 57.9249695 | 0.89021834 |  |
-| C6561 | -0.000609787674 | 0.847621885 | 153.380134 | 169.884391 | 0.816396651 |  |
-| C27xC9 | -0.000229238296 | 0.791338833 | 35.2165347 | 43.5829933 | 0.855810489 |  |
-| C729xC3 | -0.00258195498 | 0.717941615 | 80.641649 | 214.248327 | 0.670034737 |  |
-| C3xC3xC3 | -8.8444963e-05 | 0.886352166 | 14.3413079 | 84.3918643 | 0.878669626 | Sparse |
-| C19683 | -3.17238278e-05 | 0.952498705 | 24.6823441 | 249.662985 | 0.940792157 | Sparse |
-| C9xC3xC3 | -4.32855528e-05 | 0.885929916 | 7.44146342 | 40.5766377 | 0.89154099 | Sparse |
-| C2187xC3 | -7.66353568e-05 | 0.863308126 | 18.4139891 | 31.9182692 | 0.844923343 | Sparse |
-| C81xC9 | -0.00141512599 | 0.661565856 | 14.4166012 | 54.2724789 | 0.681732698 | Sparse |
-| C59049 | -4.37481591e-06 | 0.999419248 | 0.467443513 | 120.187056 | 0.999020261 | Sparse |
-| C27xC3xC3 | -1.55942102e-05 | 0.882282526 | 3.92475181 | 13.0864308 | 0.877786561 | Sparse |
-| C243xC9 | -0.000323124083 | 0.713540565 | 10.9695722 | 26.132899 | 0.658532114 | Sparse |
-| C6561xC3 | -5.02096347e-06 | 0.955453842 | 4.17315218 | 42.8837299 | 0.946227456 | Sparse |
-| C81xC3xC3 | -8.55092841e-06 | 0.856490515 | 2.46704051 | 3.14445366 | 0.849419042 | Sparse |
-| C729xC9 | -8.03628567e-06 | 0.866894301 | 3.80163423 | 5.0398044 | 0.830197233 | Sparse |
-| C27xC27 | -0.000172361346 | 0.645450809 | 4.40903744 | 6.80803099 | 0.762485683 | Sparse |
-| C243xC3xC3 | -2.08448058e-06 | 0.880551811 | 0.992194281 | 1.84127835 | 0.879716666 | Sparse |
-| C9xC9xC3 | -8.72411244e-06 | 0.803077544 | 2.02126909 | 2.21255995 | 0.84213121 | Sparse |
-| C2187xC9 | -3.21855023e-07 | 0.983733316 | 0.568295761 | 5.90126533 | 0.982424673 | Sparse |
-| C81xC27 | -9.02089667e-07 | 0.896981005 | 1.98362551 | 2.32805093 | 0.944235552 | Sparse |
-| C27xC9xC3 | -2.23794557e-06 | 0.824549206 | 0.858778661 | 0.864953215 | 0.796858097 | Sparse |
-| C729xC3xC3 | -1.01070865e-06 | 0.868785955 | 0.615276318 | 0.763157122 | 0.863345226 | Sparse |
-| C243xC27 | -5.16387588e-07 | 0.895933902 | 0.587086951 | 0.908780028 | 0.892321899 | Sparse |
-| C81xC9xC3 | -2.04473572e-07 | 0.895121168 | 0.677571782 | 0.725461419 | 1.01063776 | Sparse |
-| C2187xC3xC3 | -5.45241332e-08 | 0.968464189 | 0.147715962 | 0.677836607 | 0.964617924 | Sparse |
-| C729xC27 | -5.91284148e-08 | 0.959095717 | 0.144766606 | 0.577143612 | 0.936888617 | Sparse |
-| C243xC9xC3 | -4.10400272e-08 | 0.935701363 | 0.315558673 | 0.369059214 | 1.01530735 | Sparse |
-| C3xC3xC3xC3 | -6.06895489e-08 | 0.888452055 | 0.126964155 | 0.141820017 | 0.822455477 | Sparse |
-| C81xC81 | -9.15375696e-11 | 1.19505968 | 0.228338535 | 0.348870557 | 1.16273222 | Sparse |
-| C729xC9xC3 | -1.54113403e-08 | 0.923796418 | 0.172300104 | 0.17896645 | 1.13647729 | Sparse |
-| C27xC27xC3 | -5.59345052e-06 | 0.610060056 | 0.179409783 | 0.212387506 | 0.191692195 | Sparse |
-| C81xC27xC3 | -6.19017279e-05 | 0.422719581 | 0.151215923 | 0.164997683 | -0.654174347 | Sparse |
-| C9xC9xC9 | 2.62657953e-11 | 1.1387031 | 0.178645506 | 0.181484983 | 0.391168768 | Sparse |
-
-Ratio curves use the [README formulas](../README.md#what-the-ratio-plots-show). The three Sylow fits are also shown together in the comparison plot.
-
-## Checks and reproducibility
-
-Use --xmin and --xmax with experiments.fit to change the fitted range.
-
-The CL leading values for divisibility and Sylow types are conjectural. The torsion mean 2 is proved. Finite-range fits do not establish an asymptotic. Cumulative checkpoints are correlated.
-
-~~~bash
-source .venv/bin/activate
-python -m scripts.reproduce --check
-~~~
-
-- [Summary counts](../data/processed/p3_statistics.csv).
-- [Complete Sylow histogram](../data/processed/sylow3_types.csv).
-- [Input hashes and checkpoint grid](../data/processed/p3_statistics.manifest.json).
-- [Fit coefficients](fit_summary.csv).
-- [Full diagnostics](fits.json).
+[All dyadic checkpoints and pairs](dyadic_estimates.csv) · [Endpoint estimates](fit_summary.csv) · [JSON](fits.json)

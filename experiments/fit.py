@@ -1,16 +1,19 @@
-"""Fit divisibility, torsion, or one Sylow 3 type."""
+"""Estimate residual exponents for divisibility, torsion, or one Sylow type."""
 import argparse
 import json
 from pathlib import Path
 
 from src import ROOT
-from src.fitting import NOTE, fit_power, fitted_ratio, load_series, plot_fit, predict, select_range
+from src.fitting import (NOTE, dyadic_diagnostics, endpoint_row, load_series,
+                         plot_diagnostics, select_range)
+from src.statistics import PRIMES
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--prime", type=int, choices=PRIMES, default=3)
     parser.add_argument("--observable", choices=["divisible", "torsion", "sylow"])
-    parser.add_argument("--group", help="Sylow type, such as C243 or C9xC3")
+    parser.add_argument("--group", help="Sylow type, such as C25 or C7xC7")
     parser.add_argument("--xmin", type=float, default=1e6)
     parser.add_argument("--xmax", type=float)
     parser.add_argument("--data-dir", type=Path, default=ROOT/"data")
@@ -20,24 +23,22 @@ def main():
     if observable != "sylow" and args.group:
         parser.error("--group applies only to --observable sylow")
     try:
-        frame, metadata = load_series(observable, args.group, args.data_dir)
+        frame, metadata = load_series(observable, args.group, args.data_dir, p=args.prime)
         selected = select_range(frame, args.xmin, args.xmax)
-        if observable == "sylow" and not selected["count"].any():
-            raise ValueError("No fields of this Sylow type in the selected range")
-        result = fit_power(selected["X"], selected["error"])
+        dyadic = dyadic_diagnostics(selected)
+        if len(dyadic) < 2:
+            raise ValueError("Select at least two exact powers of two")
     except (ValueError, FileNotFoundError) as error:
         parser.error(str(error))
     label = f"sylow_{args.group}" if observable == "sylow" else observable
-    stem = f"{label}_{result['xmin']}_{result['xmax']}"
-    args.output_dir.mkdir(parents=True, exist_ok=True)
-    output = args.output_dir/stem
-    payload = {"model": "c*X**theta", "note": NOTE, **metadata, "fit": result}
+    xmin, xmax = int(selected.X.iloc[0]), int(selected.X.iloc[-1])
+    output = args.output_dir/f"p{args.prime}_{label}_{xmin}_{xmax}"
+    output.parent.mkdir(parents=True, exist_ok=True)
+    payload = {"method": "dyadic residual ratio", "note": NOTE, **metadata,
+               "xmin": xmin, "xmax": xmax, "endpoint": endpoint_row(metadata, dyadic)}
     output.with_suffix(".json").write_text(json.dumps(payload, indent=2, allow_nan=False)+"\n")
-    selected["fitted_error"] = predict(result, selected["X"])
-    selected["residual"] = selected["error"]-selected["fitted_error"]
-    selected["fitted_ratio"] = fitted_ratio(selected, result)
-    selected.to_csv(output.with_suffix(".csv"), index=False)
-    plot_fit(selected, metadata, result, output.with_suffix(".png"))
+    dyadic.to_csv(output.with_suffix(".csv"), index=False)
+    plot_diagnostics(selected, dyadic, metadata, output.with_suffix(".png"))
     print(json.dumps(payload, indent=2, allow_nan=False))
     print(f"Saved {output}.json / .csv / .png")
 

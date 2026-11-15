@@ -11,8 +11,8 @@ import subprocess
 import tempfile
 
 from src import ROOT
-from src.dataset import iter_file
-from src.statistics import (DATA_BOUND, RAW_FILES, DENSITY, group_key,
+from src.dataset import iter_file, p_primary_group
+from src.statistics import (DATA_BOUND, RAW_FILES, DENSITY, PRIMES, group_key,
                             group_parts, cl_probability, summary_row)
 
 
@@ -27,7 +27,8 @@ def checkpoints(n=200, xmin=1000, xmax=DATA_BOUND):
         step = (base-lo or base-3)/n
         extra = math.ceil(math.log10(xmax/DATA_BOUND)/step)
         values.update(int(10**(base + i*step)) for i in range(1, extra))
-    return sorted(values | set(range(DATA_BOUND, xmax+1, DATA_BOUND)) | {xmax})
+    dyadic = {2**k for k in range(xmax.bit_length()) if xmin <= 2**k <= xmax}
+    return sorted(values | dyadic | set(range(DATA_BOUND, xmax+1, DATA_BOUND)) | {xmax})
 
 
 def input_files(raw_dir, xmax=DATA_BOUND):
@@ -47,8 +48,8 @@ def input_files(raw_dir, xmax=DATA_BOUND):
     return paths
 
 
-def python_buckets(paths, xs):
-    buckets = [Counter() for _ in xs]
+def python_prime_buckets(paths, xs, primes):
+    buckets = {p: [Counter() for _ in xs] for p in primes}
     for path in paths:
         index = 0
         processed = 0
@@ -58,9 +59,11 @@ def python_buckets(paths, xs):
                 index += 1
             if index == len(xs):
                 break
-            if (record.h_K % 3 == 0) != bool(record.sylow3_invariants):
-                raise ValueError(f"Inconsistent class number and Sylow subgroup at {record.D_K}")
-            buckets[index][group_key(record.sylow3_invariants)] += 1
+            for p in primes:
+                parts = record.sylow3_invariants if p == 3 else p_primary_group(record.Cl_K_invariants, p)
+                if (record.h_K % p == 0) != bool(parts):
+                    raise ValueError(f"Inconsistent class number and Sylow subgroup at {record.D_K}")
+                buckets[p][index][group_key(parts)] += 1
             processed += 1
             if processed % 2_000_000 == 0:
                 print(f"{path.name}: {processed:,} records", flush=True)
@@ -68,7 +71,11 @@ def python_buckets(paths, xs):
     return buckets
 
 
-def cpp_buckets(paths, xs):
+def python_buckets(paths, xs):
+    return python_prime_buckets(paths, xs, (3,))[3]
+
+
+def cpp_prime_buckets(paths, xs, primes):
     compiler = shutil.which("c++")
     if not compiler:
         raise RuntimeError("C++ compiler missing; use --engine python or install g++ and zlib1g-dev")
@@ -77,15 +84,20 @@ def cpp_buckets(paths, xs):
         subprocess.run([compiler, "-O3", "-std=c++17", str(ROOT/"scripts/aggregate.cpp"),
                         "-lz", "-o", str(binary)], check=True)
         grid = Path(work)/"checkpoints.txt"
-        grid.write_text("\n".join(map(str, xs))+"\n")
+        grid.write_text(" ".join(map(str, primes))+"\n"+"\n".join(map(str, xs))+"\n")
         result = subprocess.run([str(binary), str(grid), *map(str, paths)],
                                 check=True, text=True, stdout=subprocess.PIPE)
-    buckets = [Counter() for _ in xs]
+    buckets = {p: [Counter() for _ in xs] for p in primes}
     for line in result.stdout.splitlines():
-        index, group, count = line.split()
-        group_parts(group)
-        buckets[int(index)][group] += int(count)
+        prime, index, group, count = line.split()
+        p = int(prime)
+        group_parts(group, p)
+        buckets[p][int(index)][group] += int(count)
     return buckets
+
+
+def cpp_buckets(paths, xs):
+    return cpp_prime_buckets(paths, xs, (3,))[3]
 
 
 def write_csv(path, rows):
@@ -98,6 +110,30 @@ def write_csv(path, rows):
     temporary.replace(path)
 
 
+def summarize(xs, buckets, p):
+    all_groups = sorted({g for b in buckets for g in b},
+                        key=lambda g: (len(group_parts(g, p)), group_parts(g, p)))
+    totals = Counter()
+    rows, types, ranks = [], [], []
+    for X, bucket in zip(xs, buckets):
+        totals.update(bucket)
+        row = summary_row(X, totals, p)
+        rows.append(row)
+        for group in all_groups:
+            count = totals[group]
+            probability = cl_probability(group_parts(group, p), p)
+            types.append({"X": X, "group": group, "N_fields": row["N_fields"],
+                          "N_group": count, "P_group": count/row["N_fields"] if row["N_fields"] else float("nan"),
+                          "P_CL": probability, "E_xuzhu": count-probability*DENSITY*X,
+                          "E_conditional": count-probability*row["N_fields"]})
+        rank_counts = Counter()
+        for group, count in totals.items():
+            rank_counts[len(group_parts(group, p))] += count
+        for rank in range(max(rank_counts, default=0)+1):
+            ranks.append({"X": X, f"rank{p}": rank, "N_rank": rank_counts[rank]})
+    return rows, types, ranks
+
+
 def build(raw_dir, output_dir, n=200, xmin=1000, engine="auto", xmax=None):
     if xmax is None:
         existing_manifest = output_dir/"p3_statistics.manifest.json"
@@ -107,47 +143,38 @@ def build(raw_dir, output_dir, n=200, xmin=1000, engine="auto", xmax=None):
     chosen = "cpp" if engine == "auto" and shutil.which("c++") else engine
     if chosen == "auto":
         chosen = "python"
-    buckets = cpp_buckets(paths, xs) if chosen == "cpp" else python_buckets(paths, xs)
-    all_groups = sorted({g for b in buckets for g in b},
-                        key=lambda g: (len(group_parts(g)), group_parts(g)))
-    totals = Counter()
-    rows, types, ranks = [], [], []
-    for X, bucket in zip(xs, buckets):
-        totals.update(bucket)
-        row = summary_row(X, totals)
-        rows.append(row)
-        for group in all_groups:
-            count = totals[group]
-            p = cl_probability(group_parts(group))
-            types.append({"X": X, "group": group, "N_fields": row["N_fields"],
-                          "N_group": count, "P_group": count/row["N_fields"] if row["N_fields"] else float("nan"),
-                          "P_CL": p, "E_xuzhu": count-p*DENSITY*X,
-                          "E_conditional": count-p*row["N_fields"]})
-        rank_counts = Counter()
-        for group, count in totals.items():
-            rank_counts[len(group_parts(group))] += count
-        for rank in range(max(rank_counts, default=0)+1):
-            ranks.append({"X": X, "rank3": rank, "N_rank": rank_counts[rank]})
-    write_csv(output_dir/"p3_statistics.csv", rows)
-    write_csv(output_dir/"sylow3_types.csv", types)
-    write_csv(output_dir/"rank3_counts.csv", ranks)
+    scanner = cpp_prime_buckets if chosen == "cpp" else python_prime_buckets
+    buckets = scanner(paths, xs, PRIMES)
     inputs = []
     for path in paths:
-        digest = hashlib.sha256()
         with path.open("rb") as f:
-            for chunk in iter(lambda: f.read(8*1024*1024), b""):
-                digest.update(chunk)
+            digest = hashlib.file_digest(f, "sha256")
         inputs.append({"filename": path.name, "bytes": path.stat().st_size,
                        "sha256": digest.hexdigest()})
+
+    reference_counts = None
+    for p in PRIMES:
+        rows, types, ranks = summarize(xs, buckets[p], p)
+        counts = [row["N_fields"] for row in rows]
+        if p == 3:
+            reference_counts = counts
+            reference_rows = rows
+        elif counts != reference_counts:
+            raise ValueError(f"Field counts for p={p} differ from p=3")
+        write_csv(output_dir/f"p{p}_statistics.csv", rows)
+        write_csv(output_dir/f"sylow{p}_types.csv", types)
+        write_csv(output_dir/f"rank{p}_counts.csv", ranks)
+        print(f"Saved p={p}: {len(rows)} checkpoints, {len({row['group'] for row in types})} Sylow types, "
+              f"{counts[-1]:,} fields")
+
     manifest = {"source": "https://www.lmfdb.org/NumberField/QuadraticImaginaryClassGroups",
                 "xmax": xmax, "comparison": "0 < |D| <= X", "checkpoints": xs,
-                "fields": rows[-1]["N_fields"], "inputs": inputs,
-                "observables": {"divisible": "h_D % 3 == 0",
-                                "torsion": "|Cl_D[3]| = 3^rank3, identity included",
-                                "sylow": "Cl_D[3^infinity], full isomorphism type"}}
+                "fields": reference_counts[-1], "inputs": inputs, "primes": list(PRIMES),
+                "observables": {"divisible": "h_D % p == 0",
+                                "torsion": "|Cl_D[p]| = p^rank_p, identity included",
+                                "sylow": "Cl_D[p^infinity], full isomorphism type"}}
     (output_dir/"p3_statistics.manifest.json").write_text(json.dumps(manifest, indent=2)+"\n")
-    print(f"Saved {len(rows)} checkpoints, {len(all_groups)} Sylow types, {manifest['fields']:,} fields")
-    return rows
+    return reference_rows
 
 
 def main():

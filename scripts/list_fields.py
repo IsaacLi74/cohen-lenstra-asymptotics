@@ -1,7 +1,7 @@
 import argparse
 
-from src.dataset import group_label, iter_all_fields
-from src.statistics import DATA_BOUND
+from src.dataset import group_label, iter_all_fields, p_primary_group
+from src.statistics import DATA_BOUND, PRIMES
 
 
 def main():
@@ -19,7 +19,9 @@ def main():
         type=int,
         help="List all fields Q(sqrt(d)) with squarefree d < 0 and |d| <= this bound.",
     )
+    parser.add_argument("--prime", type=int, choices=PRIMES, default=3)
     args = parser.parse_args()
+    p = args.prime
 
     radicand = args.max_d is not None
     bound = args.max_d if radicand else args.max_D
@@ -33,9 +35,9 @@ def main():
         f"{'D':>6} "
         f"{'h_D':>5} "
         f"{'Cl_D':>15} "
-        f"{'Sylow3':>15} "
-        f"{'|Cl[3]|':>8} "
-        f"{'3|h':>4}"
+        f"{f'Sylow{p}':>15} "
+        f"{f'|Cl[{p}]|':>8} "
+        f"{f'{p}|h':>4}"
     )
     print("-" * 68)
 
@@ -47,14 +49,15 @@ def main():
         if radicand and abs(record.d) > bound:
             continue
 
+        parts = p_primary_group(record.Cl_K_invariants, p)
         print(
             f"{record.d:6d} "
             f"{record.D_K:6d} "
             f"{record.h_K:5d} "
             f"{record.Cl_K:>15} "
-            f"{group_label(record.sylow3_invariants):>15} "
-            f"{record.torsion3_size:8d} "
-            f"{int(record.h_K % 3 == 0):4d}"
+            f"{group_label(parts):>15} "
+            f"{p**len(parts):8d} "
+            f"{int(record.h_K % p == 0):4d}"
         )
         count += 1
 

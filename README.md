@@ -1,106 +1,82 @@
 # Cohen–Lenstra Asymptotics
 
-We estimate the **secondary term in three counting functions**, using the blackboard notation below. The current data contain **326,378,404 imaginary quadratic fields up to $2^{30}$**, with 46 observed Sylow 3 types. Of these fields, 139,775,918 have class number divisible by 3.
+We measure the secondary terms for class-number divisibility, torsion sums, and Sylow subgroup counts at $p=3,5,7$. All three primes use the same imaginary quadratic fields with negative fundamental discriminants $-X\le D<0$, through $X=2^{30}$.
+
+[Results by prime and Sylow type](results/calculations.md) · [All dyadic estimates](results/dyadic_estimates.csv) · [Endpoint estimates](results/fit_summary.csv) · [Data format](DATA_FORMAT.md)
 
 ## Notation
 
-All sums run over negative fundamental discriminants $D$ with $-X\le D<0$. The closed endpoint matches the code.
+Let $N(X)$ be the number of fields, $\rho=3/\pi^2$, and $h_D=\lvert\mathrm{Cl}_D\rvert$. Write $\eta_p=\prod_{j\ge1}(1-p^{-j})$. The Cohen–Lenstra prediction for $p\mid h_D$ is $1-\eta_p$. For a finite abelian $p$-group $G$, the predicted proportion with Sylow subgroup $G$ is $P_{\rm CL}(G)=\eta_p/\lvert\operatorname{Aut}(G)\rvert$.
 
-| Symbol | Meaning |
-|---|---|
-| $X$ | Bound on the absolute discriminant. |
-| $D$ | Discriminant of the quadratic field $\mathbb Q(\sqrt D)$. |
-| $\mathrm{Cl}_D$ | Ideal class group of the quadratic field with discriminant $D$. |
-| $h_D=\lvert\mathrm{Cl}_D\rvert$ | Class number. |
-| $\mathrm{Cl}_D[3]$ | Elements $g$ satisfying $3g=0$. |
-| $\mathrm{Cl}_D[3^\infty]$ | The whole Sylow 3 subgroup in $\mathrm{Cl}_D$. |
-| $G_3$ | A finite abelian 3-group. |
-| $P_{\mathrm{CL}}(G_3)$ | CL predicted limiting proportion of fields with $\mathrm{Cl}_D[3^\infty]\cong G_3$. |
-
-The field count and the CL predicted proportions are
-
-$$N(X)=\sum_D1\sim\frac{3}{\pi^2}X,$$
-
-$$p_3=1-\prod_{j=1}^{\infty}(1-3^{-j})\approx0.439873922,\qquad
-P_{\mathrm{CL}}(G_3)=\frac{1-p_3}{\lvert\mathrm{Aut}(G_3)\rvert}.$$
-
-Here $p_3$ is the predicted limiting proportion with $3\mid h_D$, and $\mathrm{Aut}(G_3)$ is the automorphism group of $G_3$.
-
-## What we fit
-
-| Statistic | Counting function | Error after subtracting the leading term |
+| Statistic | Cumulative count | Fixed main term |
 |---|---|---|
-| $3\mid h_D$ | $N_3(X)=\sum_D\mathbf1[3\mid h_D]$ | $E(X)=N_3(X)-p_3\frac{3}{\pi^2}X$ |
-| 3-torsion | $S_3(X)=\sum_D\lvert\mathrm{Cl}_D[3]\rvert$ | $E_{\mathrm{tor}}(X)=S_3(X)-\frac{6}{\pi^2}X$ |
-| Sylow 3 type $G_3$ | $N_{G_3}(X)=\sum_D\mathbf1[\mathrm{Cl}_D[3^\infty]\cong G_3]$ | $E_{G_3}(X)=N_{G_3}(X)-P_{\mathrm{CL}}(G_3)\frac{3}{\pi^2}X$ |
+| Divisibility | $N_p(X)=\sum_D\mathbf{1}[p\mid h_D]$ | $(1-\eta_p)\rho X$ |
+| Torsion sum | $S_p(X)=\sum_D\lvert\mathrm{Cl}_D[p]\rvert$ | $2\rho X$ |
+| Sylow type | $N_G(X)=\sum_D\mathbf{1}[\mathrm{Cl}_D[p^\infty]\cong G]$ | $P_{\rm CL}(G)\rho X$ |
 
-For each error above we fit only
+If the Sylow subgroup has $r$ nontrivial cyclic factors, its $p$-torsion has size $p^r$, including the identity. The mean $2$ is proved at $p=3$ and is a [Cohen–Lenstra prediction](https://people.math.harvard.edu/~mmwood/Publications/ArithStats.pdf) at $p=5,7$. The [proved secondary term for the 3-torsion sum](https://arxiv.org/html/2107.12819) provides a comparison.
 
-$$E(X)\approx cX^\theta.$$
+## Residual-ratio method
 
-Both $c$ and $\theta$ are estimated separately for each statistic by unweighted least squares on the counting error. The leading terms in the table stay fixed.
+Set $E(X)=\text{observed count}-\text{fixed main term}$. If $E(X)\approx bX^\theta$, then
+$$
+\widehat\theta_{m,n}=\frac{\log\bigl(E(2^n)/E(2^m)\bigr)}{(n-m)\log 2},
+\qquad
+\widehat b_{m,n}=\frac{E(2^n)}{2^{n\widehat\theta_{m,n}}}.
+$$
+For example, the final adjacent-checkpoint estimate is $\log_2(E(2^{30})/E(2^{29}))$. We use the exact cumulative counts at powers of two and show gaps $n-m=1,2,4$. The logarithm requires two nonzero residuals of the same sign. Such residuals may both be negative. The default analysis uses powers from $2^{20}$ through $2^{30}$.
 
-The fit table and individual figures cover all 46 observed Sylow types, including the trivial group. The [calculation report](results/calculations.md) links each type to its plot and lists its endpoint proportion and CL prediction. It also reports a late-window free fit and a fixed $5/6$ RMSE for comparison. Fits with fewer than 10,000 observations at the endpoint are marked Sparse. The late fit for $C_{243}$ gives $\widehat\theta=0.6813$ despite 1,104,084 observations. The experimental report compares it with other types at similar counts.
+We also record the signed $b_{5/6}(X)=E(X)/X^{5/6}$ at each dyadic checkpoint. An exponent near $5/6$ across windows and a stable nonzero $b_{5/6}(X)$ are the two diagnostics for an $X^{5/6}$ correction. Cumulative checkpoints share fields, so the estimates describe finite-range behavior.
 
-## What the ratio plots show
+## Results
 
-The left panels show observed proportions or mean torsion size. To obtain the fitted curves, add the fitted correction $cX^\theta$ to the fixed main term, then divide by the observed field count $N(X)$:
+At $X=2^{30}$, the data contain **326,378,404 fields** and **46, 19, and 14** distinct Sylow types for $p=3,5,7$, respectively. The exponent columns compare endpoints separated by factors of $2$ and $16$.
 
-| Quantity | Observed proportion or mean | Fitted proportion or mean |
-|---|---|---|
-| Proportion with $3\mid h_D$ | $N_3(X)/N(X)$ | $\bigl(p_3\frac{3}{\pi^2}X+cX^\theta\bigr)/N(X)$ |
-| Mean 3-torsion size | $S_3(X)/N(X)$ | $\bigl(\frac{6}{\pi^2}X+cX^\theta\bigr)/N(X)$ |
-| Proportion of Sylow type $G_3$ | $N_{G_3}(X)/N(X)$ | $\bigl(P_{\mathrm{CL}}(G_3)\frac{3}{\pi^2}X+cX^\theta\bigr)/N(X)$ |
+| Statistic | Count or sum | $\widehat\theta_{29,30}$ | $\widehat\theta_{26,30}$ | $b_{5/6}(2^{30})$ |
+|---|---:|---:|---:|---:|
+| $3\mid h_D$ | 139,775,918 | 0.8294 | 0.8276 | -0.112933 |
+| 3-torsion | 638,841,092 | 0.8324 | 0.8333 | -0.414719 |
+| $5\mid h_D$ | 77,719,065 | 0.7324 | 0.7325 | -0.014994 |
+| 5-torsion | 650,168,024 | 0.7295 | 0.7284 | -0.077150 |
+| $7\mid h_D$ | 53,062,311 | 0.7613 | 0.7028 | -0.006084 |
+| 7-torsion | 651,267,184 | 0.7448 | 0.6889 | -0.044393 |
 
-Each row uses its own fitted $c,\theta$. The proportions and means are calculated from these count fits, without another fit. Every denominator counts **all fields**, including those with trivial Sylow 3 subgroup.
+The 3-torsion coefficient stays near the proved value $-0.41478$. Over $2^{26}$ to $2^{30}$, the magnitude of $b_{5/6}(X)$ falls from $0.1032$ to $0.0772$ for 5-torsion and from $0.0663$ to $0.0444$ for 7-torsion. The data show a weaker $5/6$ pattern for these two primes over this range.
 
-## Reproduce in Codespaces
+Some common Sylow types also vary strongly by window. For $C_{243}$, $\widehat\theta_{29,30}=0.7153$ and $\widehat\theta_{26,30}=0.5485$ with 1,104,084 endpoint observations.
 
-Setup installs pinned dependencies. Reproduce the fits and plots from the committed summaries:
+The [calculation tables](results/calculations.md) give the counts, proportions, and three endpoint exponents for each prime, along with a plot for every observed Sylow type. Types are ordered by $\lvert\operatorname{Aut}(G)\rvert$ and marked **Sparse** below 10,000 endpoint observations. Each plot shows the observed proportion or mean, the dyadic exponents, and $b_{5/6}(X)$.
+
+| Prime | Divisibility | Torsion | Common Sylow types |
+|---|---|---|---|
+| 3 | [Plot](figures/statistics/divisible.png) | [Plot](figures/statistics/torsion.png) | [Comparison](figures/statistics/sylow_comparison.png) |
+| 5 | [Plot](figures/statistics/p5/divisible.png) | [Plot](figures/statistics/p5/torsion.png) | [Comparison](figures/statistics/p5/sylow_comparison.png) |
+| 7 | [Plot](figures/statistics/p7/divisible.png) | [Plot](figures/statistics/p7/torsion.png) | [Comparison](figures/statistics/p7/sylow_comparison.png) |
+
+The [earlier Sylow 3 report](results/sylow3_experiment.tex) documents the original least-squares experiment.
+
+## Reproduce
 
 ~~~bash
 source .venv/bin/activate
 python -m scripts.reproduce --check
 ~~~
 
-To rebuild the summaries through $2^{30}$, download shards 0–3 for all four residue classes:
+For a raw rebuild, fetch all four residue-class shards at each of $k=0,1,2,3$.
 
 ~~~bash
 bash scripts/fetch_extended_shards.sh
 python -m scripts.reproduce --rebuild --check
 ~~~
 
-The manifest records the rebuild bound and all input hashes. Git ignores the additional raw shards.
-
-Every horizontal axis is $\log_{10}X$, with ticks showing its numerical value. Left vertical axes show the proportions or mean in the table above. Right vertical axes explicitly show $\log_{10}\lvert\text{count}-\text{main term}\rvert$ for the relevant statistic. The fitted line is $\log_{10}\lvert c\rvert+\theta\log_{10}X$; its legend gives the signed $c$ and $\theta$. Fitting still minimizes squared differences in the original count units, before taking logarithms for display. Dashed horizontal lines show the CL predictions or proved torsion limit, with numerical values in the legends. The comparison figure uses the same coordinates for $C_3$, $C_9$, and $C_3\times C_3$.
-
-[Calculations and fitted coefficients](results/calculations.md) · [Fit table](results/fit_summary.csv) · [Plots](figures/statistics) · [Experimental report (TeX)](results/sylow3_experiment.tex) · [Data format](DATA_FORMAT.md)
-
-## Inspect individual fields
-
-List all fields with $\lvert D\rvert\le100$:
+The [manifest](data/processed/p3_statistics.manifest.json) records the raw sizes, hashes, and checkpoint grid for all three primes.
 
 ~~~bash
-python -m scripts.list_fields --max-D 100
+python -m experiments.fit --prime 5 --observable divisible
+python -m experiments.fit --prime 7 --observable torsion
+python -m experiments.fit --prime 5 --group C25
+python -m experiments.fit --prime 7 --group C7xC7 --xmin 16777216
+python -m scripts.list_fields --prime 5 --max-D 100
 ~~~
 
-For $K=\mathbb Q(\sqrt d)$ with squarefree $d<0$, select $\lvert d\rvert\le100$ instead:
-
-~~~bash
-python -m scripts.list_fields --max-d 100
-~~~
-
-Rows are ordered by $\lvert D\rvert$ and show d, D, h_D, the full class-group decomposition, the Sylow 3 subgroup, the 3-torsion size, and whether 3 divides h_D. Cn denotes a cyclic group of order n; x denotes a direct product; 1 denotes the trivial group. Both bounds include the endpoint. This command uses the four shard-0 files, so --max-D is limited to 268435456 and --max-d to 67108864.
-
-## Individual fits
-
-~~~bash
-python -m experiments.fit --observable divisible
-python -m experiments.fit --observable torsion
-python -m experiments.fit --group C3
-python -m experiments.fit --group C9
-python -m experiments.fit --group C3xC3
-python -m experiments.fit --group C243 --xmin 268435456
-~~~
-
-Use any group key from the distribution table with --group. Use --xmin and --xmax to select the fitted range. Results go to results/custom/ as JSON, CSV, and PNG files named by the statistic and actual fit bounds. The CSV includes observed errors, fitted errors, residuals, and ratios.
+Use `--xmin` and `--xmax` to select the checkpoints used by an individual estimate. The resulting CSV, JSON, and plot go to `results/custom/`. Field inspection uses the four shard-0 files. Use `--max-D` for a discriminant bound or `--max-d` for a squarefree radicand bound.

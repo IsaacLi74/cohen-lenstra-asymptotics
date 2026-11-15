@@ -12,7 +12,7 @@ from src import ROOT
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--rebuild", action="store_true", help="Recompute statistics from original gzip records")
-    parser.add_argument("--xmin", type=float, default=1e6, help="Lower bound for the baseline fits")
+    parser.add_argument("--xmin", type=float, default=1e6, help="Lower bound for the dyadic analysis")
     parser.add_argument("--raw-xmax", type=int,
                         help="Override the manifest bound for --rebuild")
     parser.add_argument("--raw-dir", type=Path, default=ROOT/"data/raw")
@@ -22,10 +22,10 @@ def main():
     parser.add_argument("--engine", choices=["auto", "python", "cpp"], default="auto")
     parser.add_argument("--check", action="store_true", help="Run tests before reproduction")
     args = parser.parse_args()
-    if args.check:
-        subprocess.run([sys.executable, "-m", "pytest", "-q"], cwd=ROOT, check=True)
     if args.rebuild:
         build(args.raw_dir, args.data_dir/"processed", engine=args.engine, xmax=args.raw_xmax)
+    if args.check:
+        subprocess.run([sys.executable, "-m", "pytest", "-q"], cwd=ROOT, check=True)
     generate(args.data_dir, args.output_dir, args.figures_dir, args.xmin)
 
 

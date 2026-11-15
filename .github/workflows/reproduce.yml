@@ -45,5 +45,5 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: inputs.extend_to_2p30
         with:
-          name: sylow3-counts-2p30
+          name: sylow-counts-2p30
           path: data/processed/

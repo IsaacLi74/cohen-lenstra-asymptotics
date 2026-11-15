@@ -8,12 +8,13 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from scripts.build_stats import cpp_buckets, python_buckets, input_files, checkpoints
+from scripts.build_stats import (checkpoints, cpp_buckets, cpp_prime_buckets, input_files,
+                                 python_buckets, python_prime_buckets)
 from src import ROOT
 from src.dataset import FieldRecord, p_part
-from src.fitting import load_series, fit_power, predict, select_range
+from src.fitting import dyadic_diagnostics, load_series, select_range
 from src.statistics import (aut_size, cl_probability, ETA3, TARGETS, P_DIVISIBLE,
-                            DENSITY, group_parts, summary_row, RESIDUES, DATA_BOUND)
+                            DENSITY, group_parts, summary_row, PRIMES, RESIDUES, DATA_BOUND)
 
 
 def test_torsion_is_not_sylow_order():
@@ -159,47 +160,93 @@ def test_extended_sylow_series_uses_complete_histogram():
     types = pd.read_csv(ROOT/"data/processed/sylow3_types.csv")
     counts = types.loc[types.group == "C243", "N_group"]
     assert np.array_equal(df["count"], counts)
-    late = select_range(df, 2**28)
-    free = fit_power(late.X, late.error)
-    fixed = fit_power(late.X, late.error, theta=5/6)
-    assert free["parameters"]["theta"] == pytest.approx(.68127, abs=.0001)
-    assert fixed["RMSE"] > 3*free["RMSE"]
+    endpoint = dyadic_diagnostics(select_range(df, 2**26)).iloc[-1]
+    assert endpoint["count"] == 1_104_084
+    assert endpoint.theta_1 == pytest.approx(.715260555, abs=1e-8)
+    assert endpoint.theta_4 == pytest.approx(.548494751, abs=1e-8)
 
 
-def test_fits_recover_known_secondary_terms():
-    x = np.geomspace(1e6, 2**28, 80)
-    y = -.13*x**.827
-    fit = fit_power(x, y)
-    assert fit["parameters"]["c"] == pytest.approx(-.13, rel=1e-5)
-    assert fit["parameters"]["theta"] == pytest.approx(.827, abs=1e-6)
-    assert np.allclose(predict(fit, x), y, rtol=1e-6)
-    fit = fit_power(x, -y)
-    assert fit["parameters"]["c"] == pytest.approx(.13, rel=1e-5)
-    assert np.allclose(predict(fit, x), -y, rtol=1e-6)
-    with pytest.raises(ValueError, match="more"):
-        fit_power(x[:2], y[:2])
-
-
-def test_c9_fit_reference_value():
+def test_c9_dyadic_reference_value():
     df, _ = load_series("sylow", "C9")
-    df = select_range(df, 1e6, DATA_BOUND)
-    fit = fit_power(df.X, df.error)
-    assert fit["parameters"]["theta"] == pytest.approx(.83299010, abs=2e-6)
+    endpoint = dyadic_diagnostics(select_range(df, 2**26)).iloc[-1]
+    assert endpoint.theta_4 == pytest.approx(.833596922, abs=1e-8)
 
 
 def test_cli_preserves_distinct_fit_ranges(tmp_path, monkeypatch):
     from experiments.fit import main
 
     for xmin, xmax in [("1.1e6", "1e8"), ("1.9e6", "1e8"), ("1.1e6", "2e8")]:
-        monkeypatch.setattr(sys, "argv", ["fit", "--group", "C9", "--xmin", xmin,
+        monkeypatch.setattr(sys, "argv", ["fit", "--prime", "5", "--group", "C25", "--xmin", xmin,
                                         "--xmax", xmax, "--output-dir", str(tmp_path)])
         main()
     assert len(list(tmp_path.glob("*.json"))) == 3
     for path in tmp_path.glob("*.json"):
-        fit = json.loads(path.read_text())["fit"]
-        assert path.stem.endswith(f"_{fit['xmin']}_{fit['xmax']}")
+        result = json.loads(path.read_text())
+        assert result["prime"] == 5 and result["method"] == "dyadic residual ratio"
+        assert path.stem.endswith(f"_{result['xmin']}_{result['xmax']}")
         table = pd.read_csv(path.with_suffix(".csv"))
-        assert table.X.min() == fit["xmin"] and table.X.max() == fit["xmax"]
-        assert np.allclose(table.fitted_ratio,
-                           (table.baseline+table.fitted_error)/table.N_fields)
+        assert table.X.between(result["xmin"], result["xmax"]).all()
+        assert np.array_equal(table.X, 2**table.k)
+        assert np.allclose(table.b_5_6, table.error/table.X**(5/6))
+        assert result["endpoint"]["X"] == int(table.X.max())
         assert path.with_suffix(".png").stat().st_size > 0
+
+
+def test_all_prime_scans_match_independent_decompositions(tmp_path):
+    path = tmp_path/"cl3mod8.0.gz"
+    with gzip.open(path, "wt") as f:
+        f.write("0 99225 15 21 315\n1 1225 1225\n")
+    xs = [3, 11]
+    result = {
+        3: [Counter(C9xC3xC3=1), Counter(trivial=1)],
+        5: [Counter(C5xC5=1), Counter(C25=1)],
+        7: [Counter(C7xC7=1), Counter(C49=1)],
+    }
+    assert python_prime_buckets([path], xs, PRIMES) == result
+    if shutil.which("c++"):
+        assert cpp_prime_buckets([path], xs, PRIMES) == result
+
+
+@pytest.mark.parametrize("p", PRIMES)
+def test_prime_summary_full_histogram(p):
+    manifest = json.loads((ROOT/"data/processed/p3_statistics.manifest.json").read_text())
+    assert manifest["primes"] == list(PRIMES)
+    data = ROOT/"data/processed"
+    summary = pd.read_csv(data/f"p{p}_statistics.csv").set_index("X")
+    types = pd.read_csv(data/f"sylow{p}_types.csv")
+    ranks = pd.read_csv(data/f"rank{p}_counts.csv")
+    assert list(summary.index) == manifest["checkpoints"]
+    assert summary.N_fields.iloc[-1] == manifest["fields"]
+    assert np.array_equal(types.groupby("X").N_group.sum(), summary.N_fields)
+    assert np.array_equal(summary.N_fields-summary.N_trivial, summary.N_divisible)
+    assert np.array_equal(types[types.group != "trivial"].groupby("X").N_group.sum(), summary.N_divisible)
+    weighted = types.N_group * types.group.map(lambda group: p**len(group_parts(group, p)))
+    assert np.array_equal(weighted.groupby(types.X).sum(), summary[f"S_torsion{p}"])
+    rank_weighted = ranks.N_rank * (p**ranks[f"rank{p}"])
+    assert np.array_equal(rank_weighted.groupby(ranks.X).sum(), summary[f"S_torsion{p}"])
+    assert aut_size((p, p), p) == (p**2-1)*(p**2-p)
+    assert aut_size((p**2,), p) == p*(p-1)
+
+
+@pytest.mark.parametrize("sign", [-1, 1])
+def test_ratio_recovers_power_on_exact_checkpoints(sign):
+    x = np.array([2**k for k in range(20, 31)] + [2**30+1])
+    coefficient = sign * .23
+    theta = .792
+    frame = pd.DataFrame({"X": x, "error": coefficient*x**theta})
+    result = dyadic_diagnostics(frame)
+    assert list(result.k) == list(range(20, 31))
+    for gap in (1, 2, 4):
+        assert result.iloc[-1][f"theta_{gap}"] == pytest.approx(theta)
+        assert result.iloc[-1][f"c_{gap}"] == pytest.approx(coefficient)
+
+
+def test_ratio_excludes_zero_and_opposite_residuals():
+    frame = pd.DataFrame({"X": [4, 8, 16, 64], "error": [-1, 0, 3, -4]})
+    result = dyadic_diagnostics(frame).set_index("X")
+    assert result.loc[16, "status_1"] == "Zero residual"
+    assert result.loc[16, "status_2"] == "Opposite signs"
+    assert result.loc[64, "status_1"] == "Missing lower checkpoint"
+    assert result.loc[64, "status_2"] == "Opposite signs"
+    assert np.isnan(result.loc[64, "theta_2"])
+    assert result.loc[64, "b_5_6"] < 0

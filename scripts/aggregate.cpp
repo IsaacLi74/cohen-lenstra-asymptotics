@@ -3,11 +3,13 @@
 #include <algorithm>
 #include <charconv>
 #include <cstdint>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <limits>
 #include <map>
 #include <regex>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -18,11 +20,23 @@ int main(int argc, char** argv) {
     try {
         if (argc < 3) throw std::runtime_error("Expected checkpoint file and raw files");
         std::ifstream grid(argv[1]);
-        std::vector<U> xs;
+        std::string prime_line;
+        std::getline(grid, prime_line);
+        std::istringstream prime_input(prime_line);
+        std::vector<U> primes;
         U v;
+        while (prime_input >> v) {
+            if (v != 3 && v != 5 && v != 7)
+                throw std::runtime_error("Unsupported prime");
+            primes.push_back(v);
+        }
+        if (primes.empty()) throw std::runtime_error("No primes selected");
+        std::vector<U> xs;
         while (grid >> v) xs.push_back(v);
         if (xs.empty()) throw std::runtime_error("Empty checkpoint grid");
-        std::vector<std::map<std::string,U>> buckets(xs.size());
+        using Histogram = std::map<std::vector<U>, U>;
+        std::vector buckets(primes.size(), std::vector<Histogram>(xs.size()));
+        std::vector<U> values, parts;
         const std::regex name("(?:^|/)cl([0-9]+)mod([0-9]+)\\.([0-9]+)\\.gz$");
         for (int file=2; file<argc; ++file) {
             std::string path(argv[file]);
@@ -40,11 +54,11 @@ int main(int argc, char** argv) {
             gzbuffer(in, 1<<20);
             char line[16384];
             while (gzgets(in, line, sizeof(line))) {
-                std::string text(line);
-                if (text.size()==sizeof(line)-1 && text.back()!='\n')
+                const auto size = std::strlen(line);
+                if (size == sizeof(line)-1 && line[size-1] != '\n')
                     throw std::runtime_error("Overlong raw record");
-                std::vector<U> values;
-                const char *p=text.data(), *end=p+text.size();
+                values.clear();
+                const char *p = line, *end = line + size;
                 while (p<end) {
                     while (p<end && (*p==' ' || *p=='\t' || *p=='\r' || *p=='\n')) ++p;
                     if (p==end) break;
@@ -61,23 +75,32 @@ int main(int argc, char** argv) {
                 previous=D;
                 while (index<xs.size() && xs[index]<D) ++index;
                 if (index==xs.size()) break;
-                U product=1;
-                std::vector<U> parts;
-                for (size_t j=2;j<values.size();++j) {
-                    U n=values[j], q=1;
-                    if (!n || product>std::numeric_limits<U>::max()/n)
+                U product = 1;
+                for (size_t j = 2; j < values.size(); ++j) {
+                    const U n = values[j];
+                    if (!n || product > std::numeric_limits<U>::max() / n)
                         throw std::runtime_error("Invalid invariant factor");
-                    product*=n;
-                    while (n%3==0) { q*=3; n/=3; }
-                    if (q>1) parts.push_back(q);
+                    product *= n;
                 }
-                if (product!=values[1] || (values[1]%3==0)!=!parts.empty())
+                if (product != values[1])
                     throw std::runtime_error("Class number does not match invariants");
-                std::sort(parts.rbegin(),parts.rend());
-                std::string key;
-                for (U q:parts) { if (!key.empty()) key+="x"; key+="C"+std::to_string(q); }
-                if (key.empty()) key="trivial";
-                ++buckets[index][key]; ++count;
+                for (size_t t = 0; t < primes.size(); ++t) {
+                    const U prime = primes[t];
+                    parts.clear();
+                    if (product % prime == 0) {
+                        for (size_t j = 2; j < values.size(); ++j) {
+                            U n = values[j], q = 1;
+                            while (n % prime == 0) {
+                                q *= prime;
+                                n /= prime;
+                            }
+                            if (q > 1) parts.push_back(q);
+                        }
+                        std::sort(parts.rbegin(), parts.rend());
+                    }
+                    ++buckets[t][index][parts];
+                }
+                ++count;
             }
             int err=Z_OK;
             const char* msg=gzerror(in,&err);
@@ -87,9 +110,19 @@ int main(int argc, char** argv) {
                 throw std::runtime_error(error);
             std::cerr<<path<<": "<<count<<" records\n";
         }
-        for (size_t i=0;i<xs.size();++i)
-            for (const auto& entry:buckets[i])
-                std::cout<<i<<' '<<entry.first<<' '<<entry.second<<'\n';
+        for (size_t t = 0; t < primes.size(); ++t) {
+            for (size_t i = 0; i < xs.size(); ++i) {
+                for (const auto& [parts, count] : buckets[t][i]) {
+                    std::string key;
+                    for (U q : parts) {
+                        if (!key.empty()) key += "x";
+                        key += "C" + std::to_string(q);
+                    }
+                    if (key.empty()) key = "trivial";
+                    std::cout << primes[t] << ' ' << i << ' ' << key << ' ' << count << '\n';
+                }
+            }
+        }
         return 0;
     } catch (const std::exception& error) {
         std::cerr<<error.what()<<'\n'; return 1;

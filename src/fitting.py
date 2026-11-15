@@ -1,51 +1,62 @@
-"""Fit c*X**theta after subtracting the fixed linear main term."""
+"""Compare cumulative residuals at exact powers of two."""
 import hashlib
-import math
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from scipy.optimize import minimize_scalar
 
 from src import ROOT
-from src.statistics import DENSITY, P_DIVISIBLE, SYLOW_TYPES, TARGETS, cl_probability, group_parts
+from src.statistics import (DENSITY, PRIMES, SYLOW_TYPES, aut_size,
+                            cl_probability, cl_trivial_probability, group_parts)
 
-NOTE = "Finite-range least-squares fits. Cumulative checkpoints are correlated."
+NOTE = "Two-point estimates from cumulative errors. Checkpoints are correlated."
+GAPS = (1, 2, 4)
 SPARSE_COUNT = 10_000
-FIT_CASES = {
-    ("divisible", None): ("N_divisible", P_DIVISIBLE, "Class-number divisibility"),
-    ("torsion", None): ("S_torsion3", 2.0, "3-torsion sum"),
-    **{("sylow", group): (f"N_{group}", cl_probability(TARGETS[group]), f"Sylow {group}")
-       for group in SYLOW_TYPES},
-}
-GROUP_LABELS = {"C3": r"$C_3$", "C9": r"$C_9$", "C3xC3": r"$C_3\times C_3$"}
+BTT_TORSION3_COEFFICIENT = -0.41478
 
 
-def available_groups(data_dir):
-    path = Path(data_dir)/"processed/sylow3_types.csv"
+def data_path(data_dir, p, *, sylow=False):
+    if p not in PRIMES:
+        raise ValueError(f"Unsupported prime: {p}")
+    filename = f"sylow{p}_types.csv" if sylow else f"p{p}_statistics.csv"
+    return Path(data_dir)/"processed"/filename
+
+
+def figure_path(figures_dir, p, observable, group=None):
+    directory = figures_dir if p == 3 else figures_dir/f"p{p}"
+    return directory/(f"sylow_{group}.png" if group else f"{observable}.png")
+
+
+def available_groups(data_dir, p=3):
+    path = data_path(data_dir, p, sylow=True)
     return tuple(pd.read_csv(path, usecols=["group"])["group"].unique())
 
 
-def group_label(group):
-    parts = group_parts(group)
+def group_label(group, p=3):
+    parts = group_parts(group, p)
     return "$" + (r"\times ".join(f"C_{{{q}}}" for q in parts) or "1") + "$"
 
 
-def load_series(observable="divisible", group=None, data_dir=None):
+def load_series(observable="divisible", group=None, data_dir=None, *, p=3):
     data_dir = Path(data_dir) if data_dir else ROOT/"data"
-    case = FIT_CASES.get((observable, group))
-    if case is not None:
-        column, leading, _ = case
-        path = data_dir/"processed/p3_statistics.csv"
+    if observable in ("divisible", "torsion") and group is None:
+        path = data_path(data_dir, p)
         summary = pd.read_csv(path)
+        if observable == "divisible":
+            column, leading = "N_divisible", 1 - cl_trivial_probability(p)
+        else:
+            column, leading = f"S_torsion{p}", 2.0
     elif observable == "sylow" and group:
-        leading = cl_probability(group_parts(group))
-        path = data_dir/"processed/sylow3_types.csv"
-        types = pd.read_csv(path)
-        summary = types.loc[types["group"] == group]
-        if summary.empty:
-            raise ValueError(f"Sylow type {group} is absent from the dataset")
-        column = "N_group"
+        leading = cl_probability(group_parts(group, p), p)
+        path = data_path(data_dir, p, sylow=not (p == 3 and group in SYLOW_TYPES))
+        summary = pd.read_csv(path)
+        if p == 3 and group in SYLOW_TYPES:
+            column = f"N_{group}"
+        else:
+            summary = summary.loc[summary["group"] == group]
+            if summary.empty:
+                raise ValueError(f"Sylow type {group} is absent from the dataset")
+            column = "N_group"
     else:
         raise ValueError("Choose divisible, torsion, or sylow with a group")
     df = pd.DataFrame({"X": summary["X"], "N_fields": summary["N_fields"],
@@ -53,55 +64,11 @@ def load_series(observable="divisible", group=None, data_dir=None):
     df["baseline"] = leading * (DENSITY*df["X"])
     df["error"] = df["count"]-df["baseline"]
     df["ratio"] = df["count"]/df["N_fields"]
-    metadata = {"observable": observable, "group": group,
+    metadata = {"prime": p, "observable": observable, "group": group,
                 "ratio_leading_term": leading, "linear_count_coefficient": leading*DENSITY,
                 "input_files": [{"path": str(path.relative_to(data_dir)),
                                  "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}]}
     return df, metadata
-
-
-def fit_power(x, y, *, theta=None):
-    x, y = np.asarray(x, float), np.asarray(y, float)
-    if (x.ndim != 1 or y.shape != x.shape or len(x) <= 2
-            or not np.all(np.isfinite(x)) or not np.all(np.isfinite(y)) or not np.all(x > 0)):
-        raise ValueError("Need more than two finite points, with X > 0")
-    scale = float(x.max())
-    t = x/scale
-
-    def profile(theta):
-        basis = t**theta
-        amplitude = float(basis@y/(basis@basis))
-        return float(np.sum((y-amplitude*basis)**2)), amplitude
-
-    if theta is None:
-        grid = np.linspace(-1, 2, 601)
-        index = min(range(len(grid)), key=lambda j: profile(grid[j])[0])
-        if index in (0, len(grid)-1):
-            raise ValueError("Power fit optimum hits the [-1,2] search boundary")
-        optimum = minimize_scalar(lambda a: profile(a)[0], method="bounded",
-                                  bounds=(grid[index-1], grid[index+1]),
-                                  options={"xatol": 1e-12})
-        if not optimum.success:
-            raise ValueError("Power fit failed")
-        theta = float(optimum.x)
-    _, amplitude = profile(theta)
-    params = {"c": amplitude/scale**theta, "theta": theta}
-    prediction = params["c"]*x**theta
-    if not np.all(np.isfinite(prediction)):
-        raise ValueError("Non-finite model prediction")
-    rss, norm, size = float(np.sum((y-prediction)**2)), float(y@y), len(y)
-    return {"parameters": params, "points": size,
-            "xmin": int(x.min()), "xmax": int(x.max()),
-            "RMSE": math.sqrt(rss/size),
-            "relative_RMSE": math.sqrt(rss/norm) if norm else None}
-
-
-def predict(fit, x):
-    return fit["parameters"]["c"]*np.asarray(x, float)**fit["parameters"]["theta"]
-
-
-def fitted_ratio(df, fit):
-    return (df["baseline"]+predict(fit, df["X"]))/df["N_fields"]
 
 
 def select_range(df, xmin, xmax=None):
@@ -114,72 +81,94 @@ def select_range(df, xmin, xmax=None):
     return df.loc[mask].copy()
 
 
-def plot_labels(observable, group=None):
-    if observable == "divisible":
-        count, main = r"N_3(X)", r"p_3\frac{3}{\pi^2}X"
-    elif observable == "torsion":
-        count, main = r"S_3(X)", r"\frac{6}{\pi^2}X"
-    else:
-        symbol = group_label(group).strip("$") if group else "G_3"
-        count = rf"N_{{{symbol}}}(X)"
-        main = rf"P_{{\mathrm{{CL}}}}({symbol})\frac{{3}}{{\pi^2}}X"
-    return rf"${count}/N(X)$", rf"$\log_{{10}}\left|{count}-{main}\right|$"
+def dyadic_diagnostics(frame):
+    """Estimate theta and signed c separately on each valid pair of checkpoints."""
+    is_dyadic = frame["X"].map(lambda x: x > 0 and x == int(x) and int(x).bit_count() == 1)
+    dyadic = frame.loc[is_dyadic].copy()
+    dyadic["k"] = dyadic["X"].map(lambda x: int(x).bit_length() - 1)
+    dyadic["b_5_6"] = dyadic["error"] / dyadic["X"].astype(float)**(5/6)
+    errors = dyadic.set_index("k")["error"]
+    for gap in GAPS:
+        lower = dyadic["k"].map(lambda k: errors.get(k - gap, np.nan))
+        upper = dyadic["error"]
+        status = np.select(
+            [lower.isna(), (lower == 0) | (upper == 0), np.sign(lower) != np.sign(upper)],
+            ["Missing lower checkpoint", "Zero residual", "Opposite signs"],
+            default="",
+        )
+        log_upper = np.log2(upper.abs().where(status == ""))
+        log_lower = np.log2(lower.abs().where(status == ""))
+        theta = (log_upper - log_lower) / gap
+        dyadic[f"theta_{gap}"] = theta
+        dyadic[f"c_{gap}"] = np.sign(upper) * np.exp2(log_upper - dyadic["k"] * theta)
+        dyadic[f"status_{gap}"] = status
+    return dyadic
 
 
-def plot_error_fit(ax, df, fit, ylabel, label=None, color="C2"):
-    x = df["X"].to_numpy(float)
-    u = np.log10(x)
-    error = df["error"].to_numpy(float)
-    nonzero = error != 0
-    ax.plot(u[nonzero], np.log10(np.abs(error[nonzero])), ".",
-            color="C0" if label is None else color, label="Observed" if label is None else None)
-    if fit is not None:
-        c, theta = fit["parameters"]["c"], fit["parameters"]["theta"]
-        parameters = rf"$c={c:.6g},\ \theta={theta:.6f}$"
-        legend = (f"{label}: {parameters}" if label else
-                  r"Fit: $\log_{10}|c|+\theta\log_{10}X$"+"\n"+parameters)
-        if c:
-            ax.plot(u, np.log10(abs(c))+theta*u, color=color, label=legend)
-    ax.set(xlabel=r"$\log_{10}X$", ylabel=ylabel)
+def endpoint_row(metadata, dyadic):
+    last = dyadic.iloc[-1]
+    p, group = metadata["prime"], metadata["group"]
+    row = {key: metadata[key] for key in ("prime", "observable", "group", "ratio_leading_term")}
+    row.update({"aut_size": aut_size(group_parts(group, p), p) if group else None,
+                "X": int(last.X), "N_fields": int(last.N_fields), "count": int(last["count"]),
+                "observed_ratio": float(last.ratio), "error": float(last.error),
+                "b_5_6": float(last.b_5_6),
+                "sparse": group is not None and int(last["count"]) < SPARSE_COUNT})
+    for gap in GAPS:
+        for name in ("theta", "c"):
+            key = f"{name}_{gap}"
+            row[key] = float(last[key]) if pd.notna(last[key]) else None
+        row[f"status_{gap}"] = last[f"status_{gap}"]
+    return row
 
 
-def plot_fit(df, metadata, fit, output, *, fit_reason=None):
+def observable_label(metadata):
+    p, observable = metadata["prime"], metadata["observable"]
+    if observable == "sylow":
+        return f"Sylow {p} " + group_label(metadata["group"], p)
+    if observable == "torsion":
+        return f"{p}-torsion"
+    return rf"${p} \mid h_D$"
+
+
+def plot_diagnostics(frame, dyadic, metadata, output):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    plt.rcParams.update({"font.size": 10, "axes.spines.top": False, "axes.spines.right": False})
-    fig, (ax, error_ax) = plt.subplots(1, 2, figsize=(12, 5), constrained_layout=True)
-    x = df["X"].to_numpy(float)
-    u = np.log10(x)
-    ax.plot(u, df["ratio"], ".", label="Observed")
-    fitted_label = "Fitted mean" if metadata["observable"] == "torsion" else "Fitted proportion"
-    if fit is not None:
-        ratio = fitted_ratio(df, fit)
-        if metadata["observable"] == "sylow" and ((ratio < 0) | (ratio > 1)).any():
-            fitted_label = "Fit leaves [0, 1]"
-        ax.plot(u, ratio, color="C2", label=fitted_label)
+
+    fig, (proportion, exponent, coefficient) = plt.subplots(1, 3, figsize=(13, 4), layout="constrained")
+    x = np.log2(frame["X"])
+    proportion.plot(x, frame["ratio"], ".", ms=3, label="Observed")
     leading = metadata["ratio_leading_term"]
-    reference = "Proved limit" if metadata["observable"] == "torsion" else "CL prediction"
-    ax.axhline(leading, color="black", linestyle="--", label=f"{reference}: {leading:.9g}")
-    ylabel, error_ylabel = plot_labels(metadata["observable"], metadata["group"])
-    ax.set(xlabel=r"$\log_{10}X$", ylabel=ylabel)
-    ax.legend()
-    observable = metadata["observable"]
-    if observable == "torsion":
-        label = "Mean 3-torsion size"
-    elif observable == "sylow":
-        label = "Sylow "+group_label(metadata["group"])
-        count = int(df["count"].iloc[-1])
-        if 0 < count < SPARSE_COUNT:
-            label += f" (sparse, N={count:,})"
+    torsion = metadata["observable"] == "torsion"
+    reference = "Proved limit" if torsion and metadata["prime"] == 3 else "CL prediction"
+    proportion.axhline(leading, color="black", linestyle="--", label=f"{reference} {leading:.6g}")
+    proportion.set_ylabel("Mean torsion size" if torsion else "Proportion of all fields")
+    proportion.legend(fontsize=8)
+
+    exponent.axhline(5/6, color="black", linestyle="--", label="$5/6$")
+    for gap in GAPS:
+        exponent.plot(dyadic["k"], dyadic[f"theta_{gap}"], "o-", ms=3, label=rf"$n-m={gap}$")
+    exponent.set_ylabel(r"Residual-ratio exponent $\widehat{\theta}_{m,n}$")
+    exponent.legend(fontsize=8)
+
+    coefficient.plot(dyadic["k"], dyadic["b_5_6"], "o-", ms=3)
+    if torsion and metadata["prime"] == 3:
+        coefficient.axhline(BTT_TORSION3_COEFFICIENT, color="black", linestyle="--",
+                            label=f"BTT coefficient {BTT_TORSION3_COEFFICIENT}")
+        coefficient.legend(fontsize=8)
     else:
-        label = FIT_CASES[observable, None][2]
-    ax.set_title(f"{label}\n{int(x[0]):,} <= X <= {int(x[-1]):,}")
-    plot_error_fit(error_ax, df, fit, error_ylabel)
-    error_ax.set_title("Logarithm of counting correction" if fit is not None
-                       else f"Free fit unavailable\n{fit_reason}")
-    error_ax.legend(fontsize=9)
+        coefficient.axhline(0, color="0.65", linewidth=0.8)
+    coefficient.set_ylabel(r"$E(X)/X^{5/6}$")
+    for ax in fig.axes:
+        ax.set(xlabel=r"$\log_2 X$", xlim=(float(x.min())-.2, float(x.max())+.2))
+        ax.spines[["top", "right"]].set_visible(False)
+    title = observable_label(metadata)
+    count = int(frame["count"].iloc[-1])
+    if metadata["observable"] == "sylow" and count < SPARSE_COUNT:
+        title += f" (Sparse, {count:,} observations)"
+    fig.suptitle(title)
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(output, dpi=160)
+    fig.savefig(output, dpi=140)
     plt.close(fig)
