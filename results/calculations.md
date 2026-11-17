@@ -1,26 +1,26 @@
 # Residual-ratio estimates
 
-The final dyadic checkpoint is $X=2^{30}$ (1,073,741,824), with 326,378,404 fields.
+The final dyadic checkpoint is $`X=2^{30}`$ (1,073,741,824), with 326,378,404 fields.
 The [README](../README.md#residual-ratio-method) gives the fixed main terms and definitions.
 The [input manifest](../data/processed/p3_statistics.manifest.json) records the raw shards and SHA-256 hashes.
 
-Each exponent column uses the endpoint and one earlier dyadic checkpoint. A dash marks a missing checkpoint, a zero residual, or opposite signs. The gap 4 coefficient is $\widehat b_{n-4,n}=E(2^n)/2^{n\widehat\theta_{n-4,n}}$. Each coefficient is paired with its own effective exponent. The $b_{5/6}=E(X)/X^{5/6}$ comparison is reported for $p=3$.
-Types with fewer than 10,000 observations at the endpoint are marked **Sparse**. Within each prime, the Sylow types are ordered by $\lvert\mathrm{Aut}(G)\rvert$.
+Each exponent column uses the endpoint and one earlier dyadic checkpoint. A dash marks a missing checkpoint, a zero residual, or opposite signs. The gap 4 coefficient is $`\widehat{b}_{n-4,n}=E(2^n)/2^{n\widehat{\theta}_{n-4,n}}`$. Each coefficient is paired with its own effective exponent. The $`b_{5/6}=E(X)/X^{5/6}`$ comparison is reported for $`p=3`$.
+Types with fewer than 10,000 observations at the endpoint are marked **Sparse**. Within each prime, the Sylow types are ordered by $`\lvert\mathrm{Aut}(G)\rvert`$.
 
-| Statistic | Count or sum | Observed / $N(X)$ | Leading mean or proportion | $\widehat\theta_{29,30}$ | $\widehat\theta_{28,30}$ | $\widehat\theta_{26,30}$ | $\widehat b_{26,30}$ |
+| Statistic | Count or sum | Observed / $`N(X)`$ | Leading mean or proportion | $`\widehat{\theta}_{29,30}`$ | $`\widehat{\theta}_{28,30}`$ | $`\widehat{\theta}_{26,30}`$ | $`\widehat{b}_{26,30}`$ |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| [$3\mid h_D$](../figures/statistics/divisible.png) | 139,775,918 | 0.428263379 | 0.439873922 | 0.82939 | 0.82850022 | 0.82756928 | -0.12731433 |
-| [3-torsion](../figures/statistics/torsion.png) | 638,841,092 | 1.957363245 | 2.000000000 | 0.8323687 | 0.83333374 | 0.83330132 | -0.41499525 |
-| [$5\mid h_D$](../figures/statistics/p5/divisible.png) | 77,719,065 | 0.238125636 | 0.239667204 | 0.73242938 | 0.75463528 | 0.73253653 | -0.12195922 |
-| [5-torsion](../figures/statistics/p5/torsion.png) | 650,168,024 | 1.992068152 | 2.000000000 | 0.72945526 | 0.74484817 | 0.72838474 | -0.68409638 |
-| [$7\mid h_D$](../figures/statistics/p7/divisible.png) | 53,062,311 | 0.162579112 | 0.163204593 | 0.76133332 | 0.69941972 | 0.70283706 | -0.091764651 |
-| [7-torsion](../figures/statistics/p7/torsion.png) | 651,267,184 | 1.995435899 | 2.000000000 | 0.74479821 | 0.69637599 | 0.68886249 | -0.89539185 |
+| $`3\mid h_D`$ ([Plot](../figures/statistics/divisible.png)) | 139,775,918 | 0.428263379 | 0.439873922 | 0.82939 | 0.82850022 | 0.82756928 | -0.12731433 |
+| 3-torsion ([Plot](../figures/statistics/torsion.png)) | 638,841,092 | 1.957363245 | 2.000000000 | 0.8323687 | 0.83333374 | 0.83330132 | -0.41499525 |
+| $`5\mid h_D`$ ([Plot](../figures/statistics/p5/divisible.png)) | 77,719,065 | 0.238125636 | 0.239667204 | 0.73242938 | 0.75463528 | 0.73253653 | -0.12195922 |
+| 5-torsion ([Plot](../figures/statistics/p5/torsion.png)) | 650,168,024 | 1.992068152 | 2.000000000 | 0.72945526 | 0.74484817 | 0.72838474 | -0.68409638 |
+| $`7\mid h_D`$ ([Plot](../figures/statistics/p7/divisible.png)) | 53,062,311 | 0.162579112 | 0.163204593 | 0.76133332 | 0.69941972 | 0.70283706 | -0.091764651 |
+| 7-torsion ([Plot](../figures/statistics/p7/torsion.png)) | 651,267,184 | 1.995435899 | 2.000000000 | 0.74479821 | 0.69637599 | 0.68886249 | -0.89539185 |
 
 ## Sylow 3
 
 46 types in the data. [Compare the common groups](../figures/statistics/sylow_comparison.png).
 
-| Group | Aut size | Count | Observed / $N(X)$ | CL probability | Gap 1 exponent | Gap 2 exponent | Gap 4 exponent | Gap 4 coefficient | $b_{5/6}$ | Status |
+| Group | Aut size | Count | Observed / $`N(X)`$ | CL probability | Gap 1 exponent | Gap 2 exponent | Gap 4 exponent | Gap 4 coefficient | $`b_{5/6}`$ | Status |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
 | [trivial](../figures/statistics/sylow_trivial.png) | 1 | 186,602,486 | 0.57173662 | 0.56012608 | 0.82938165 | 0.82848148 | 0.82760258 | 0.12722711 | 0.11293427 |  |
 | [C3](../figures/statistics/sylow_C3.png) | 2 | 89,635,292 | 0.2746361 | 0.28006304 | 0.83658955 | 0.8422592 | 0.83799694 | -0.047908002 | -0.052786716 |  |
@@ -73,7 +73,7 @@ Types with fewer than 10,000 observations at the endpoint are marked **Sparse**.
 
 19 types in the data. [Compare the common groups](../figures/statistics/p5/sylow_comparison.png).
 
-| Group | Aut size | Count | Observed / $N(X)$ | CL probability | Gap 1 exponent | Gap 2 exponent | Gap 4 exponent | Gap 4 coefficient | Status |
+| Group | Aut size | Count | Observed / $`N(X)`$ | CL probability | Gap 1 exponent | Gap 2 exponent | Gap 4 exponent | Gap 4 coefficient | Status |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---|
 | [trivial](../figures/statistics/p5/sylow_trivial.png) | 1 | 248,659,339 | 0.76187436 | 0.7603328 | 0.7323755 | 0.75451153 | 0.73273362 | 0.12146678 |  |
 | [C5](../figures/statistics/p5/sylow_C5.png) | 4 | 61,737,128 | 0.18915813 | 0.1900832 | 0.73819106 | 0.78471648 | 0.76784075 | -0.035123375 |  |
@@ -99,7 +99,7 @@ Types with fewer than 10,000 observations at the endpoint are marked **Sparse**.
 
 14 types in the data. [Compare the common groups](../figures/statistics/p7/sylow_comparison.png).
 
-| Group | Aut size | Count | Observed / $N(X)$ | CL probability | Gap 1 exponent | Gap 2 exponent | Gap 4 exponent | Gap 4 coefficient | Status |
+| Group | Aut size | Count | Observed / $`N(X)`$ | CL probability | Gap 1 exponent | Gap 2 exponent | Gap 4 exponent | Gap 4 coefficient | Status |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---|
 | [trivial](../figures/statistics/p7/sylow_trivial.png) | 1 | 273,316,093 | 0.83742089 | 0.83679541 | 0.76119408 | 0.69914411 | 0.70328823 | 0.090919519 |  |
 | [C7](../figures/statistics/p7/sylow_C7.png) | 6 | 45,439,736 | 0.13922409 | 0.1394659 | 1.0480283 | 0.91605235 | 0.90342122 | -0.00054761152 |  |

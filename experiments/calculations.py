@@ -30,38 +30,38 @@ def write_calculations(data_dir, output_dir, figures_dir, results):
     k = X.bit_length() - 1
     lines = [
         "# Residual-ratio estimates", "",
-        f"The final dyadic checkpoint is $X=2^{{{k}}}$ ({X:,}), with {fields:,} fields.",
+        f"The final dyadic checkpoint is $`X=2^{{{k}}}`$ ({X:,}), with {fields:,} fields.",
         f"The [README]({readme}#residual-ratio-method) gives the fixed main terms and definitions.",
         f"The [input manifest]({manifest}) records the raw shards and SHA-256 hashes.", "",
         "Each exponent column uses the endpoint and one earlier dyadic checkpoint. "
         "A dash marks a missing checkpoint, a zero residual, or opposite signs. "
-        r"The gap 4 coefficient is $\widehat b_{n-4,n}=E(2^n)/2^{n\widehat\theta_{n-4,n}}$. "
+        r"The gap 4 coefficient is $`\widehat{b}_{n-4,n}=E(2^n)/2^{n\widehat{\theta}_{n-4,n}}`$. "
         r"Each coefficient is paired with its own effective exponent. "
-        r"The $b_{5/6}=E(X)/X^{5/6}$ comparison is reported for $p=3$.",
+        r"The $`b_{5/6}=E(X)/X^{5/6}`$ comparison is reported for $`p=3`$.",
         f"Types with fewer than {SPARSE_COUNT:,} observations at the endpoint are marked **Sparse**. "
-        r"Within each prime, the Sylow types are ordered by $\lvert\mathrm{Aut}(G)\rvert$.", "",
-        "| Statistic | Count or sum | Observed / $N(X)$ | Leading mean or proportion | "
-        rf"$\widehat\theta_{{{k-1},{k}}}$ | $\widehat\theta_{{{k-2},{k}}}$ | "
-        rf"$\widehat\theta_{{{k-4},{k}}}$ | $\widehat b_{{{k-4},{k}}}$ |",
+        r"Within each prime, the Sylow types are ordered by $`\lvert\mathrm{Aut}(G)\rvert`$.", "",
+        "| Statistic | Count or sum | Observed / $`N(X)`$ | Leading mean or proportion | "
+        rf"$`\widehat{{\theta}}_{{{k-1},{k}}}`$ | $`\widehat{{\theta}}_{{{k-2},{k}}}`$ | "
+        rf"$`\widehat{{\theta}}_{{{k-4},{k}}}`$ | $`\widehat{{b}}_{{{k-4},{k}}}`$ |",
         "|---|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for row in results:
         if row["group"]:
             continue
         p, observable = row["prime"], row["observable"]
-        label = rf"${p}\mid h_D$" if observable == "divisible" else f"{p}-torsion"
+        label = rf"$`{p}\mid h_D`$" if observable == "divisible" else f"{p}-torsion"
         plot = os.path.relpath(figure_path(figures_dir, p, observable), output_dir)
-        lines.append(f"| [{label}]({plot}) | {row['count']:,} | {row['observed_ratio']:.9f} | "
+        lines.append(f"| {label} ([Plot]({plot})) | {row['count']:,} | {row['observed_ratio']:.9f} | "
                      f"{row['ratio_leading_term']:.9f} | {exponents(row)} | {number(row['c_4'])} |")
     for p in PRIMES:
         groups = [row for row in results if row["prime"] == p and row["group"]]
         comparison = os.path.relpath(figure_path(figures_dir, p, "sylow_comparison"), output_dir)
-        fixed_header = " | $b_{5/6}$" if p == 3 else ""
+        fixed_header = " | $`b_{5/6}`$" if p == 3 else ""
         fixed_separator = "---:|" if p == 3 else ""
         lines.extend([
             "", f"## Sylow {p}", "",
             f"{len(groups)} types in the data. [Compare the common groups]({comparison}).", "",
-            "| Group | Aut size | Count | Observed / $N(X)$ | CL probability | "
+            "| Group | Aut size | Count | Observed / $`N(X)`$ | CL probability | "
             "Gap 1 exponent | Gap 2 exponent | Gap 4 exponent | Gap 4 coefficient"
             f"{fixed_header} | Status |",
             f"|---|---:|---:|---:|---:|---:|---:|---:|---:|{fixed_separator}---|",
