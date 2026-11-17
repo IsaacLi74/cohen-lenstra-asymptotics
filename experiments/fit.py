@@ -25,7 +25,7 @@ def main():
     try:
         frame, metadata = load_series(observable, args.group, args.data_dir, p=args.prime)
         selected = select_range(frame, args.xmin, args.xmax)
-        dyadic = dyadic_diagnostics(selected)
+        dyadic = dyadic_diagnostics(selected, p=args.prime)
         if len(dyadic) < 2:
             raise ValueError("Select at least two exact powers of two")
     except (ValueError, FileNotFoundError) as error:

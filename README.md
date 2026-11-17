@@ -26,26 +26,28 @@ $$
 $$
 For example, the final adjacent-checkpoint estimate is $\log_2(E(2^{30})/E(2^{29}))$. We use the exact cumulative counts at powers of two and show gaps $n-m=1,2,4$. The logarithm requires two nonzero residuals of the same sign. Such residuals may both be negative. The default analysis uses powers from $2^{20}$ through $2^{30}$.
 
-We also record the signed $b_{5/6}(X)=E(X)/X^{5/6}$ at each dyadic checkpoint. An exponent near $5/6$ across windows and a stable nonzero $b_{5/6}(X)$ are the two diagnostics for an $X^{5/6}$ correction. Cumulative checkpoints share fields, so the estimates describe finite-range behavior.
+For $p=5,7$, we report each effective exponent together with its signed coefficient $\widehat b_{m,n}$. Both parameters depend on the chosen window. In the CSV and JSON files, `theta_1`, `theta_2`, `theta_4` are the exponents and `c_1`, `c_2`, `c_4` are their paired coefficients. Cumulative checkpoints share fields, so these estimates describe finite-range behavior.
+
+For $p=3$, we additionally record $b_{5/6}(X)=E(X)/X^{5/6}$ and show the $5/6$ reference. This tests the proved 3-torsion secondary term and the proposed corrections for divisibility and individual Sylow 3 types. A stable nonzero coefficient and exponents near $5/6$ across windows support this scale. The `b_5_6` column is populated for $p=3$.
 
 ## Results
 
 At $X=2^{30}$, the data contain **326,378,404 fields** and **46, 19, and 14** distinct Sylow types for $p=3,5,7$, respectively. The exponent columns compare endpoints separated by factors of $2$ and $16$.
 
-| Statistic | Count or sum | $\widehat\theta_{29,30}$ | $\widehat\theta_{26,30}$ | $b_{5/6}(2^{30})$ |
+| Statistic | Count or sum | $\widehat\theta_{29,30}$ | $\widehat\theta_{26,30}$ | $\widehat b_{26,30}$ |
 |---|---:|---:|---:|---:|
-| $3\mid h_D$ | 139,775,918 | 0.8294 | 0.8276 | -0.112933 |
-| 3-torsion | 638,841,092 | 0.8324 | 0.8333 | -0.414719 |
-| $5\mid h_D$ | 77,719,065 | 0.7324 | 0.7325 | -0.014994 |
-| 5-torsion | 650,168,024 | 0.7295 | 0.7284 | -0.077150 |
-| $7\mid h_D$ | 53,062,311 | 0.7613 | 0.7028 | -0.006084 |
-| 7-torsion | 651,267,184 | 0.7448 | 0.6889 | -0.044393 |
+| $3\mid h_D$ | 139,775,918 | 0.8294 | 0.8276 | -0.127314 |
+| 3-torsion | 638,841,092 | 0.8324 | 0.8333 | -0.414995 |
+| $5\mid h_D$ | 77,719,065 | 0.7324 | 0.7325 | -0.121959 |
+| 5-torsion | 650,168,024 | 0.7295 | 0.7284 | -0.684096 |
+| $7\mid h_D$ | 53,062,311 | 0.7613 | 0.7028 | -0.091765 |
+| 7-torsion | 651,267,184 | 0.7448 | 0.6889 | -0.895392 |
 
-The 3-torsion coefficient stays near the proved value $-0.41478$. Over $2^{26}$ to $2^{30}$, the magnitude of $b_{5/6}(X)$ falls from $0.1032$ to $0.0772$ for 5-torsion and from $0.0663$ to $0.0444$ for 7-torsion. The data show a weaker $5/6$ pattern for these two primes over this range.
+At $p=3$, $b_{5/6}(2^{30})=-0.112933$ for divisibility and $-0.414719$ for torsion. The torsion coefficient stays near the proved value $-0.41478$. For $p=5,7$, the table reports the effective power and its corresponding coefficient for each statistic.
 
-Some common Sylow types also vary strongly by window. For $C_{243}$, $\widehat\theta_{29,30}=0.7153$ and $\widehat\theta_{26,30}=0.5485$ with 1,104,084 endpoint observations.
+Some common Sylow types also vary strongly by window. For $C_{243}$, $\widehat\theta_{29,30}=0.7153$ and $\widehat\theta_{26,30}=0.5485$ with 1,104,084 endpoint observations. In Sylow 5, the gap 4 exponents are $0.9655$ for $C_{25}$ and $0.4267$ for $C_{625}$. In Sylow 7, they are $0.8259$ for $C_{49}$ and $0.3186$ for $C_{343}$.
 
-The [calculation tables](results/calculations.md) give the counts, proportions, and three endpoint exponents for each prime, along with a plot for every observed Sylow type. Types are ordered by $\lvert\operatorname{Aut}(G)\rvert$ and marked **Sparse** below 10,000 endpoint observations. Each plot shows the observed proportion or mean, the dyadic exponents, and $b_{5/6}(X)$.
+The [calculation tables](results/calculations.md) give the counts, proportions, three endpoint exponents, and a paired coefficient for every observed Sylow type. Types are ordered by $\lvert\operatorname{Aut}(G)\rvert$ and marked **Sparse** below 10,000 endpoint observations. Each plot shows the observed proportion or mean and the dyadic exponents. Its third panel shows $b_{5/6}(X)$ for $p=3$ and the effective coefficients for $p=5,7$. Effective coefficient panels use a symmetric logarithmic scale, linear within $\pm10^{-6}$.
 
 | Prime | Divisibility | Torsion | Common Sylow types |
 |---|---|---|---|

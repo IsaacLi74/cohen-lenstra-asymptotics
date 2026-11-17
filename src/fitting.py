@@ -81,12 +81,13 @@ def select_range(df, xmin, xmax=None):
     return df.loc[mask].copy()
 
 
-def dyadic_diagnostics(frame):
+def dyadic_diagnostics(frame, *, p=3):
     """Estimate theta and signed c separately on each valid pair of checkpoints."""
     is_dyadic = frame["X"].map(lambda x: x > 0 and x == int(x) and int(x).bit_count() == 1)
     dyadic = frame.loc[is_dyadic].copy()
     dyadic["k"] = dyadic["X"].map(lambda x: int(x).bit_length() - 1)
-    dyadic["b_5_6"] = dyadic["error"] / dyadic["X"].astype(float)**(5/6)
+    if p == 3:
+        dyadic["b_5_6"] = dyadic["error"] / dyadic["X"].astype(float)**(5/6)
     errors = dyadic.set_index("k")["error"]
     for gap in GAPS:
         lower = dyadic["k"].map(lambda k: errors.get(k - gap, np.nan))
@@ -112,8 +113,9 @@ def endpoint_row(metadata, dyadic):
     row.update({"aut_size": aut_size(group_parts(group, p), p) if group else None,
                 "X": int(last.X), "N_fields": int(last.N_fields), "count": int(last["count"]),
                 "observed_ratio": float(last.ratio), "error": float(last.error),
-                "b_5_6": float(last.b_5_6),
                 "sparse": group is not None and int(last["count"]) < SPARSE_COUNT})
+    if p == 3:
+        row["b_5_6"] = float(last.b_5_6)
     for gap in GAPS:
         for name in ("theta", "c"):
             key = f"{name}_{gap}"
@@ -146,20 +148,30 @@ def plot_diagnostics(frame, dyadic, metadata, output):
     proportion.set_ylabel("Mean torsion size" if torsion else "Proportion of all fields")
     proportion.legend(fontsize=8)
 
-    exponent.axhline(5/6, color="black", linestyle="--", label="$5/6$")
+    p = metadata["prime"]
+    if p == 3:
+        exponent.axhline(5/6, color="black", linestyle="--", label="$5/6$")
     for gap in GAPS:
         exponent.plot(dyadic["k"], dyadic[f"theta_{gap}"], "o-", ms=3, label=rf"$n-m={gap}$")
     exponent.set_ylabel(r"Residual-ratio exponent $\widehat{\theta}_{m,n}$")
     exponent.legend(fontsize=8)
 
-    coefficient.plot(dyadic["k"], dyadic["b_5_6"], "o-", ms=3)
-    if torsion and metadata["prime"] == 3:
+    if p == 3:
+        coefficient.plot(dyadic["k"], dyadic["b_5_6"], "o-", ms=3)
+        coefficient.set_ylabel(r"$E(X)/X^{5/6}$")
+    else:
+        for gap in GAPS:
+            coefficient.plot(dyadic["k"], dyadic[f"c_{gap}"], "o-", ms=3,
+                             label=rf"$n-m={gap}$")
+        coefficient.set_yscale("symlog", linthresh=1e-6)
+        coefficient.set_ylabel(r"Effective coefficient $\widehat{b}_{m,n}$ (symlog)")
+        coefficient.legend(fontsize=8)
+    if torsion and p == 3:
         coefficient.axhline(BTT_TORSION3_COEFFICIENT, color="black", linestyle="--",
                             label=f"BTT coefficient {BTT_TORSION3_COEFFICIENT}")
         coefficient.legend(fontsize=8)
     else:
         coefficient.axhline(0, color="0.65", linewidth=0.8)
-    coefficient.set_ylabel(r"$E(X)/X^{5/6}$")
     for ax in fig.axes:
         ax.set(xlabel=r"$\log_2 X$", xlim=(float(x.min())-.2, float(x.max())+.2))
         ax.spines[["top", "right"]].set_visible(False)

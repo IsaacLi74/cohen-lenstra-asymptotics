@@ -18,14 +18,20 @@ def plot_comparison(entries, output):
     import matplotlib.pyplot as plt
 
     fig, axes = plt.subplots(1, 2, figsize=(11, 4), layout="constrained")
+    p = entries[0][0]["prime"]
     for metadata, points in entries:
         label = observable_label(metadata)
         axes[0].plot(points["k"], points["theta_4"], "o-", ms=3, label=label)
-        axes[1].plot(points["k"], points["b_5_6"], "o-", ms=3, label=label)
-    axes[0].axhline(5/6, color="black", linestyle="--", label="$5/6$")
+        coefficient = points["b_5_6"] if p == 3 else points["c_4"]
+        axes[1].plot(points["k"], coefficient, "o-", ms=3, label=label)
+    if p == 3:
+        axes[0].axhline(5/6, color="black", linestyle="--", label="$5/6$")
+    else:
+        axes[1].set_yscale("symlog", linthresh=1e-6)
     axes[1].axhline(0, color="0.65", linewidth=0.8)
     axes[0].set_ylabel(r"Residual-ratio exponent $\widehat{\theta}_{n-4,n}$")
-    axes[1].set_ylabel(r"$E(X)/X^{5/6}$")
+    axes[1].set_ylabel(r"$E(X)/X^{5/6}$" if p == 3
+                       else r"Effective coefficient $\widehat{b}_{n-4,n}$ (symlog)")
     for ax in axes:
         ax.set_xlabel(r"$\log_2 X$")
         ax.spines[["top", "right"]].set_visible(False)
@@ -48,7 +54,7 @@ def generate(data_dir=ROOT/"data", output_dir=ROOT/"results", figures_dir=ROOT/"
         for observable, group in cases:
             frame, metadata = load_series(observable, group, data_dir, p=p)
             selected = select_range(frame, xmin, xmax)
-            dyadic = dyadic_diagnostics(selected)
+            dyadic = dyadic_diagnostics(selected, p=p)
             if dyadic.empty:
                 raise ValueError("No powers of two in the selected range")
             endpoint = endpoint_row(metadata, dyadic)

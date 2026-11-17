@@ -187,7 +187,13 @@ def test_cli_preserves_distinct_fit_ranges(tmp_path, monkeypatch):
         table = pd.read_csv(path.with_suffix(".csv"))
         assert table.X.between(result["xmin"], result["xmax"]).all()
         assert np.array_equal(table.X, 2**table.k)
-        assert np.allclose(table.b_5_6, table.error/table.X**(5/6))
+        assert "b_5_6" not in table
+        assert "b_5_6" not in result["endpoint"]
+        for gap in (1, 2, 4):
+            valid = table[f"theta_{gap}"].notna()
+            assert np.allclose(table.loc[valid, f"c_{gap}"] *
+                               table.loc[valid, "X"]**table.loc[valid, f"theta_{gap}"],
+                               table.loc[valid, "error"])
         assert result["endpoint"]["X"] == int(table.X.max())
         assert path.with_suffix(".png").stat().st_size > 0
 
@@ -229,12 +235,14 @@ def test_prime_summary_full_histogram(p):
 
 
 @pytest.mark.parametrize("sign", [-1, 1])
-def test_ratio_recovers_power_on_exact_checkpoints(sign):
+@pytest.mark.parametrize("p", PRIMES)
+def test_ratio_recovers_power_on_exact_checkpoints(sign, p):
     x = np.array([2**k for k in range(20, 31)] + [2**30+1])
     coefficient = sign * .23
     theta = .792
     frame = pd.DataFrame({"X": x, "error": coefficient*x**theta})
-    result = dyadic_diagnostics(frame)
+    result = dyadic_diagnostics(frame, p=p)
+    assert ("b_5_6" in result) == (p == 3)
     assert list(result.k) == list(range(20, 31))
     for gap in (1, 2, 4):
         assert result.iloc[-1][f"theta_{gap}"] == pytest.approx(theta)
