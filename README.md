@@ -16,6 +16,14 @@ Let $`N(X)`$ be the number of fields, $`\rho=3/\pi^2`$, and $`h_D=\lvert\mathrm{
 
 If the Sylow subgroup has $`r`$ nontrivial cyclic factors, its $`p`$-torsion has size $`p^r`$, including the identity. The mean $`2`$ is proved at $`p=3`$ and is a [Cohen–Lenstra prediction](https://people.math.harvard.edu/~mmwood/Publications/ArithStats.pdf) at $`p=5,7`$. The [proved secondary term for the 3-torsion sum](https://arxiv.org/html/2107.12819) provides a comparison.
 
+For every finite abelian $`p`$-group $`G`$,
+
+```math
+|G[p]|=|\mathrm{Hom}(G,C_p)|=1+\#\mathrm{Sur}(G,C_p).
+```
+
+The trivial homomorphism contributes one. The CL model gives an expected surjection count of one, so its predicted mean torsion size is two for every odd prime. See [Wood, Proposition 5.6](https://people.math.harvard.edu/~mmwood/Publications/ArithStats.pdf#page=10). The code computes the observed sum separately for each prime as $`\sum_D p^{r_p(D)}`$.
+
 ## Residual-ratio method
 
 Set $`E(X)=\text{observed count}-\text{fixed main term}`$. If $`E(X)\approx bX^\theta`$, then
@@ -49,13 +57,13 @@ At $`p=3`$, $`b_{5/6}(2^{30})=-0.112933`$ for divisibility and $`-0.414719`$ for
 
 Some common Sylow types also vary strongly by window. For $`C_{243}`$, $`\widehat{\theta}_{29,30}=0.7153`$ and $`\widehat{\theta}_{26,30}=0.5485`$ with 1,104,084 endpoint observations. In Sylow 5, the gap 4 exponents are $`0.9655`$ for $`C_{25}`$ and $`0.4267`$ for $`C_{625}`$. In Sylow 7, they are $`0.8259`$ for $`C_{49}`$ and $`0.3186`$ for $`C_{343}`$.
 
-The [calculation tables](results/calculations.md) give the counts, proportions, three endpoint exponents, and a paired coefficient for every observed Sylow type. Types are ordered by $`\lvert\mathrm{Aut}(G)\rvert`$ and marked **Sparse** below 10,000 endpoint observations. Each plot shows the observed proportion or mean and the dyadic exponents. Its third panel shows $`b_{5/6}(X)`$ for $`p=3`$ and the effective coefficients for $`p=5,7`$. Effective coefficient panels use a symmetric logarithmic scale, linear within $`\pm10^{-6}`$.
+The [calculation tables](results/calculations.md) give the counts, proportions, three endpoint exponents, and a paired coefficient for every observed Sylow type. Types are ordered by $`\lvert\mathrm{Aut}(G)\rvert`$ and marked **Sparse** below 10,000 endpoint observations. The divisibility and torsion plots show the observed proportion or mean and the dyadic exponents. Their third panels show $`b_{5/6}(X)`$ for $`p=3`$ and the effective coefficients for $`p=5,7`$. Effective coefficient panels use a symmetric logarithmic scale, linear within $`\pm10^{-6}`$.
 
-| Prime | Divisibility | Torsion | Common Sylow types |
+| Prime | Divisibility | Torsion | Sylow types |
 |---|---|---|---|
-| 3 | [Plot](figures/statistics/divisible.png) | [Plot](figures/statistics/torsion.png) | [Comparison](figures/statistics/sylow_comparison.png) |
-| 5 | [Plot](figures/statistics/p5/divisible.png) | [Plot](figures/statistics/p5/torsion.png) | [Comparison](figures/statistics/p5/sylow_comparison.png) |
-| 7 | [Plot](figures/statistics/p7/divisible.png) | [Plot](figures/statistics/p7/torsion.png) | [Comparison](figures/statistics/p7/sylow_comparison.png) |
+| 3 | [Plot](figures/statistics/divisible.png) | [Plot](figures/statistics/torsion.png) | [Table](results/calculations.md#sylow-3) |
+| 5 | [Plot](figures/statistics/p5/divisible.png) | [Plot](figures/statistics/p5/torsion.png) | [Table](results/calculations.md#sylow-5) |
+| 7 | [Plot](figures/statistics/p7/divisible.png) | [Plot](figures/statistics/p7/torsion.png) | [Table](results/calculations.md#sylow-7) |
 
 The [earlier Sylow 3 report](results/sylow3_experiment.tex) documents the original least-squares experiment.
 
@@ -83,4 +91,4 @@ python -m experiments.fit --prime 7 --group C7xC7 --xmin 16777216
 python -m scripts.list_fields --prime 5 --max-D 100
 ~~~
 
-Use `--xmin` and `--xmax` to select the checkpoints used by an individual estimate. The resulting CSV, JSON, and plot go to `results/custom/`. Field inspection uses the four shard-0 files. Use `--max-D` for a discriminant bound or `--max-d` for a squarefree radicand bound.
+Use `--xmin` and `--xmax` to select the checkpoints used by an individual estimate. Results go to `results/custom/`. Sylow estimates produce CSV and JSON tables. Divisibility and torsion estimates also produce a plot. Field inspection uses the four shard-0 files. Use `--max-D` for a discriminant bound or `--max-d` for a squarefree radicand bound.

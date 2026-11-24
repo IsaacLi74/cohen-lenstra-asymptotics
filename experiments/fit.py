@@ -38,9 +38,12 @@ def main():
                "xmin": xmin, "xmax": xmax, "endpoint": endpoint_row(metadata, dyadic)}
     output.with_suffix(".json").write_text(json.dumps(payload, indent=2, allow_nan=False)+"\n")
     dyadic.to_csv(output.with_suffix(".csv"), index=False)
-    plot_diagnostics(selected, dyadic, metadata, output.with_suffix(".png"))
+    saved_formats = ".json / .csv"
+    if args.group is None:
+        plot_diagnostics(selected, dyadic, metadata, output.with_suffix(".png"))
+        saved_formats += " / .png"
     print(json.dumps(payload, indent=2, allow_nan=False))
-    print(f"Saved {output}.json / .csv / .png")
+    print(f"Saved {output}{saved_formats}")
 
 
 if __name__ == "__main__":

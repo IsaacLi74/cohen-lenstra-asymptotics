@@ -1,4 +1,4 @@
-"""Write the endpoint summary and links to the dyadic diagnostics."""
+"""Write the endpoint summary, aggregate plot links, and Sylow tables."""
 import os
 from pathlib import Path
 
@@ -55,12 +55,11 @@ def write_calculations(data_dir, output_dir, figures_dir, results):
                      f"{row['ratio_leading_term']:.9f} | {exponents(row)} | {number(row['c_4'])} |")
     for p in PRIMES:
         groups = [row for row in results if row["prime"] == p and row["group"]]
-        comparison = os.path.relpath(figure_path(figures_dir, p, "sylow_comparison"), output_dir)
         fixed_header = " | $`b_{5/6}`$" if p == 3 else ""
         fixed_separator = "---:|" if p == 3 else ""
         lines.extend([
             "", f"## Sylow {p}", "",
-            f"{len(groups)} types in the data. [Compare the common groups]({comparison}).", "",
+            f"{len(groups)} types in the data.", "",
             "| Group | Aut size | Count | Observed / $`N(X)`$ | CL probability | "
             "Gap 1 exponent | Gap 2 exponent | Gap 4 exponent | Gap 4 coefficient"
             f"{fixed_header} | Status |",
@@ -68,9 +67,8 @@ def write_calculations(data_dir, output_dir, figures_dir, results):
         ])
         for row in groups:
             group = row["group"]
-            plot = os.path.relpath(figure_path(figures_dir, p, "sylow", group), output_dir)
             fixed_value = f" | {number(row['b_5_6'])}" if p == 3 else ""
-            lines.append(f"| [{group}]({plot}) | {row['aut_size']:,} | {row['count']:,} | "
+            lines.append(f"| {group} | {row['aut_size']:,} | {row['count']:,} | "
                          f"{number(row['observed_ratio'])} | {number(row['ratio_leading_term'])} | "
                          f"{exponents(row)} | {number(row['c_4'])}{fixed_value} | {status(row)} |")
     lines.extend(["", "[All dyadic checkpoints and pairs](dyadic_estimates.csv) · "

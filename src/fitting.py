@@ -22,19 +22,14 @@ def data_path(data_dir, p, *, sylow=False):
     return Path(data_dir)/"processed"/filename
 
 
-def figure_path(figures_dir, p, observable, group=None):
+def figure_path(figures_dir, p, observable):
     directory = figures_dir if p == 3 else figures_dir/f"p{p}"
-    return directory/(f"sylow_{group}.png" if group else f"{observable}.png")
+    return directory/f"{observable}.png"
 
 
 def available_groups(data_dir, p=3):
     path = data_path(data_dir, p, sylow=True)
     return tuple(pd.read_csv(path, usecols=["group"])["group"].unique())
-
-
-def group_label(group, p=3):
-    parts = group_parts(group, p)
-    return "$" + (r"\times ".join(f"C_{{{q}}}" for q in parts) or "1") + "$"
 
 
 def load_series(observable="divisible", group=None, data_dir=None, *, p=3):
@@ -124,15 +119,6 @@ def endpoint_row(metadata, dyadic):
     return row
 
 
-def observable_label(metadata):
-    p, observable = metadata["prime"], metadata["observable"]
-    if observable == "sylow":
-        return f"Sylow {p} " + group_label(metadata["group"], p)
-    if observable == "torsion":
-        return f"{p}-torsion"
-    return rf"${p} \mid h_D$"
-
-
 def plot_diagnostics(frame, dyadic, metadata, output):
     import matplotlib
     matplotlib.use("Agg")
@@ -175,10 +161,7 @@ def plot_diagnostics(frame, dyadic, metadata, output):
     for ax in fig.axes:
         ax.set(xlabel=r"$\log_2 X$", xlim=(float(x.min())-.2, float(x.max())+.2))
         ax.spines[["top", "right"]].set_visible(False)
-    title = observable_label(metadata)
-    count = int(frame["count"].iloc[-1])
-    if metadata["observable"] == "sylow" and count < SPARSE_COUNT:
-        title += f" (Sparse, {count:,} observations)"
+    title = f"{p}-torsion" if torsion else rf"${p} \mid h_D$"
     fig.suptitle(title)
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)

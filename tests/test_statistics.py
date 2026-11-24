@@ -172,17 +172,21 @@ def test_c9_dyadic_reference_value():
     assert endpoint.theta_4 == pytest.approx(.833596922, abs=1e-8)
 
 
-def test_cli_preserves_distinct_fit_ranges(tmp_path, monkeypatch):
+@pytest.mark.parametrize("prime, observable, group", [(5, "sylow", "C25"), (7, "torsion", None)])
+def test_cli_preserves_distinct_fit_ranges(tmp_path, monkeypatch, prime, observable, group):
     from experiments.fit import main
 
     for xmin, xmax in [("1.1e6", "1e8"), ("1.9e6", "1e8"), ("1.1e6", "2e8")]:
-        monkeypatch.setattr(sys, "argv", ["fit", "--prime", "5", "--group", "C25", "--xmin", xmin,
-                                        "--xmax", xmax, "--output-dir", str(tmp_path)])
+        args = ["fit", "--prime", str(prime), "--observable", observable, "--xmin", xmin,
+                "--xmax", xmax, "--output-dir", str(tmp_path)]
+        if group:
+            args.extend(["--group", group])
+        monkeypatch.setattr(sys, "argv", args)
         main()
     assert len(list(tmp_path.glob("*.json"))) == 3
     for path in tmp_path.glob("*.json"):
         result = json.loads(path.read_text())
-        assert result["prime"] == 5 and result["method"] == "dyadic residual ratio"
+        assert result["prime"] == prime and result["method"] == "dyadic residual ratio"
         assert path.stem.endswith(f"_{result['xmin']}_{result['xmax']}")
         table = pd.read_csv(path.with_suffix(".csv"))
         assert table.X.between(result["xmin"], result["xmax"]).all()
@@ -195,7 +199,10 @@ def test_cli_preserves_distinct_fit_ranges(tmp_path, monkeypatch):
                                table.loc[valid, "X"]**table.loc[valid, f"theta_{gap}"],
                                table.loc[valid, "error"])
         assert result["endpoint"]["X"] == int(table.X.max())
-        assert path.with_suffix(".png").stat().st_size > 0
+        if group:
+            assert not path.with_suffix(".png").exists()
+        else:
+            assert path.with_suffix(".png").stat().st_size > 0
 
 
 def test_all_prime_scans_match_independent_decompositions(tmp_path):

@@ -1,4 +1,4 @@
-"""Generate residual-ratio tables and plots for p = 3, 5, and 7."""
+"""Generate residual-ratio tables and aggregate plots for p = 3, 5, and 7."""
 import argparse
 import json
 from pathlib import Path
@@ -8,36 +8,8 @@ import pandas as pd
 from experiments.calculations import write_calculations
 from src import ROOT
 from src.fitting import (GAPS, NOTE, available_groups, dyadic_diagnostics, endpoint_row, figure_path,
-                         load_series, observable_label, plot_diagnostics, select_range)
+                         load_series, plot_diagnostics, select_range)
 from src.statistics import PRIMES, aut_size, group_parts
-
-
-def plot_comparison(entries, output):
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-
-    fig, axes = plt.subplots(1, 2, figsize=(11, 4), layout="constrained")
-    p = entries[0][0]["prime"]
-    for metadata, points in entries:
-        label = observable_label(metadata)
-        axes[0].plot(points["k"], points["theta_4"], "o-", ms=3, label=label)
-        coefficient = points["b_5_6"] if p == 3 else points["c_4"]
-        axes[1].plot(points["k"], coefficient, "o-", ms=3, label=label)
-    if p == 3:
-        axes[0].axhline(5/6, color="black", linestyle="--", label="$5/6$")
-    else:
-        axes[1].set_yscale("symlog", linthresh=1e-6)
-    axes[1].axhline(0, color="0.65", linewidth=0.8)
-    axes[0].set_ylabel(r"Residual-ratio exponent $\widehat{\theta}_{n-4,n}$")
-    axes[1].set_ylabel(r"$E(X)/X^{5/6}$" if p == 3
-                       else r"Effective coefficient $\widehat{b}_{n-4,n}$ (symlog)")
-    for ax in axes:
-        ax.set_xlabel(r"$\log_2 X$")
-        ax.spines[["top", "right"]].set_visible(False)
-        ax.legend(fontsize=8)
-    fig.savefig(output, dpi=140)
-    plt.close(fig)
 
 
 def generate(data_dir=ROOT/"data", output_dir=ROOT/"results", figures_dir=ROOT/"figures/statistics",
@@ -50,7 +22,6 @@ def generate(data_dir=ROOT/"data", output_dir=ROOT/"results", figures_dir=ROOT/"
         groups = sorted(available_groups(data_dir, p),
                         key=lambda group: (aut_size(group_parts(group, p), p), group))
         cases = [("divisible", None), ("torsion", None), *(("sylow", g) for g in groups)]
-        comparison = []
         for observable, group in cases:
             frame, metadata = load_series(observable, group, data_dir, p=p)
             selected = select_range(frame, xmin, xmax)
@@ -61,12 +32,9 @@ def generate(data_dir=ROOT/"data", output_dir=ROOT/"results", figures_dir=ROOT/"
             results.append(endpoint)
             all_points.append(dyadic.assign(prime=p, observable=observable, group=group))
             fits.append({**metadata, **endpoint})
-            plot_diagnostics(selected, dyadic, metadata, figure_path(figures_dir, p, observable, group))
-            if group in (f"C{p}", f"C{p**2}", f"C{p}xC{p}"):
-                comparison.append((metadata, dyadic))
-        if comparison:
-            plot_comparison(comparison, figure_path(figures_dir, p, "sylow_comparison"))
-        print(f"Generated p={p} tables and plots for {len(groups)} Sylow types", flush=True)
+            if group is None:
+                plot_diagnostics(selected, dyadic, metadata, figure_path(figures_dir, p, observable))
+        print(f"Generated p={p} tables for {len(groups)} Sylow types and two aggregate plots", flush=True)
     (output_dir/"fits.json").write_text(json.dumps({"method": "dyadic residual ratio", "note": NOTE,
                                                     "gaps": GAPS, "fits": fits}, indent=2, allow_nan=False)+"\n")
     summary = pd.DataFrame(results)
