@@ -63,6 +63,8 @@ At $`X=2^{30}`$, the data contain **326,378,404 fields**. The type counts and ta
 
 At $`p=3`$, $`b_{5/6}(2^{30})=-0.112933`$ for divisibility and $`-0.414719`$ for torsion. The torsion coefficient stays near the proved value $`-0.41478`$. For $`p\ge5`$, the table reports the effective power and its corresponding coefficient for each statistic.
 
+Divisibility and torsion have similar finite-range residuals: their gap 4 exponents differ by less than $`0.014`$ at every prime. At $`X=2^{30}`$, $`E_{\mathrm{tor}}/(pE_{\mathrm{div}})`$ equals $`1.0126,1.0031,0.9953,0.9986`$ for $`p=11,13,17,19`$, respectively. Here both residuals subtract the fixed main terms above. These comparisons do not establish a shared asymptotic exponent.
+
 Some common Sylow types also vary strongly by window. For $`C_{243}`$, $`\widehat{\theta}_{29,30}=0.7153`$ and $`\widehat{\theta}_{26,30}=0.5485`$ with 1,104,084 endpoint observations. In Sylow 5, the gap 4 exponents are $`0.9655`$ for $`C_{25}`$ and $`0.4267`$ for $`C_{625}`$. In Sylow 7, they are $`0.8259`$ for $`C_{49}`$ and $`0.3186`$ for $`C_{343}`$.
 
 For $`C_{17}`$, the residuals at $`2^{26}`$ and $`2^{30}`$ have opposite signs despite 19,128,367 observations. The gap 4 exponent is marked unavailable.
@@ -78,8 +80,6 @@ The [calculation tables](results/calculations.md) give the counts, proportions, 
 | 13 | 8 | [Plot](figures/statistics/p13/divisible.png) | [Plot](figures/statistics/p13/torsion.png) | [Table](results/calculations.md#sylow-13) |
 | 17 | 6 | [Plot](figures/statistics/p17/divisible.png) | [Plot](figures/statistics/p17/torsion.png) | [Table](results/calculations.md#sylow-17) |
 | 19 | 6 | [Plot](figures/statistics/p19/divisible.png) | [Plot](figures/statistics/p19/torsion.png) | [Table](results/calculations.md#sylow-19) |
-
-The [earlier Sylow 3 report](results/sylow3_experiment.tex) documents the original least-squares experiment.
 
 ## Reproduce
 
