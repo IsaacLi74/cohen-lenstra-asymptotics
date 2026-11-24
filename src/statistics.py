@@ -6,7 +6,7 @@ DATA_BOUND = 2**28
 RESIDUES = ((3, 8), (7, 8), (4, 16), (8, 16))
 RAW_FILES = tuple(f"cl{r}mod{m}.0.gz" for r, m in RESIDUES)
 DENSITY = 3 / math.pi**2
-PRIMES = (3, 5, 7)
+PRIMES = (3, 5, 7, 11, 13, 17, 19)
 
 
 def cl_trivial_probability(p):

@@ -11,7 +11,7 @@ D_0=-k2^{28}-r,\qquad D_i=D_{i-1}-ma_i,\qquad
 \mathrm{Cl}_{D_i}\cong\prod_j C_{c_j},\qquad h_{D_i}=\prod_j c_j.
 ```
 
-For each $`p=3,5,7`$, keep $`q_j=p^{v_p(c_j)}>1`$ to obtain the Sylow type. The $`p`$-torsion size is $`p^r`$, where $`r`$ is the number of retained factors. Keys list these factors in decreasing order, for example `C25xC5`. The trivial group has key `trivial`.
+For each $`p=3,5,7,11,13,17,19`$, keep $`q_j=p^{v_p(c_j)}>1`$ to obtain the Sylow type. The $`p`$-torsion size is $`p^r`$, where $`r`$ is the number of retained factors. Keys list these factors in decreasing order, for example `C25xC5`. The trivial group has key `trivial`.
 
 ## Summary files
 

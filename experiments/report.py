@@ -1,4 +1,4 @@
-"""Generate residual-ratio tables and aggregate plots for p = 3, 5, and 7."""
+"""Generate residual-ratio tables and aggregate plots for odd primes through 19."""
 import argparse
 import json
 from pathlib import Path

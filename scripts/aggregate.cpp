@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
         std::vector<U> primes;
         U v;
         while (prime_input >> v) {
-            if (v != 3 && v != 5 && v != 7)
+            if (v != 3 && v != 5 && v != 7 && v != 11 && v != 13 && v != 17 && v != 19)
                 throw std::runtime_error("Unsupported prime");
             primes.push_back(v);
         }

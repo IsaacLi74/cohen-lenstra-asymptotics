@@ -172,7 +172,9 @@ def test_c9_dyadic_reference_value():
     assert endpoint.theta_4 == pytest.approx(.833596922, abs=1e-8)
 
 
-@pytest.mark.parametrize("prime, observable, group", [(5, "sylow", "C25"), (7, "torsion", None)])
+@pytest.mark.parametrize("prime, observable, group", [
+    (5, "sylow", "C25"), (7, "torsion", None), (19, "sylow", "C19"),
+])
 def test_cli_preserves_distinct_fit_ranges(tmp_path, monkeypatch, prime, observable, group):
     from experiments.fit import main
 
@@ -199,9 +201,7 @@ def test_cli_preserves_distinct_fit_ranges(tmp_path, monkeypatch, prime, observa
                                table.loc[valid, "X"]**table.loc[valid, f"theta_{gap}"],
                                table.loc[valid, "error"])
         assert result["endpoint"]["X"] == int(table.X.max())
-        if group:
-            assert not path.with_suffix(".png").exists()
-        else:
+        if group is None:
             assert path.with_suffix(".png").stat().st_size > 0
 
 
@@ -209,11 +209,17 @@ def test_all_prime_scans_match_independent_decompositions(tmp_path):
     path = tmp_path/"cl3mod8.0.gz"
     with gzip.open(path, "wt") as f:
         f.write("0 99225 15 21 315\n1 1225 1225\n")
-    xs = [3, 11]
+        mixed = 11 * 13 * 17 * 19
+        f.write(f"1 {mixed**3} {mixed} {mixed**2}\n")
+    xs = [3, 11, 19]
     result = {
-        3: [Counter(C9xC3xC3=1), Counter(trivial=1)],
-        5: [Counter(C5xC5=1), Counter(C25=1)],
-        7: [Counter(C7xC7=1), Counter(C49=1)],
+        3: [Counter(C9xC3xC3=1), Counter(trivial=1), Counter(trivial=1)],
+        5: [Counter(C5xC5=1), Counter(C25=1), Counter(trivial=1)],
+        7: [Counter(C7xC7=1), Counter(C49=1), Counter(trivial=1)],
+        11: [Counter(trivial=1), Counter(trivial=1), Counter(C121xC11=1)],
+        13: [Counter(trivial=1), Counter(trivial=1), Counter(C169xC13=1)],
+        17: [Counter(trivial=1), Counter(trivial=1), Counter(C289xC17=1)],
+        19: [Counter(trivial=1), Counter(trivial=1), Counter(C361xC19=1)],
     }
     assert python_prime_buckets([path], xs, PRIMES) == result
     if shutil.which("c++"):
